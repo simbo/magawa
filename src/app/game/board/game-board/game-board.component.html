@@ -1,0 +1,6 @@
+<div class="m-game-board">
+  <div class="m-game-board__row" *ngFor="let row of (boardIndex$ | async); let y = index;">
+    <m-game-tile *ngFor="let column of row; let x = index;" [x]="x" [y]="y"></m-game-tile>
+  </div>
+  <m-game-board-overlay></m-game-board-overlay>
+</div>

@@ -1,0 +1,11 @@
+<button
+  class="m-game-status-bar__button"
+  title="Pause"
+  style="width: 100px"
+  (click)="togglePause($event)"
+>
+  <span class="m-game-status-bar__label">
+    <span class="m-game-status-bar__icon">⏱</span>
+    <span class="m-game-status-bar__text">{{ duration | gameDurationFormat }}</span>
+  </span>
+</button>

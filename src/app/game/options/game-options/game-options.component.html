@@ -1,0 +1,88 @@
+<div class="m-game-options">
+
+  <form [formGroup]="formGroup">
+
+    <div class="m-game-options__row">
+      <label
+        for="difficulty"
+        class="m-game-options__label"
+      >Difficulty</label>
+      <select
+        class="m-game-options__input"
+        id="difficulty"
+        formControlName="difficulty"
+      >
+        <option *ngFor="let difficulty of gameDifficulties" [value]="difficulty">{{ difficulty }}</option>
+      </select>
+    </div>
+
+    <div class="m-game-options__row">
+      <label
+        for="tilesX"
+        class="m-game-options__label"
+      >Width</label>
+      <input
+        class="m-game-options__input"
+        type="number"
+        id="tilesX"
+        formControlName="tilesX"
+        [min]="minTilesX"
+        [max]="maxTilesX"
+        step="1"
+        pattern="\d+"
+        [readonly]="!isCustom"
+      />
+    </div>
+
+    <div class="m-game-options__row">
+      <label
+        for="tilesY"
+        class="m-game-options__label"
+      >Height</label>
+      <input
+        class="m-game-options__input"
+        type="number"
+        id="tilesY"
+        formControlName="tilesY"
+        [min]="minTilesY"
+        [max]="maxTilesY"
+        step="1"
+        pattern="\d+"
+        [readonly]="!isCustom"
+      />
+    </div>
+
+    <div class="m-game-options__row">
+      <label
+        for="minesCount"
+        class="m-game-options__label"
+      >Mines</label>
+      <input
+        class="m-game-options__input"
+        type="number"
+        id="minesCount"
+        formControlName="minesCount"
+        [min]="minMinesCount"
+        [max]="maxMinesCount"
+        step="1"
+        pattern="\d+"
+        [readonly]="!isCustom"
+      />
+    </div>
+
+    <div class="m-game-options__row">
+      <button
+        class="m-game-options__button m-game-options__button--start"
+        [disabled]="!isValid"
+        (click)="start($event)"
+      >New Game</button>
+      <button
+        *ngIf="gameInProgress$ | async"
+        class="m-game-options__button m-game-options__button--cancel"
+        (click)="cancel($event)"
+      >Cancel</button>
+    </div>
+
+  </form>
+
+</div>

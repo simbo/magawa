@@ -1,0 +1,7 @@
+<div class="m-game-overlay"
+  *ngIf="visible$ | async"
+  [ngClass]="(classNames$ | async) || {}"
+>
+  <div class="m-game-overlay__title">{{ title$ | async }}</div>
+  <div class="m-game-overlay__text">{{ text$ | async }}</div>
+</div>

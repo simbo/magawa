@@ -1,0 +1,9 @@
+<button
+  *ngIf="x !== undefined && y !== undefined"
+  class="m-game-tile"
+  [ngClass]="classNames"
+  (click)="onClickTile($event)"
+  (contextmenu)="onRightClickTile($event)"
+>
+  <div class="m-game-tile__label">{{ label }}</div>
+</button>
