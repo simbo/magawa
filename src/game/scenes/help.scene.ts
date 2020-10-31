@@ -3,26 +3,26 @@ import Phaser from 'phaser';
 import { throttleCallback } from '../../utils/throttle-callback';
 import { GameScenes } from '../game-scenes.enum';
 
-export class MainScene extends Phaser.Scene {
+export class HelpScene extends Phaser.Scene {
   constructor() {
-    super(GameScenes.Main);
+    super(GameScenes.Help);
   }
 
   public init(data: object): void {
-    console.log('main#init', data);
+    console.log('help#init', data);
   }
 
   public preload(): void {
-    console.log('main#preload');
+    console.log('help#preload');
   }
 
   public create(data: object): void {
-    console.log('main#create', data);
+    console.log('help#create', data);
     this.scale.on('resize', throttleCallback(this.resize, 50, this));
   }
 
   public update(time: number, delta: number): void {
-    // console.log('main#update', time, delta);
+    // console.log('help#update', time, delta);
   }
 
   public resize(
@@ -30,7 +30,7 @@ export class MainScene extends Phaser.Scene {
     baseSize: Phaser.Structs.Size,
     displaySize: Phaser.Structs.Size
   ): void {
-    console.log('main#resize', gameSize, baseSize, displaySize);
+    console.log('help#resize', gameSize, baseSize, displaySize);
     // this.cameras.resize(gameSize.width, gameSize.height);
   }
 }

@@ -1,3 +1,24 @@
-@import "~css-reset-and-normalize/scss/reset-and-normalize";
-@import "~css-reset-and-normalize/scss/link-reset";
-@import "~css-reset-and-normalize/scss/button-reset";
+html,
+body,
+#game-container {
+  height: 100%;
+}
+
+body {
+  background: #35654d;
+  color: #fff;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+#game-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  &:empty::before {
+    text-transform: uppercase;
+    content: "Loading...";
+  }
+}

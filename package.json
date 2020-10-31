@@ -25,8 +25,8 @@
     "watcherGlob": "**"
   },
   "dependencies": {
-    "css-reset-and-normalize": "^2.1.0",
     "phaser": "^3.24.1",
+    "phaser3-rex-plugins": "^1.1.31",
     "shuffle-array": "^1.0.1"
   },
   "devDependencies": {
