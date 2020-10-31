@@ -10,7 +10,7 @@ This is a minesweeper clone that I've built as a spare time project for fun.
 
 It's written in typescript using phaser as game engine and parcel as build tool.
 
-You can see a live version on github pages: [simbo.codes/magawa](https://simbo.codes/magawa)
+You can see a live version on github pages: [simbo.codes/magawa](https://simbo.codes/magawa/)
 
 ## Development
 
@@ -42,4 +42,4 @@ Cambodia.
 
 ## License and Author
 
-MIT 2020 Simon Lepel simbo@simbo.de https://simbo.de
+MIT 2020 [Simon Lepel](https://simbo.codes/)
