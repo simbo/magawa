@@ -1,0 +1,40 @@
+{
+  "name": "magawa",
+  "version": "0.1.0",
+  "description": "A Minesweeper Clone.",
+  "author": "Simon Lepel <simbo@simbo.de> (https://simbo.de)",
+  "homepage": "https://github.com/simbo/magawa#readme",
+  "license": "MIT",
+  "private": true,
+  "repository": "github:simbo/magawa",
+  "engines": {
+    "node": "^12"
+  },
+  "scripts": {
+    "start": "parcel src/index.html -p 8080",
+    "build": "parcel build src/index.html --out-dir dist",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "prettier --check .",
+    "format": "prettier --write ."
+  },
+  "parcelCleanPaths": [
+    "dist"
+  ],
+  "staticFiles": {
+    "staticPath": "src/assets",
+    "watcherGlob": "**"
+  },
+  "dependencies": {
+    "css-reset-and-normalize": "^2.1.0",
+    "phaser": "^3.24.1",
+    "shuffle-array": "^1.0.1"
+  },
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-clean-easy": "^1.0.2",
+    "parcel-plugin-static-files-copy": "^2.5.0",
+    "prettier": "^2.1.2",
+    "sass": "^1.28.0",
+    "typescript": "^4.0.5"
+  }
+}
