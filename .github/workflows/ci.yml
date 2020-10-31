@@ -11,10 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout 🛎
+      - name: "Checkout 🛎 "
         uses: actions/checkout@v2
 
-      - name: Read .nvmrc 📄
+      - name: "Read .nvmrc 📄 "
         run: echo "::set-output name=NVMRC::$(cat .nvmrc)"
         id: nvm
 
