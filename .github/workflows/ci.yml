@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v2
+
+      - name: Install 📦
+        uses: borales/actions-yarn@v2
+        with:
+          cmd: install
+
+      # - name: Lint 🕵️‍♂️
+      #   uses: borales/actions-yarn@v2
+      #   with:
+      #     cmd: lint
+
+      # - name: Test 👨‍🔬
+      #   uses: borales/actions-yarn@v2
+      #   with:
+      #     cmd: test
+
+      - name: Build 👷‍♂️
+        uses: borales/actions-yarn@v2
+        with:
+          cmd: build
+
+      - name: Deploy 🚚
+        uses: JamesIves/github-pages-deploy-action@3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: dist
+          CLEAN: true
