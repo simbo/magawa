@@ -8,7 +8,7 @@
   "private": true,
   "repository": "github:simbo/magawa",
   "engines": {
-    "node": "^12"
+    "node": "^14"
   },
   "scripts": {
     "start": "parcel src/index.html -p 8080",
