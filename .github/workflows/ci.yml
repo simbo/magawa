@@ -14,25 +14,26 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@v2
 
-      - name: Install 📦
-        uses: borales/actions-yarn@v2.3.0
+      - name: Read .nvmrc
+        run: echo "::set-output name=NVMRC::$(cat .nvmrc)"
+        id: nvm
+
+      - name: Setup node
+        uses: actions/setup-node@1
         with:
-          cmd: install
+          node-version: "${{ steps.nvm.outputs.NVMRC }}"
+
+      - name: Install 📦
+        run: yarn install
 
       # - name: Lint 🕵️‍♂️
-      #   uses: borales/actions-yarn@v2.3.0
-      #   with:
-      #     cmd: lint
+      #   run: yarn lint
 
       # - name: Test 👨‍🔬
-      #   uses: borales/actions-yarn@v2.3.0
-      #   with:
-      #     cmd: test
+      #   run: yarn test
 
       - name: Build 👷‍♂️
-        uses: borales/actions-yarn@v2.3.0
-        with:
-          cmd: build
+        run: yarn build
 
       - name: Deploy 🚚
         uses: JamesIves/github-pages-deploy-action@3.7.1
