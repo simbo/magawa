@@ -21,4 +21,4 @@ var t,e=require("process"),i=arguments[3];!function(e,i){"object"==typeof export
 },{"./scenes/help.scene":"I4f2","./scenes/main.scene":"vzAT","./scenes/options.scene":"i1m8"}],"ZCfc":[function(require,module,exports) {
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("./game/game-config");try{new Phaser.Game(e.gameConfig)}catch(r){console.error(r);var a=document.getElementById(e.GAME_CONTAINER);a&&(a.append("ERROR: game initialization failed"),a.style.color="#ffae42")}
 },{"./game/game-config":"WL7F"}]},{},["ZCfc"], null)
-//# sourceMappingURL=/main.97b229f9.js.map
+//# sourceMappingURL=main.97b229f9.js.map
