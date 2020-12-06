@@ -1,7 +1,11 @@
+import { gameDifficultySettings } from '../../lib/game-difficulty-settings';
 import { GameDifficulty } from '../../lib/game-difficulty.enum';
 import { GameStatus } from '../../lib/game-status.enum';
 import { Store } from '../store';
 import { GameState } from './game-state';
+
+const difficulty = GameDifficulty.Medium;
+const { tilesX, tilesY, minesCount } = gameDifficultySettings[difficulty];
 
 const initialState: GameState = {
   status: GameStatus.Closed,
@@ -9,11 +13,11 @@ const initialState: GameState = {
   startedAt: null,
   pausedAt: null,
   finishedAt: null,
-  difficulty: GameDifficulty.Easy,
+  difficulty,
   tileSize: 40,
-  tilesX: 8,
-  tilesY: 8,
-  minesCount: 10,
+  tilesX,
+  tilesY,
+  minesCount,
   flagsCount: 0
 };
 
