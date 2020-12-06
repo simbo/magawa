@@ -1,0 +1,10 @@
+body.loading {
+  position: relative;
+  &::before {
+    content: 'Loading...';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: transform(-50%, -50%);
+  }
+}

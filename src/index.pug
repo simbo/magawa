@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport", content="width=device-width, initial-scale=1.0")
+    title Magawa
+    link(rel="stylesheet", href="styles/main.scss")
+    link(rel="shortcut icon", href=`${APP_URI}favicon.ico`, type="image/x-icon")
+    base(href="/magawa/")
+    if (APP_PROD)
+      script(async, defer, data-website-id="12345", src="https://trk.simbo.de/umami.js")
+  body(class="loading")
+    a(class="version", title="Sources on GitHub", href="https://github.com/simbo/magawa")
+      .version__label=`v${APP_VERSION}`
+      .version__icon
+        include ../raw/github.svg
+    script(src="scripts/main.tsx")

@@ -1,0 +1,8 @@
+.c-timer {
+  display: flex;
+
+  &__label {
+    line-height: $lineHeight;
+    margin-left: 0.4em;
+  }
+}

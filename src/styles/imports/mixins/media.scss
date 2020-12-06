@@ -1,0 +1,41 @@
+@mixin mq($media) {
+  @if $media == 'mobile' {
+    @media screen and (max-width: 767px) {
+      @content;
+    }
+  } @else if $media == 'mobile-portrait' {
+    @media screen and (max-width: 559px) {
+      @content;
+    }
+  } @else if $media == 'mobile-landscape' {
+    @media screen and (min-width: 560px) and (max-width: 767px) {
+      @content;
+    }
+  } @else if $media == 'tablet' {
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+      @content;
+    }
+  } @else if $media == 'tablet-portrait' {
+    @media screen and (min-width: 768px) and (max-width: 895px) {
+      @content;
+    }
+  } @else if $media == 'tablet-landscape' {
+    @media screen and (min-width: 896px) and (max-width: 1024px) {
+      @content;
+    }
+  } @else if $media == 'tablet' {
+    @media screen and (min-width: 768px) and (max-width: 1024px) {
+      @content;
+    }
+  } @else if $media == '>=tablet' {
+    @media screen and (min-width: 768px) {
+      @content;
+    }
+  } @else if $media == 'desktop' {
+    @media screen and (min-width: 1025px) {
+      @content;
+    }
+  } @else {
+    @warn "#{$media} is not a known mediaquery name";
+  }
+}

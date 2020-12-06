@@ -1,9 +1,0 @@
-<m-game-options
-  *ngIf="options.visible$ | async; else gameView"
-></m-game-options>
-<ng-template #gameView>
-  <div class="m-game-view" [style.maxWidth]="maxWidth">
-    <m-game-status-bar></m-game-status-bar>
-    <m-game-board></m-game-board>
-  </div>
-</ng-template>

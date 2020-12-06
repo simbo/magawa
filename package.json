@@ -1,64 +1,59 @@
 {
   "name": "magawa",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "A minesweeper clone.",
   "author": "Simon Lepel <simbo@simbo.de> (https://simbo.de)",
-  "homepage": "https://github.com/simbo/magawa#readme",
+  "homepage": "https://simbo.codes/magawa",
   "license": "MIT",
   "private": true,
   "repository": "github:simbo/magawa",
   "engines": {
-    "node": "^12"
+    "node": ">=14"
   },
   "scripts": {
-    "ng": "ng",
-    "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e"
+    "build": "parcel build src/*.pug --public-url /magawa",
+    "dev": "parcel src/*.pug --public-url /magawa",
+    "lint": "yarn lint:prettier && yarn lint:tslint",
+    "lint:prettier": "prettier --check \"**/*.{ts,tsx,scss,js,md,json}\"",
+    "lint:tslint": "tslint -p tsconfig.json -c tslint.json",
+    "serve": "yarn build && live-server --host=0.0.0.0 --port=1234 --path=dist --mount=/magawa:dist --no-browser",
+    "start": "yarn run dev",
+    "test": "echo \"No tests specified. Skipping...\" && exit 0"
   },
   "parcelCleanPaths": [
+    ".cache",
     "dist"
   ],
   "staticFiles": {
-    "staticPath": "public",
+    "staticPath": "src/static",
     "watcherGlob": "**"
   },
   "dependencies": {
-    "@angular/animations": "~10.1.5",
-    "@angular/common": "~10.1.5",
-    "@angular/compiler": "~10.1.5",
-    "@angular/core": "~10.1.5",
-    "@angular/forms": "~10.1.5",
-    "@angular/platform-browser": "~10.1.5",
-    "@angular/platform-browser-dynamic": "~10.1.5",
-    "@angular/router": "~10.1.5",
-    "css-reset-and-normalize": "^2.1.0",
-    "rxjs": "~6.6.0",
-    "shuffle-array": "^1.0.1",
-    "tslib": "^2.0.0",
-    "zone.js": "~0.10.2"
+    "css-reset-and-normalize": "^2.3.3",
+    "date-fns": "^2.16.1",
+    "pixi.js": "^5.3.3",
+    "preact": "^10.5.7",
+    "rxjs": "^6.6.3",
+    "shuffle-array": "^1.0.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "~0.1001.6",
-    "@angular/cli": "~10.1.6",
-    "@angular/compiler-cli": "~10.1.5",
-    "@types/jasmine": "~3.5.0",
-    "@types/jasminewd2": "~2.0.3",
-    "@types/node": "^12.11.1",
+    "@types/node": "^14.14.10",
+    "@types/pixi.js": "^5.0.0",
     "@types/shuffle-array": "^1.0.0",
-    "codelyzer": "^6.0.0",
-    "jasmine-core": "~3.6.0",
-    "jasmine-spec-reporter": "~5.0.0",
-    "karma": "~5.0.0",
-    "karma-chrome-launcher": "~3.1.0",
-    "karma-coverage-istanbul-reporter": "~3.0.2",
-    "karma-jasmine": "~4.0.0",
-    "karma-jasmine-html-reporter": "^1.5.0",
-    "protractor": "~7.0.0",
-    "ts-node": "~8.3.0",
-    "tslint": "~6.1.0",
-    "typescript": "~4.0.2"
+    "autoprefixer": "^10.0.4",
+    "css-mqpacker-sort-mediaqueries": "^0.2.2",
+    "cssnano": "^4.1.10",
+    "live-server": "^1.2.1",
+    "mqpacker": "^7.0.0",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-clean-easy": "^1.0.2",
+    "parcel-plugin-package-version": "^1.0.2",
+    "parcel-plugin-static-files-copy": "^2.5.0",
+    "postcss": "^8.1.14",
+    "prettier": "^2.2.1",
+    "pug": "^3.0.0",
+    "sass": "^1.30.0",
+    "tslint": "^6.1.3",
+    "typescript": "^4.1.2"
   }
 }

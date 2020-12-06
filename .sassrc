@@ -1,0 +1,10 @@
+{
+  "outputStyle": "expanded",
+  "precision": 8,
+  "sourceMap": true,
+  "includePaths": [
+    "./src/styles/imports",
+    "node_modules"
+  ],
+  "data": "@import 'global-imports';"
+}

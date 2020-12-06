@@ -1,6 +1,6 @@
 {
   "generalConfiguration": {
-    "exclude": [],
+    "exclude": [".*\\.d\\.ts"],
     "sortOnBeforeSave": true
   },
   "importStringConfiguration": {
@@ -9,7 +9,7 @@
       "count": 256,
       "type": "characters"
     },
-    "numberOfEmptyLinesAfterAllImports": 2,
+    "numberOfEmptyLinesAfterAllImports": 1,
     "quoteMark": "single",
     "spacingPerImportExpression": {
       "afterComma": 1,

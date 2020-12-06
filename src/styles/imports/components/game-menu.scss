@@ -1,0 +1,72 @@
+.c-game-menu {
+  margin: 0 auto;
+
+  &__form {
+    max-width: 200px;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__label,
+  &__input,
+  &__select {
+    line-height: $lineHeight;
+  }
+
+  &__label {
+    padding: 0.2em 1em 0.2em 0;
+  }
+
+  &__input,
+  &__select {
+    width: 100px;
+    border: 0;
+    padding: 0.2em 0.4em;
+    background: transparent;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  &__option {
+  }
+
+  &__input {
+    text-align: right;
+  }
+
+  &__input[readonly] {
+    opacity: 0.65;
+  }
+
+  &__input[type='number'] {
+    padding-right: 0;
+
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+      margin-left: 0.4em;
+    }
+  }
+
+  &__buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.4em;
+  }
+
+  &__button {
+    background: #eee;
+    line-height: $lineHeight;
+    padding: 0.2em 2.5em;
+    border-radius: 0.2em;
+    display: flex;
+
+    .c-icon {
+      margin-left: 0.4em;
+    }
+  }
+}
