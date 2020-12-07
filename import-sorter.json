@@ -6,8 +6,8 @@
   "importStringConfiguration": {
     "hasSemicolon": true,
     "maximumNumberOfImportExpressionsPerLine": {
-      "count": 256,
-      "type": "characters"
+      "count": 80,
+      "type": "newLineEachExpressionAfterCountLimitExceptIfOnlyOne"
     },
     "numberOfEmptyLinesAfterAllImports": 1,
     "quoteMark": "single",

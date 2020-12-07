@@ -14,6 +14,9 @@
     "module": "es2020",
     "moduleResolution": "node",
     "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "removeComments": true,
     "sourceMap": true,
     "strict": true,
     "target": "es2015"

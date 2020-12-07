@@ -170,7 +170,12 @@
     },
     "unified-signatures": true,
     "variable-name": {
-      "options": ["ban-keywords", "check-format", "require-const-for-all-caps"]
+      "options": [
+        "ban-keywords",
+        "check-format",
+        "require-const-for-all-caps",
+        "allow-pascal-case"
+      ]
     },
     "whitespace": {
       "options": [
