@@ -1,4 +1,4 @@
-# Magawa
+# 🐀 Magawa
 
 [![GitHub package.json dynamic](https://img.shields.io/github/package-json/version/simbo/magawa)](https://github.com/simbo/magawa/blob/master/package.json)
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/simbo/magawa/CI/master)](https://github.com/simbo/magawa/actions?query=workflow%3ACI)
