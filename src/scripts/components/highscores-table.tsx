@@ -59,21 +59,21 @@ export class HighscoresTable extends Component<HighscoresTableProps> {
               {list === null ? (
                 <td
                   colSpan={4}
-                  className="c-highscores-table__foot-cell c-highscores-table__foot-cell--error"
+                  class="c-highscores-table__foot-cell c-highscores-table__foot-cell--error"
                 >
                   Error loading highscores.
                 </td>
               ) : list === undefined ? (
                 <td
                   colSpan={4}
-                  className="c-highscores-table__foot-cell c-highscores-table__foot-cell--loading"
+                  class="c-highscores-table__foot-cell c-highscores-table__foot-cell--loading"
                 >
                   Loading...
                 </td>
               ) : (
                 <td
                   colSpan={4}
-                  className="c-highscores-table__foot-cell c-highscores-table__foot-cell--empty"
+                  class="c-highscores-table__foot-cell c-highscores-table__foot-cell--empty"
                 >
                   No entries found.
                 </td>

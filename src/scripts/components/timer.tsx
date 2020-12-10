@@ -33,10 +33,10 @@ export class Timer extends Component {
     const icon = isPaused ? IconName.Zzz : IconName.Stopwatch;
     return (
       <button class="c-timer" title={label} onClick={this.onClick}>
-        <div className="c-timer__icon">
+        <div class="c-timer__icon">
           <Icon name={icon} />
         </div>
-        <div className="c-timer__label">{duration}</div>
+        <div class="c-timer__label">{duration}</div>
       </button>
     );
   }

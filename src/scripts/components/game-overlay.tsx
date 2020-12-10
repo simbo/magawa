@@ -10,7 +10,7 @@ export class GameOverlay extends Component {
     const isPaused = gameSelectors.isPaused(gameState);
     const isWon = gameSelectors.isWon(gameState);
     return (
-      <div className="c-game-overlay">
+      <div class="c-game-overlay">
         {isPaused
           ? this.pausedContent()
           : isWon

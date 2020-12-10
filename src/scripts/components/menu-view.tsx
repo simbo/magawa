@@ -13,7 +13,7 @@ export class MenuView extends Component {
         <MenuForm />
         <Link
           href={AppRoute.Highscores}
-          className="c-menu-view__button e-button e-button--block"
+          class="c-menu-view__button e-button e-button--block"
         >
           Highscores
           <Icon name={IconName.Trophy} />

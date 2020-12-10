@@ -61,7 +61,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
     const readonly = difficulty !== GameDifficulty.Custom;
     return (
       <form class="c-menu-form" onSubmit={this.onSubmit}>
-        <div className="c-menu-form__row">
+        <div class="c-menu-form__row">
           <label htmlFor="player" class="c-menu-form__label e-label">
             Your Name
           </label>
@@ -76,7 +76,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
             ref={this.refPlayerInput}
           />
         </div>{' '}
-        <div className="c-menu-form__row">
+        <div class="c-menu-form__row">
           <label htmlFor="difficulty" class="c-menu-form__label e-label">
             Difficulty
           </label>
@@ -97,7 +97,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
             ))}
           </select>
         </div>
-        <div className="c-menu-form__row">
+        <div class="c-menu-form__row">
           <label htmlFor="tilesX" class="c-menu-form__label e-label">
             Width
           </label>
@@ -113,7 +113,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
             readOnly={readonly}
           />
         </div>
-        <div className="c-menu-form__row">
+        <div class="c-menu-form__row">
           <label htmlFor="tilesY" class="c-menu-form__label e-label">
             Height
           </label>
@@ -129,7 +129,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
             readOnly={readonly}
           />
         </div>
-        <div className="c-menu-form__row">
+        <div class="c-menu-form__row">
           <label htmlFor="minesCount" class="c-menu-form__label e-label">
             Mines
           </label>

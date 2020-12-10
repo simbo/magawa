@@ -41,8 +41,8 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
   ): VNode {
     return (
       <div class="c-highscores-view">
-        <div className="c-highscores-view__options">
-          <div className="c-highscores-view__option">
+        <div class="c-highscores-view__options">
+          <div class="c-highscores-view__option">
             <label
               class="c-highscores-view__label e-label"
               htmlFor="difficulty"
@@ -52,7 +52,7 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
             <select
               ref={this.refSelect}
               onChange={this.onChange}
-              className="c-highscores-view__select e-select"
+              class="c-highscores-view__select e-select"
               id="difficulty"
               name="difficulty"
             >
@@ -67,7 +67,7 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
               ))}
             </select>
           </div>
-          <div className="c-highscores-view__option">
+          <div class="c-highscores-view__option">
             <label class="c-highscores-view__label e-label" htmlFor="player">
               Player
             </label>
@@ -77,16 +77,16 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
               id="player"
               name="player"
               pattern="^\w*$"
-              className="c-highscores-view__input e-input"
+              class="c-highscores-view__input e-input"
               value={player}
             />
           </div>
         </div>
-        <div className="c-highscores-view__table">
+        <div class="c-highscores-view__table">
           <HighscoresTable list={list} highlight="CrjD8A1cqGjxtpVT70aMM" />
         </div>
         {updated ? (
-          <div className="c-highscores-view__updated">
+          <div class="c-highscores-view__updated">
             Updated at {formatDate(updated)}
           </div>
         ) : (

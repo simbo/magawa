@@ -10,10 +10,10 @@ export class Flags extends Component {
     const { flagsCount, minesCount } = useContext(GameStoreContext);
     return (
       <div class="c-flags">
-        <div className="c-flags__label">
+        <div class="c-flags__label">
           {flagsCount}/{minesCount}
         </div>
-        <div className="c-flags__icon">
+        <div class="c-flags__icon">
           <Icon name={IconName.FlagOnGreen} />
         </div>
       </div>
