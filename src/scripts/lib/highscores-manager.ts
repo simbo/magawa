@@ -39,7 +39,7 @@ class HighscoresManager {
       player,
       difficulty
     };
-    return this.getHighscores().pipe(
+    return this.request().pipe(
       mergeMap(highscores => {
         highscores[difficulty].push(entry);
         highscores[difficulty] = this.sortList(highscores[difficulty]);
