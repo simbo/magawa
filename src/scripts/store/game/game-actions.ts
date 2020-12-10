@@ -12,6 +12,7 @@ import { GameState } from './game-state.interface';
 export enum GameAction {
   SetSettings = 'setSettings',
   Start = 'start',
+  FirstClick = 'firstClick',
   Restart = 'restart',
   Pause = 'pause',
   Unpause = 'unpause',
@@ -61,6 +62,15 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayload> = {
     return {
       status: GameStatus.Running,
       finalStatus: null,
+      startedAt: null,
+      pausedAt: null,
+      finishedAt: null,
+      flagsCount: 0
+    };
+  },
+
+  [GameAction.FirstClick]: () => {
+    return {
       startedAt: new Date(),
       pausedAt: null,
       finishedAt: null,
@@ -91,9 +101,12 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayload> = {
       state.pausedAt as Date,
       new Date()
     );
+    const startedAt = state.startedAt
+      ? subMilliseconds(state.startedAt as Date, pauseDuration)
+      : null;
     return {
       status: GameStatus.Running,
-      startedAt: subMilliseconds(state.startedAt as Date, pauseDuration),
+      startedAt,
       pausedAt: null
     };
   },

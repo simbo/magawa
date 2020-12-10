@@ -48,6 +48,7 @@ export class GameGfx extends Component {
       this.tilesX,
       this.tilesY,
       this.minesCount,
+      () => gameStore.dispatch(GameAction.FirstClick),
       flagsCount =>
         gameStore.dispatch(GameAction.SetFlagsCount, { flagsCount }),
       () => gameStore.dispatch(GameAction.Unpause),

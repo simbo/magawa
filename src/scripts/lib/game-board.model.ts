@@ -21,6 +21,7 @@ export class GameBoard {
     private readonly tilesX: number,
     private readonly tilesY: number,
     private readonly minesCount: number,
+    private readonly firstClick: () => void,
     private readonly setFlagsCount: (flagsCount: number) => void,
     private readonly unpause: () => void,
     private readonly finish: (finalStatus: GameFinalStatus) => void,
@@ -127,6 +128,7 @@ export class GameBoard {
     y: number
   ): void {
     if (!this.minesIndex.length) {
+      this.firstClick();
       this.initMines(x, y);
       this.populateTiles();
     }

@@ -19,6 +19,7 @@ See the live version at [simbo.codes/magawa](https://simbo.codes/magawa)
 - first click will always uncover an area and never trigger a mine (as long as
   you didn't choose too many mines in custom mode)
 - auto-pause when switching tabs or apps
+- start timer on first click
 - flag mines using right-click or alt/shift/ctrl/meta-click
 - different difficulties (_easy_, _medium_, _hard_ and _custom_)
 - global and personal highscores

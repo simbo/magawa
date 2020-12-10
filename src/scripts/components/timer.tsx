@@ -48,7 +48,7 @@ export class Timer extends Component {
 
   private getDuration(startedAt: Date, pausedAt: Date | null): string {
     const date = pausedAt === null ? new Date() : pausedAt;
-    const duration = differenceInMilliseconds(date, startedAt);
+    const duration = startedAt ? differenceInMilliseconds(date, startedAt) : 0;
     return formatDuration(duration, false);
   }
 
