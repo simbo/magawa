@@ -2223,10 +2223,10 @@ css-mqpacker-sort-mediaqueries@^0.2.2:
   resolved "https://registry.yarnpkg.com/css-mqpacker-sort-mediaqueries/-/css-mqpacker-sort-mediaqueries-0.2.2.tgz#ad1fe51ae218cd0082de171e2c4c5ba942ed0cb3"
   integrity sha512-LMB22drsU0ODOMT+TqUOpQJyZ0N2eGsrrw1ARXJBCgYS/Y0GFVzgDMpx8UUVnFPIpEmIoauGlXrkbHdEGmATww==
 
-css-reset-and-normalize@^2.3.4:
-  version "2.3.4"
-  resolved "https://registry.yarnpkg.com/css-reset-and-normalize/-/css-reset-and-normalize-2.3.4.tgz#f604ce1f8244f3b10239d4d7ed81036138d55654"
-  integrity sha512-FMdEaRXbUQ1x22faAb18/nfTzwB+2KXK2KOhFL4rc0kFbmD4LeFyPoiNaHSN1seaISWJRpEE+E9RHwkHNg97mg==
+css-reset-and-normalize@^2.3.5:
+  version "2.3.5"
+  resolved "https://registry.yarnpkg.com/css-reset-and-normalize/-/css-reset-and-normalize-2.3.5.tgz#e7ed1369e53eb9dbe22cae3e5ef4d88ce9cc8999"
+  integrity sha512-lvhftImDx84z0O1RltM3Th6yDJstBfHzCgVBLIDI5vn/BQpONp0D4lccj5tTHkIRSaFdBYOyKUsaB6WkL2zD1A==
 
 css-select-base-adapter@^0.1.1:
   version "0.1.1"
