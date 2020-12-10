@@ -74,7 +74,6 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayload> = {
   },
 
   [GameAction.Pause]: state => {
-    console.log(state);
     if (state.status !== GameStatus.Running) {
       return;
     }
