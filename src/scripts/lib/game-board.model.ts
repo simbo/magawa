@@ -1,19 +1,17 @@
-import { Application, Graphics, InteractionEvent, utils } from 'pixi.js';
 import shuffle from 'shuffle-array';
 
-import { GameActions } from '../store/game/game-actions';
 import { GameFinalStatus } from './game-status.enum';
 import { GameTile } from './game-tile.model';
 
 export class GameBoard {
-  private gfx!: Application;
+  private gfx!: PIXI.Application;
   private width!: number;
   private height!: number;
   private minesIndex!: boolean[];
   private tiles!: GameTile[];
-  private pauseOverlay!: Graphics | null;
-  private lostOverlay!: Graphics | null;
-  private wonOverlay!: Graphics | null;
+  private pauseOverlay!: PIXI.Graphics | null;
+  private lostOverlay!: PIXI.Graphics | null;
+  private wonOverlay!: PIXI.Graphics | null;
   private flagsCount!: number;
   private triggeredMinedTile!: GameTile | null;
 
@@ -22,33 +20,29 @@ export class GameBoard {
     private readonly tileSize: number,
     private readonly tilesX: number,
     private readonly tilesY: number,
-    private readonly minesCount: number
+    private readonly minesCount: number,
+    private readonly setFlagsCount: (flagsCount: number) => void,
+    private readonly unpause: () => void,
+    private readonly finish: (finalStatus: GameFinalStatus) => void,
+    private readonly close: () => void
   ) {
-    utils.skipHello();
+    PIXI.utils.skipHello();
     this.initBoard();
   }
 
   public showPauseOverlay(): void {
+    const overlayName = 'pauseOverlay';
     if (!this.pauseOverlay) {
       this.pauseOverlay = this.drawOverlay(0x6b8e23);
-      this.pauseOverlay.on('pointerdown', () => GameActions.unpause());
-    } else {
+      this.pauseOverlay.name = overlayName;
+      this.pauseOverlay.on('pointerdown', this.unpause);
+    } else if (!this.gfx.stage.getChildByName(overlayName)) {
       this.gfx.stage.addChild(this.pauseOverlay);
     }
   }
 
   public hidePauseOverlay(): void {
-    this.gfx.stage.removeChild(this.pauseOverlay as Graphics);
-  }
-
-  public showLostOverlay(): void {
-    this.lostOverlay = this.drawOverlay(0xff0000, 0.2);
-    this.lostOverlay.on('pointerdown', () => GameActions.close());
-  }
-
-  public showWonOverlay(): void {
-    this.wonOverlay = this.drawOverlay(0x00ff00, 0.2);
-    this.wonOverlay.on('pointerdown', () => GameActions.close());
+    this.gfx.stage.removeChild(this.pauseOverlay as PIXI.Graphics);
   }
 
   public initBoard(): void {
@@ -57,16 +51,12 @@ export class GameBoard {
     }
     this.width = this.tilesX * this.tileSize;
     this.height = this.tilesY * this.tileSize;
-    this.gfx = new Application({
+    this.gfx = new PIXI.Application({
       view: this.view,
       width: this.width,
       height: this.height,
       resolution: 2
     });
-    this.gfx.view.style.maxWidth = `${this.width}px`;
-    this.gfx.view.style.maxHeight = `${this.height}px`;
-    this.gfx.view.style.minWidth = `${this.width / 2}px`;
-    this.gfx.view.style.minHeight = `${this.height / 2}px`;
     this.flagsCount = 0;
     this.tiles = [];
     this.minesIndex = [];
@@ -77,11 +67,21 @@ export class GameBoard {
     this.initTiles();
   }
 
+  private showLostOverlay(): void {
+    this.lostOverlay = this.drawOverlay(0xff0000, 0.2);
+    this.lostOverlay.on('pointerdown', this.close);
+  }
+
+  private showWonOverlay(): void {
+    this.wonOverlay = this.drawOverlay(0x00ff00, 0.2);
+    this.wonOverlay.on('pointerdown', this.close);
+  }
+
   private initTiles(): void {
     for (let y = 0; y < this.tilesY; y++) {
       for (let x = 0; x < this.tilesX; x++) {
         const tile = new GameTile(x, y, this.tileSize);
-        tile.container.on('pointerdown', (iEvent: InteractionEvent) =>
+        tile.container.on('pointerdown', (iEvent: PIXI.InteractionEvent) =>
           this.onTileClick(iEvent, x, y)
         );
         this.tiles.push(tile);
@@ -121,7 +121,11 @@ export class GameBoard {
     );
   }
 
-  private onTileClick(iEvent: InteractionEvent, x: number, y: number): void {
+  private onTileClick(
+    iEvent: PIXI.InteractionEvent,
+    x: number,
+    y: number
+  ): void {
     if (!this.minesIndex.length) {
       this.initMines(x, y);
       this.populateTiles();
@@ -184,7 +188,7 @@ export class GameBoard {
     }
     tile.toggleFlag();
     this.flagsCount = this.tiles.reduce((c, t) => (t.isFlagged ? ++c : c), 0);
-    GameActions.setFlagsCount(this.flagsCount);
+    this.setFlagsCount(this.flagsCount);
     this.updateBoardState();
   }
 
@@ -200,12 +204,17 @@ export class GameBoard {
     const lost = !!this.triggeredMinedTile;
     const won = !lost && this.isBoardSolved();
     if (lost || won) {
-      GameActions.finish(won ? GameFinalStatus.Won : GameFinalStatus.Lost);
+      if (won) {
+        this.showWonOverlay();
+      } else {
+        this.showLostOverlay();
+      }
+      this.finish(won ? GameFinalStatus.Won : GameFinalStatus.Lost);
     }
   }
 
-  private drawOverlay(color: number, alpha?: number): Graphics {
-    const overlay = new Graphics();
+  private drawOverlay(color: number, alpha?: number): PIXI.Graphics {
+    const overlay = new PIXI.Graphics();
     overlay.interactive = true;
     overlay.beginFill(color, alpha);
     overlay.drawRect(0, 0, this.width, this.height);

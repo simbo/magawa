@@ -1,85 +1,111 @@
-import { Component, createRef, h, RefObject, VNode } from 'preact';
-import { Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { differenceInMilliseconds } from 'date-fns';
+import { Component, h, VNode } from 'preact';
+import { useContext } from 'preact/hooks';
+import { fromEvent, Subject } from 'rxjs';
+import { filter, takeUntil, withLatestFrom } from 'rxjs/operators';
 
-import { GameBoard } from '../lib/game-board.model';
+import { GameDifficulty } from '../lib/game-difficulty.enum';
+import { highscoresManager } from '../lib/highscores-manager';
+import {
+  HighscoreGameDifficulty,
+  HighscoresEntry,
+  HighscoresForDifficulty
+} from '../lib/highscores.interface';
 import { GameAction } from '../store/game/game-actions';
-import { gameStore } from '../store/game/game-store';
+import { gameSelectors } from '../store/game/game-selectors';
+import { gameStore, GameStoreContext } from '../store/game/game-store';
+import { Flags } from './flags';
+import { GameGfx } from './game-gfx';
+import { HighscoresTable } from './highscores-table';
+import { Restart } from './restart';
+import { Timer } from './timer';
 
-interface GameViewProps {
-  tileSize: number;
-  tilesX: number;
-  tilesY: number;
-  minesCount: number;
-  isPaused: boolean;
-  isFinished: boolean;
-  isWon: boolean;
+interface GameViewState {
+  highscores: HighscoresForDifficulty;
+  entry: HighscoresEntry;
 }
 
-export class GameView extends Component<GameViewProps> {
-  public viewRef: RefObject<HTMLCanvasElement> = createRef();
-
+export class GameView extends Component<{}, GameViewState> {
   private readonly unsubscribeSubject = new Subject<void>();
-  private board!: GameBoard;
 
-  constructor(props: GameViewProps) {
-    super(props);
-    gameStore.actions$
+  private highscoreSaved = false;
+
+  constructor() {
+    super();
+    gameStore.dispatch(GameAction.Start);
+
+    fromEvent<Event>(window, 'blur')
+      .pipe(takeUntil(this.unsubscribeSubject))
+      .subscribe(() => gameStore.dispatch(GameAction.Pause));
+
+    fromEvent<KeyboardEvent>(document, 'keydown')
       .pipe(
         takeUntil(this.unsubscribeSubject),
-        filter(({ type }) => type === GameAction.Restart)
+        filter(event => event.code === 'KeyP' || event.code === 'Escape')
       )
-      .subscribe(() => this.board.initBoard());
-  }
-
-  public shouldComponentUpdate({
-    isPaused,
-    isFinished,
-    isWon
-  }: GameViewProps): boolean {
-    if (this.props.isPaused !== isPaused) {
-      if (isPaused) {
-        this.board.showPauseOverlay();
-      } else {
-        this.board.hidePauseOverlay();
-      }
-    } else if (isFinished) {
-      if (isWon) {
-        this.board.showWonOverlay();
-      } else {
-        this.board.showLostOverlay();
-      }
-    }
-    return false;
-  }
-
-  public componentDidMount(): void {
-    this.board = new GameBoard(
-      this.viewRef.current as HTMLCanvasElement,
-      this.props.tileSize,
-      this.props.tilesX,
-      this.props.tilesY,
-      this.props.minesCount
-    );
+      .subscribe(() => gameStore.dispatch(GameAction.TogglePause));
   }
 
   public componentWillUnmount(): void {
     this.unsubscribeSubject.next();
+    gameStore.dispatch(GameAction.Close);
   }
 
-  public render(): VNode {
+  public render(props: never, { highscores, entry }: GameViewState): VNode {
+    const gameState = useContext(GameStoreContext);
+    if (gameSelectors.isClosed(gameState)) {
+      return <div></div>;
+    }
+    const isWon = gameSelectors.isWon(gameState);
+    const { difficulty, startedAt, finishedAt, player } = gameState;
+    if (isWon && !this.highscoreSaved && difficulty !== GameDifficulty.Custom) {
+      this.saveHighscore(
+        startedAt as Date,
+        finishedAt as Date,
+        player as string,
+        difficulty
+      );
+    }
+    const width = gameSelectors.width(gameState);
     return (
-      <div class="c-game-view">
-        <canvas
-          class="c-game-view__canvas"
-          ref={this.viewRef}
-          onContextMenu={this.onRightClick}
-        ></canvas>
+      <div
+        class="c-game-view"
+        style={`width:${width}px; min-width:${width * 0.5}px`}
+      >
+        <div className="c-game-view__bar">
+          <div className="c-game-view__bar-item">
+            <Timer />
+          </div>
+          <div className="c-game-view__bar-item">
+            <Restart />
+          </div>
+          <div className="c-game-view__bar-item">
+            <Flags />
+          </div>
+        </div>
+        <GameGfx />
+        {isWon ? (
+          <div className="c-game-view__highscores">
+            <HighscoresTable list={highscores?.list} highlight={entry?.id} />
+          </div>
+        ) : (
+          ''
+        )}
       </div>
     );
   }
 
-  public onRightClick = (event: Event): void => {
-    event.preventDefault();
-  };
+  private saveHighscore(
+    startedAt: Date,
+    finishedAt: Date,
+    player: string,
+    difficulty: HighscoreGameDifficulty
+  ): void {
+    this.highscoreSaved = true;
+    highscoresManager
+      .add(differenceInMilliseconds(finishedAt, startedAt), player, difficulty)
+      .subscribe(({ entry, highscores }) => {
+        this.setState({ highscores, entry });
+      });
+  }
 }

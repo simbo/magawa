@@ -1,13 +1,27 @@
-import { gameDifficultySettings } from '../../lib/game-difficulty-settings';
-import { GameDifficulty } from '../../lib/game-difficulty.enum';
-import { GameStatus } from '../../lib/game-status.enum';
-import { Store } from '../store';
-import { GameState } from './game-state';
+import { createContext } from 'preact';
 
-const difficulty = GameDifficulty.Medium;
-const { tilesX, tilesY, minesCount } = gameDifficultySettings[difficulty];
+import {
+  DEFAULT_GAME_DIFFICULTY,
+  gameDifficultySettings
+} from '../../lib/game-difficulty-settings';
+import { GameStatus } from '../../lib/game-status.enum';
+import { storage } from '../../lib/storage';
+import { Store } from '../store';
+import { GameAction, GameActionPayload, gameActions } from './game-actions';
+import { GameState } from './game-state.interface';
+
+const {
+  player,
+  difficulty,
+  difficultySettings: { tilesX, tilesY, minesCount }
+} = storage.get({
+  player: null,
+  difficulty: DEFAULT_GAME_DIFFICULTY,
+  difficultySettings: gameDifficultySettings[DEFAULT_GAME_DIFFICULTY]
+});
 
 const initialState: GameState = {
+  player,
   status: GameStatus.Closed,
   finalStatus: null,
   startedAt: null,
@@ -21,4 +35,9 @@ const initialState: GameState = {
   flagsCount: 0
 };
 
-export const gameStore = new Store<GameState>(initialState);
+export const gameStore = new Store<GameState, GameAction, GameActionPayload>(
+  initialState,
+  gameActions
+);
+
+export const GameStoreContext = createContext(initialState);

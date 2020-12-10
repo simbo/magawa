@@ -4,7 +4,8 @@
   right: 0.5rem;
   bottom: 0.5rem;
   font-size: 0.65em;
-  opacity: 0.5;
+  color: $colorSecondary;
+  z-index: -1;
 
   &:hover {
     opacity: 1;

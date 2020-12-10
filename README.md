@@ -21,6 +21,8 @@ See the live version at [simbo.codes/magawa](https://simbo.codes/magawa)
 - auto-pause when switching tabs or apps
 - flag mines using right-click or alt/shift/ctrl/meta-click
 - different difficulties (_easy_, _medium_, _hard_ and _custom_)
+- global and personal highscores
+- save game settings in storage
 - quick restart function
 - responsive interface
 
@@ -31,8 +33,9 @@ See [ToDo](./TODO.md) for planned features.
 - [Preact](https://preactjs.com/) for DOM manipulation
 - [PixiJS](https://www.pixijs.com/) for GFX
 - [Parcel](https://parceljs.org/) as bundler
-- a selfmade redux-like [mini-store](./src/scripts/store/store.ts) using
-  [rxjs](https://rxjs-dev.firebaseapp.com/)
+- a selfmade immutable [mini-store](./src/scripts/store/store.ts) using
+  [rxjs](https://rxjs-dev.firebaseapp.com/) and
+  [immer](https://immerjs.github.io/immer/docs/introduction)
 - also Typescript, Pug, SCSS, css-reset-and-normalize, date-fns and others...
 
 ## Development

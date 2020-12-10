@@ -1,0 +1,107 @@
+.c-highscores-table {
+  width: 20em;
+  line-height: $lineHeight;
+  table-layout: fixed;
+
+  &__head-row {
+    background: darken($colorBackground, 2%);
+  }
+
+  &__foot-row {
+    background: $colorBackground;
+  }
+
+  &__row {
+    &:nth-child(even) {
+      background: darken($colorBackground, 2%);
+    }
+    &:nth-child(odd) {
+      background: $colorBackground;
+    }
+    &--highlight {
+      &:nth-child(even),
+      &:nth-child(odd) {
+        background: radial-gradient(
+            ellipse farthest-corner at right bottom,
+            #fedb37 0%,
+            #fdb931 20%,
+            #c09537 40%,
+            #9c7d33 60%,
+            transparent 80%
+          ),
+          radial-gradient(
+            ellipse farthest-corner at left top,
+            #ffffff 0%,
+            #ffffac 8%,
+            #d1b464 20%,
+            #aa8838 100%
+          );
+
+        &,
+        .c-highscores-table__cell--rank {
+          color: black;
+        }
+      }
+    }
+  }
+
+  &__head-cell,
+  &__cell,
+  &__foot-cell {
+    padding: 0.2em 0.2em;
+    text-align: center;
+  }
+
+  &__head-cell,
+  &__cell {
+    white-space: nowrap;
+
+    &--rank {
+      width: 2.5em;
+    }
+
+    &--name {
+      width: 7.5em;
+    }
+
+    &--difficulty {
+      width: 4.5em;
+    }
+
+    &--time {
+      width: 5.5em;
+    }
+  }
+
+  &__head-cell {
+    font-size: $small;
+    color: $colorSecondary;
+  }
+
+  &__cell {
+    &--rank {
+      color: $colorSecondary;
+      font-weight: bold;
+    }
+
+    &--name {
+      font-weight: bold;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  &__foot-cell {
+    font-size: small;
+    text-align: center;
+    padding: 1em 0.2em;
+
+    &--loading {
+      color: $colorSecondary;
+    }
+
+    &--error {
+      color: $colorError;
+    }
+  }
+}

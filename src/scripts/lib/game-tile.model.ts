@@ -1,7 +1,5 @@
-import { Container, Graphics, Sprite, Text, Texture } from 'pixi.js';
-
 import { IconName } from './icon-name.enum';
-import { Resource, resources } from './resources';
+import { resources } from './resources';
 
 enum GameTileColor {
   LineCovered = 0xf9edcc,
@@ -10,15 +8,12 @@ enum GameTileColor {
   FillUncovered = 0xf9edcc
 }
 
-const gameTileTextures: [IconName, Resource][] = [
-  [IconName.Boom, Resource.IconBoom],
-  [IconName.Flag, Resource.IconFlag]
-];
+const gameTileTextures: IconName[] = [IconName.Boom, IconName.Flag];
 
-type GameTileIcons = { [key in IconName]?: Texture };
+type GameTileIcons = { [key in IconName]?: PIXI.Texture };
 
 export class GameTile {
-  public readonly container: Container;
+  public readonly container: PIXI.Container;
   public readonly posX: number;
   public readonly posY: number;
 
@@ -35,7 +30,7 @@ export class GameTile {
   ) {
     this.posX = this.size * this.x;
     this.posY = this.size * this.y;
-    this.container = new Container();
+    this.container = new PIXI.Container();
     this.container.interactive = true;
     this.setTextures();
     this.draw();
@@ -87,14 +82,14 @@ export class GameTile {
   }
 
   private setTextures(): void {
-    gameTileTextures.forEach(([name, resource]) => {
-      this.textures[name] = resources.get(resource)?.texture as Texture;
+    gameTileTextures.forEach(name => {
+      this.textures[name] = resources.get(name)?.texture as PIXI.Texture;
     });
   }
 
   private draw(): void {
     this.container.removeChildren();
-    const tile = new Graphics();
+    const tile = new PIXI.Graphics();
     tile.lineStyle(1, this.lineColor);
     tile.beginFill(this.fillColor);
     tile.drawRect(this.posX, this.posY, this.size, this.size);
@@ -118,7 +113,7 @@ export class GameTile {
     size = 1,
     [anchorX, anchorY]: [number, number] = [0.5, 0.5]
   ): void {
-    const icon = new Sprite(this.textures[name] as Texture);
+    const icon = new PIXI.Sprite(this.textures[name] as PIXI.Texture);
     icon.anchor.set(anchorX, anchorY);
     icon.width = this.size * size;
     icon.height = this.size * size;
@@ -128,7 +123,7 @@ export class GameTile {
   }
 
   private drawText(str: string): void {
-    const text = new Text(str);
+    const text = new PIXI.Text(str);
     text.x = this.size / 2 - text.width / 2 + this.posX;
     text.y = this.size / 2 - text.height / 2 + this.posY;
     this.container.addChild(text);

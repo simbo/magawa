@@ -4,116 +4,88 @@ import { gameDifficultySettings } from '../../lib/game-difficulty-settings';
 import { GameDifficultySettings } from '../../lib/game-difficulty-settings.interface';
 import { GameDifficulty } from '../../lib/game-difficulty.enum';
 import { GameFinalStatus, GameStatus } from '../../lib/game-status.enum';
-import { Action } from '../store';
-import { GameReducers } from './game-reducers';
-import { GameState } from './game-state';
-import { gameStore } from './game-store';
+import { storage } from '../../lib/storage';
+import { Actions } from '../store';
+import { gameSelectors } from './game-selectors';
+import { GameState } from './game-state.interface';
 
 export enum GameAction {
-  Start = 'START',
-  Restart = 'RESTART',
-  Pause = 'PAUSE',
-  Unpause = 'UNPAUSE',
-  TogglePause = 'TOGGLE PAUSE',
-  Finish = 'FINISH',
-  Close = 'CLOSE',
-  SetFlagsCount = 'SET FLAGS COUNT'
+  SetSettings = 'setSettings',
+  Start = 'start',
+  Restart = 'restart',
+  Pause = 'pause',
+  Unpause = 'unpause',
+  TogglePause = 'togglePause',
+  Finish = 'finish',
+  Close = 'close',
+  SetFlagsCount = 'setFlagsCount'
 }
 
-export class GameActions {
-  public static start(
-    difficulty?: GameDifficulty,
-    settings?: GameDifficultySettings
-  ): void {
-    gameStore.push(new GameStartAction(difficulty, settings));
-  }
-
-  public static restart(): void {
-    gameStore.push(new GameRestartAction());
-  }
-
-  public static pause(): void {
-    gameStore.push(new GamePauseAction());
-  }
-
-  public static unpause(): void {
-    gameStore.push(new GameUnpauseAction());
-  }
-
-  public static togglePause(): void {
-    gameStore.push(new GameTogglePauseAction());
-  }
-
-  public static finish(finalStatus: GameFinalStatus): void {
-    gameStore.push(new GameFinishAction(finalStatus));
-  }
-
-  public static close(): void {
-    gameStore.push(new GameCloseAction());
-  }
-
-  public static setFlagsCount(flagsCount: number): void {
-    gameStore.push(new GameSetFlagsCountAction(flagsCount));
-  }
+export interface GameActionPayload {
+  [GameAction.SetSettings]: {
+    player: string;
+    difficulty: GameDifficulty;
+    settings: GameDifficultySettings;
+  };
+  [GameAction.Finish]: {
+    finalStatus: GameFinalStatus;
+  };
+  [GameAction.SetFlagsCount]: {
+    flagsCount: number;
+  };
 }
 
-class GameStartAction implements Action<GameState> {
-  public readonly type = GameAction.Start;
-
-  constructor(
-    private readonly difficulty?: GameDifficulty,
-    private readonly settings?: GameDifficultySettings
-  ) {}
-
-  public map(state: GameState): Partial<GameState> {
-    const difficulty = this.difficulty || state.difficulty;
-    const { tilesX, tilesY, minesCount } =
+export const gameActions: Actions<GameState, GameAction, GameActionPayload> = {
+  [GameAction.SetSettings]: (state, { player, difficulty, settings }) => {
+    if (!/^\w+$/.test(player)) {
+      return;
+    }
+    difficulty =
+      difficulty >= 0 && difficulty <= GameDifficulty.Custom
+        ? difficulty
+        : state.difficulty;
+    const difficultySettings =
       difficulty === GameDifficulty.Custom
-        ? this.settings || {
+        ? settings || {
             tilesX: state.tilesX,
             tilesY: state.tilesY,
             minesCount: state.minesCount
           }
         : gameDifficultySettings[difficulty];
+    const { tilesX, tilesY, minesCount } = difficultySettings;
+    storage.set({ player, difficulty, difficultySettings });
+    return { player, difficulty, tilesX, tilesY, minesCount };
+  },
+
+  [GameAction.Start]: () => {
     return {
       status: GameStatus.Running,
       finalStatus: null,
       startedAt: new Date(),
       pausedAt: null,
       finishedAt: null,
-      difficulty,
-      tilesX,
-      tilesY,
-      minesCount,
       flagsCount: 0
     };
-  }
-}
+  },
 
-class GameRestartAction implements Action<GameState> {
-  public readonly type = GameAction.Restart;
+  [GameAction.Restart]: (state, payload, dispatch) => {
+    dispatch(GameAction.Start);
+    return;
+  },
 
-  public map(): void {
-    GameActions.start();
-  }
-}
-
-class GamePauseAction implements Action<GameState> {
-  public readonly type = GameAction.Pause;
-
-  public map(state: GameState): Partial<GameState> | void {
-    if (!GameReducers.isRunning(state)) {
+  [GameAction.Pause]: state => {
+    console.log(state);
+    if (state.status !== GameStatus.Running) {
       return;
     }
-    return { status: GameStatus.Paused, pausedAt: new Date() };
-  }
-}
+    return {
+      status: GameStatus.Paused,
+      pausedAt: new Date()
+    };
+  },
 
-class GameUnpauseAction implements Action<GameState> {
-  public readonly type = GameAction.Unpause;
-
-  public map(state: GameState): Partial<GameState> | void {
-    if (!GameReducers.isPaused(state)) {
+  [GameAction.Unpause]: state => {
+    if (state.status !== GameStatus.Paused) {
       return;
     }
     const pauseDuration = differenceInMilliseconds(
@@ -125,51 +97,39 @@ class GameUnpauseAction implements Action<GameState> {
       startedAt: subMilliseconds(state.startedAt as Date, pauseDuration),
       pausedAt: null
     };
-  }
-}
+  },
 
-class GameTogglePauseAction implements Action<GameState> {
-  public readonly type = GameAction.TogglePause;
-
-  public map(state: GameState): void {
-    if (GameReducers.isPaused(state)) {
-      GameActions.unpause();
-    } else if (GameReducers.isRunning(state)) {
-      GameActions.pause();
+  [GameAction.TogglePause]: (state, payload, dispatch) => {
+    if (gameSelectors.isPaused(state)) {
+      dispatch(GameAction.Unpause);
+    } else {
+      dispatch(GameAction.Pause);
     }
-  }
-}
+  },
 
-class GameFinishAction implements Action<GameState> {
-  public readonly type = GameAction.Finish;
-
-  constructor(public readonly finalStatus: GameFinalStatus) {}
-
-  public map(state: GameState): Partial<GameState> | void {
-    if (!GameReducers.isRunning(state)) {
+  [GameAction.Finish]: (state, { finalStatus }) => {
+    if (state.status !== GameStatus.Running) {
       return;
     }
-    return { status: GameStatus.Finished, finalStatus: this.finalStatus };
-  }
-}
+    return {
+      finishedAt: new Date(),
+      status: GameStatus.Finished,
+      finalStatus
+    };
+  },
 
-class GameCloseAction implements Action<GameState> {
-  public readonly type = GameAction.Close;
+  [GameAction.Close]: () => {
+    return {
+      status: GameStatus.Closed,
+      startedAt: null,
+      pausedAt: null
+    };
+  },
 
-  public map(): Partial<GameState> {
-    return { status: GameStatus.Closed, startedAt: null, pausedAt: null };
-  }
-}
-
-class GameSetFlagsCountAction implements Action<GameState> {
-  public readonly type = GameAction.SetFlagsCount;
-
-  constructor(private readonly flagsCount: number) {}
-
-  public map(state: GameState): Partial<GameState> | void {
-    if (!GameReducers.isRunning(state)) {
+  [GameAction.SetFlagsCount]: (state, { flagsCount }) => {
+    if (state.status !== GameStatus.Running || isNaN(flagsCount)) {
       return;
     }
-    return { flagsCount: this.flagsCount };
+    return { flagsCount };
   }
-}
+};

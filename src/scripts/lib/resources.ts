@@ -1,21 +1,20 @@
-import { Loader, LoaderResource } from 'pixi.js';
 import { Observable, Subject } from 'rxjs';
 
-export enum Resource {
-  IconBoom = 'icons/boom.png',
-  IconFlag = 'icons/flag.png'
-}
+import { IconName } from './icon-name.enum';
+
+export type ResourceName = IconName;
+export type Resource = [ResourceName, string];
 
 class Resources {
-  public readonly loader = new Loader();
+  public readonly loader = new PIXI.Loader();
 
   private readonly loadedSubject = new Subject<void>();
 
-  private readonly items = new Map<Resource, LoaderResource>();
+  private readonly items = new Map<ResourceName, PIXI.LoaderResource>();
 
-  constructor(...keys: Resource[]) {
+  constructor(...res: Resource[]) {
     this.loader.baseUrl = document.head.baseURI;
-    keys.forEach(key => this.loader.add(key, key));
+    res.forEach(([key, value]) => this.loader.add(key, value));
     this.loader.load((loader, items) => this.onLoaded(items));
   }
 
@@ -23,18 +22,20 @@ class Resources {
     return this.loadedSubject.asObservable();
   }
 
-  public get(key: Resource): LoaderResource | undefined {
+  public get(key: ResourceName): PIXI.LoaderResource | undefined {
     return this.items.get(key);
   }
 
-  public has(key: Resource): boolean {
+  public has(key: ResourceName): boolean {
     return this.items.has(key);
   }
 
-  private onLoaded(items: Partial<Record<Resource, LoaderResource>>): void {
+  private onLoaded(
+    items: Partial<Record<ResourceName, PIXI.LoaderResource>>
+  ): void {
     Object.entries(items).forEach(([key, value]) => {
       if (value && !value.error) {
-        this.items.set(key as Resource, value);
+        this.items.set(key as ResourceName, value);
       }
     });
     this.loadedSubject.next();
@@ -42,4 +43,9 @@ class Resources {
   }
 }
 
-export const resources = new Resources(...Object.values(Resource));
+export const resources = new Resources(
+  ...(Object.values(IconName).map(name => [
+    name,
+    `icons/${name}.png`
+  ]) as Resource[])
+);

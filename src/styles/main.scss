@@ -1,10 +1,15 @@
 @import 'base';
 @import 'loading';
 @import 'version';
+@import 'form-elements';
 @import 'components/app';
-@import 'components/game-menu';
-@import 'components/game-container';
+@import 'components/menu-view';
+@import 'components/menu-form';
 @import 'components/game-view';
+@import 'components/game-gfx';
+@import 'components/game-overlay';
+@import 'components/highscores-view';
+@import 'components/highscores-table';
 @import 'components/flags';
 @import 'components/timer';
 @import 'components/restart';

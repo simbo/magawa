@@ -1,0 +1,11 @@
+.c-menu-form {
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    margin: 0.2em 0;
+  }
+
+  &__input[readonly] {
+    text-align: right;
+  }
+}

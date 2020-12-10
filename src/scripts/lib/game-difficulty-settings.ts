@@ -1,6 +1,8 @@
 import { GameDifficultySettings } from './game-difficulty-settings.interface';
 import { GameDifficulty } from './game-difficulty.enum';
 
+export const DEFAULT_GAME_DIFFICULTY = GameDifficulty.Medium;
+
 export type GameDifficultySettingsMap = {
   [key in GameDifficulty]: GameDifficultySettings;
 };

@@ -2,6 +2,7 @@ import { GameDifficulty } from '../../lib/game-difficulty.enum';
 import { GameFinalStatus, GameStatus } from '../../lib/game-status.enum';
 
 export interface GameState {
+  player: string | null;
   status: GameStatus;
   finalStatus: GameFinalStatus | null;
   startedAt: Date | null;

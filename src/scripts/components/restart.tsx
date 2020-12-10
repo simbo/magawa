@@ -1,16 +1,15 @@
 import { Component, h, VNode } from 'preact';
+import { useContext } from 'preact/hooks';
 
 import { GameFinalStatus } from '../lib/game-status.enum';
 import { IconName } from '../lib/icon-name.enum';
-import { GameActions } from '../store/game/game-actions';
+import { GameAction } from '../store/game/game-actions';
+import { gameStore, GameStoreContext } from '../store/game/game-store';
 import { Icon } from './icon';
 
-interface RestartProps {
-  finalStatus: GameFinalStatus | null;
-}
-
-export class Restart extends Component<RestartProps> {
-  public render({ finalStatus }: RestartProps): VNode {
+export class Restart extends Component {
+  public render(): VNode {
+    const { finalStatus } = useContext(GameStoreContext);
     const iconName =
       finalStatus === null
         ? IconName.Magawa
@@ -19,13 +18,13 @@ export class Restart extends Component<RestartProps> {
         : IconName.Dead;
     return (
       <button class="c-restart" title="Restart Game" onClick={this.onClick}>
-        <Icon name={iconName}></Icon>
+        <Icon name={iconName} />
       </button>
     );
   }
 
   private readonly onClick = (event: Event): void => {
     event.preventDefault();
-    GameActions.restart();
+    gameStore.dispatch(GameAction.Restart);
   };
 }

@@ -1,0 +1,11 @@
+.c-game-gfx {
+  position: relative;
+  width: 100%;
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin: 0 auto;
+  }
+}

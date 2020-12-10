@@ -16,7 +16,8 @@ html {
 
 body {
   font-family: $fontSans;
-  background: #fafbfc;
+  background: $colorBackground;
+  color: $colorText;
   text-rendering: optimizeLegibility;
 }
 

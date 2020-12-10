@@ -33,6 +33,9 @@ jobs:
       - name: 👷‍♂️ Build
         run: yarn build
 
+      - name: 🗑 Remove artifacts
+        run: rm dist/report.html
+
       - name: 🚚 Deploy
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:

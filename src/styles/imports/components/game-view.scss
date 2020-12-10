@@ -1,8 +1,17 @@
 .c-game-view {
-  canvas {
-    display: block;
-    width: 100%;
-    height: auto;
-    margin: 0 auto;
+  max-width: 100%;
+  padding: 1em;
+  user-select: none;
+
+  &__bar {
+    display: flex;
+    justify-content: space-between;
+    max-width: 100%;
+    margin: 0 auto 0.4em auto;
+  }
+
+  &__bar-item {
+    width: 30%;
+    flex: 0 0 auto;
   }
 }

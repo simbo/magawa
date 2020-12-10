@@ -1,98 +1,67 @@
 import { differenceInMilliseconds } from 'date-fns';
 import { Component, h, VNode } from 'preact';
+import { useContext } from 'preact/hooks';
 
 import { formatDuration } from '../lib/format-duration.function';
 import { IconName } from '../lib/icon-name.enum';
-import { GameActions } from '../store/game/game-actions';
+import { GameAction } from '../store/game/game-actions';
+import { gameSelectors } from '../store/game/game-selectors';
+import { gameStore, GameStoreContext } from '../store/game/game-store';
 import { Icon } from './icon';
 
-interface TimerProps {
-  startedAt: Date;
-  isPaused: boolean;
-  isFinished: boolean;
-}
-
-interface TimerState {
-  duration: number;
-}
-
-export class Timer extends Component<TimerProps, TimerState> {
-  private interval!: number;
-
-  constructor(props: TimerProps) {
-    super(props);
-    this.setDuration(props.startedAt);
-  }
-
-  public componentDidMount(): void {
-    this.startInterval();
-  }
-
-  public shouldComponentUpdate({
-    startedAt,
-    isFinished,
-    isPaused
-  }: TimerProps): boolean {
-    if (this.props.isFinished !== isFinished) {
-      if (!isFinished) {
-        this.clearInterval();
-        return false;
-      } else {
-        this.setDuration(startedAt);
-        this.startInterval();
-        return true;
-      }
-    }
-    if (this.props.isPaused !== isPaused) {
-      return true;
-    }
-    if (isPaused) {
-      return false;
-    }
-    return true;
-  }
+export class Timer extends Component {
+  private timeout!: number;
 
   public componentWillUnmount(): void {
-    this.clearInterval();
+    this.stopTimeout();
   }
 
-  public render({ isPaused }: TimerProps, { duration }: TimerState): VNode {
-    const durationText = formatDuration(duration);
+  public render(): VNode {
+    const gameState = useContext(GameStoreContext);
+    const isPaused = gameSelectors.isPaused(gameState);
+    const isFinished = gameSelectors.isFinished(gameState);
+    if (isFinished || isPaused) {
+      this.stopTimeout();
+    } else {
+      this.startTimeout(gameState.startedAt as Date);
+    }
+    const duration = this.getDuration(
+      gameState.startedAt as Date,
+      gameState.pausedAt
+    );
+    const label = isPaused ? 'Continue' : 'Pause';
+    const icon = isPaused ? IconName.Zzz : IconName.Stopwatch;
     return (
-      <button
-        class="c-timer"
-        title={isPaused ? 'Continue' : 'Pause'}
-        onClick={this.onClick}
-      >
+      <button class="c-timer" title={label} onClick={this.onClick}>
         <div className="c-timer__icon">
-          <Icon name={isPaused ? IconName.Zzz : IconName.Stopwatch}></Icon>
+          <Icon name={icon} />
         </div>
-        <div className="c-timer__label">{durationText}</div>
+        <div className="c-timer__label">{duration}</div>
       </button>
     );
   }
 
   private readonly onClick = (event: Event): void => {
     event.preventDefault();
-    GameActions.togglePause();
+    gameStore.dispatch(GameAction.TogglePause);
   };
 
-  private setDuration(startedAt: Date): void {
-    const duration = differenceInMilliseconds(new Date(), startedAt);
-    this.setState({ duration });
+  private getDuration(startedAt: Date, pausedAt: Date | null): string {
+    const date = pausedAt === null ? new Date() : pausedAt;
+    const duration = differenceInMilliseconds(date, startedAt);
+    return formatDuration(duration, false);
   }
 
-  private startInterval(): void {
-    this.interval = window.setInterval(() => {
-      if (!this.props.isPaused && !this.props.isFinished) {
-        this.setDuration(this.props.startedAt);
-      }
+  private startTimeout(startedAt: Date): void {
+    this.stopTimeout();
+    this.timeout = window.setTimeout(() => {
+      this.forceUpdate();
     }, 1000);
   }
 
-  private clearInterval(): void {
-    if (this.interval) {
-      window.clearInterval(this.interval);
+  private stopTimeout(): void {
+    if (this.timeout) {
+      window.clearTimeout(this.timeout);
     }
   }
 }

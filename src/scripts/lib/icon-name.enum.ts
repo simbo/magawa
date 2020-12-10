@@ -6,5 +6,6 @@ export enum IconName {
   Magawa = 'magawa',
   Party = 'party',
   Stopwatch = 'stopwatch',
+  Trophy = 'trophy',
   Zzz = 'zzz'
 }
