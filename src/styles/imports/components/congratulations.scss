@@ -1,0 +1,17 @@
+.c-congratulations {
+  width: 20em;
+  text-align: center;
+  line-height: $lineHeight;
+
+  &__title {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1em;
+    font-size: 1.2em;
+    font-weight: bold;
+
+    .c-icon {
+      margin-right: 1em;
+    }
+  }
+}
