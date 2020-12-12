@@ -10,6 +10,7 @@ import {
 } from '../lib/highscores.interface';
 import { IconName } from '../lib/icon-name.enum';
 import { toNumber } from '../lib/to-number.function';
+import { BackButton } from './back-button';
 import { HighscoresTable } from './highscores-table';
 import { Icon } from './icon';
 
@@ -97,6 +98,7 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
         ) : (
           ''
         )}
+        <BackButton />
       </div>
     );
   }

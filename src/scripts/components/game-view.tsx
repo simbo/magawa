@@ -14,6 +14,7 @@ import {
 import { GameAction } from '../store/game/game-actions';
 import { gameSelectors } from '../store/game/game-selectors';
 import { gameStore, GameStoreContext } from '../store/game/game-store';
+import { BackButton } from './back-button';
 import { Congratulations } from './congratulations';
 import { Flags } from './flags';
 import { GameGfx } from './game-gfx';
@@ -95,6 +96,7 @@ export class GameView extends Component<{}, GameViewState> {
         ) : (
           ''
         )}
+        <BackButton />
       </div>
     );
   }
