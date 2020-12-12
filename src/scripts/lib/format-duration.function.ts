@@ -10,6 +10,6 @@ export function formatDuration(
   duration -= minutes * 60000;
   const seconds = Math.floor(duration / 1000);
   return `${addZeros(minutes)}:${addZeros(seconds)}${
-    withMilliseconds ? `:${addZeros(duration - seconds * 1000, 2)}` : ''
+    withMilliseconds ? `:${addZeros(duration - seconds * 1000, 3)}` : ''
   }`;
 }
