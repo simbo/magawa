@@ -16,11 +16,6 @@
 
 - design menu
 
-- about/help layer
-
-  - describe usage and game rules
-  - tell magawa story
-
 - custom color themes
 
 - write tests for everything
