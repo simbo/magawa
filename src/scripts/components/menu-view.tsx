@@ -22,6 +22,14 @@ export class MenuView extends Component {
           Highscores
           <Icon name={IconName.Trophy} />
         </Link>
+        <a
+          href="https://www.paypal.com/donate/?hosted_button_id=UHNHNPFVD32U8"
+          target="_blank"
+          class="c-menu-view__button e-button e-button--block"
+        >
+          Donate
+          <Icon name={IconName.Money} />
+        </a>
       </div>
     );
   }
