@@ -10,6 +10,10 @@ export class MenuView extends Component {
   public render(): VNode {
     return (
       <div class="c-menu-view">
+        <h1 className="c-menu-view__title e-title e-title--with-subtitle">
+          Magawa <Icon name={IconName.Magawa} />
+        </h1>
+        <p className="e-subtitle">A Minesweeper Clone.</p>
         <MenuForm />
         <Link
           href={AppRoute.Highscores}

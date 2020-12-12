@@ -8,8 +8,10 @@ import {
   HighscoreGameDifficulty,
   HighscoresList
 } from '../lib/highscores.interface';
+import { IconName } from '../lib/icon-name.enum';
 import { toNumber } from '../lib/to-number.function';
 import { HighscoresTable } from './highscores-table';
+import { Icon } from './icon';
 
 interface HighscoresViewState {
   difficulty: HighscoreGameDifficulty;
@@ -41,6 +43,9 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
   ): VNode {
     return (
       <div class="c-highscores-view">
+        <h1 class="c-highscores-view__title e-title">
+          Highscores <Icon name={IconName.Trophy} />
+        </h1>
         <div class="c-highscores-view__options">
           <div class="c-highscores-view__option">
             <label

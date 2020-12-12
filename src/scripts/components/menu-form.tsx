@@ -5,11 +5,9 @@ import { take } from 'rxjs/operators';
 import { AppRoute } from '../lib/app-route.enum';
 import { gameDifficultySettings } from '../lib/game-difficulty-settings';
 import { GameDifficulty } from '../lib/game-difficulty.enum';
-import { IconName } from '../lib/icon-name.enum';
 import { toNumber } from '../lib/to-number.function';
 import { GameAction } from '../store/game/game-actions';
 import { gameStore } from '../store/game/game-store';
-import { Icon } from './icon';
 
 interface MenuFormState {
   difficulty: GameDifficulty;
@@ -150,7 +148,6 @@ export class MenuForm extends Component<{}, MenuFormState> {
           type="submit"
         >
           Start Game
-          <Icon name={IconName.Magawa} />
         </button>
       </form>
     );

@@ -1,0 +1,52 @@
+h1,
+.e-title {
+  display: flex;
+  justify-content: center;
+  line-height: $lineHeight;
+  font-weight: bold;
+  font-size: 1.6em;
+  color: $colorTitle;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 0 0.2em 0.4em rgba(darken($colorTitle, 20%), 0.1);
+
+  &--with-subtitle {
+    margin-bottom: 0.5rem;
+  }
+
+  .c-icon {
+    margin-left: 0.4em;
+  }
+}
+
+.e-subtitle {
+  text-align: center;
+  color: $colorSecondary;
+  font-style: italic;
+  margin: 0 0 2rem 0;
+  line-height: $lineHeight;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid darken($colorBackground, 5%);
+  margin: 2rem auto;
+  width: 40%;
+}
+
+h2,
+p,
+dl {
+  margin: 1rem 0;
+  line-height: $lineHeight;
+}
+
+h2 {
+  color: $colorTitle;
+  font-weight: bold;
+  font-size: 1.2em;
+}
+
+p {
+  line-height: $lineHeight;
+}

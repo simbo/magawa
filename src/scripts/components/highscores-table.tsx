@@ -1,4 +1,4 @@
-import { Component, Fragment, h, VNode } from 'preact';
+import { Component, h, VNode } from 'preact';
 
 import { formatDate } from '../lib/format-date.function';
 import { formatDifficulty } from '../lib/format-difficulty.function';

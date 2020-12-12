@@ -50,7 +50,10 @@
   border-radius: 0.2em;
 
   &--primary {
-    background: darken($colorBackground, 10%);
+    background: darken($colorBackground, 40%);
+    color: $colorBackground;
+    font-weight: bold;
+    text-transform: uppercase;
   }
 
   &--block {

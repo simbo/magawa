@@ -4,8 +4,6 @@ import { useContext } from 'preact/hooks';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { formatDifficulty } from '../lib/format-difficulty.function';
-import { formatDuration } from '../lib/format-duration.function';
 import { GameDifficulty } from '../lib/game-difficulty.enum';
 import { highscoresManager } from '../lib/highscores-manager';
 import {
@@ -13,7 +11,6 @@ import {
   HighscoresEntry,
   HighscoresForDifficulty
 } from '../lib/highscores.interface';
-import { IconName } from '../lib/icon-name.enum';
 import { GameAction } from '../store/game/game-actions';
 import { gameSelectors } from '../store/game/game-selectors';
 import { gameStore, GameStoreContext } from '../store/game/game-store';
@@ -21,7 +18,6 @@ import { Congratulations } from './congratulations';
 import { Flags } from './flags';
 import { GameGfx } from './game-gfx';
 import { HighscoresTable } from './highscores-table';
-import { Icon } from './icon';
 import { Restart } from './restart';
 import { Timer } from './timer';
 
