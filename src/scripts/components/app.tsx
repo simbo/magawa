@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs/operators';
 import { AppRoute } from '../lib/app-route.enum';
 import { GameState } from '../store/game/game-state.interface';
 import { gameStore, GameStoreContext } from '../store/game/game-store';
+import { AboutView } from './about-view';
 import { GameView } from './game-view';
 import { HighscoresView } from './highscores-view';
 import { MenuView } from './menu-view';
@@ -36,6 +37,7 @@ export class App extends Component<{}, AppState> {
           <Router history={createHashHistory()}>
             <GameView path={AppRoute.Game} />
             <HighscoresView path={AppRoute.Highscores} />
+            <AboutView path={AppRoute.About} />
             <MenuView path={AppRoute.Home} />
           </Router>
         </GameStoreContext.Provider>

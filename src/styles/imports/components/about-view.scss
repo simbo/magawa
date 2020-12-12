@@ -1,0 +1,43 @@
+.c-about-view {
+  width: 30em;
+  max-width: 100%;
+
+  &__image {
+    width: 12em;
+    max-width: 60%;
+    height: auto;
+    float: right;
+    margin-left: 1em;
+    border-radius: 0.2em;
+    box-shadow: 0 0.0625em 0.125em #ccc;
+  }
+
+  dl {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+  }
+
+  dd,
+  dt {
+    margin-bottom: 1rem;
+  }
+
+  dt {
+    &::after {
+      content: ':';
+    }
+  }
+
+  dd {
+    display: flex;
+    border-right: 0.0625em solid darken($colorBackground, 5%);
+    margin-left: 0.75em;
+    padding-right: 0.75em;
+
+    &:last-child {
+      border-right: none;
+      padding-right: none;
+    }
+  }
+}

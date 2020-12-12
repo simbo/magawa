@@ -22,6 +22,13 @@ export class MenuView extends Component {
           Highscores
           <Icon name={IconName.Trophy} />
         </Link>
+        <Link
+          href={AppRoute.About}
+          class="c-menu-view__button e-button e-button--block"
+        >
+          About
+          <Icon name={IconName.Book} />
+        </Link>
         <a
           href="https://www.paypal.com/donate/?hosted_button_id=UHNHNPFVD32U8"
           target="_blank"

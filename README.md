@@ -61,7 +61,7 @@ This game is named after the giant pouched rat _Magawa_, who received a gold med
 in september 2020 for its success and bravery in clearing mine fields in
 Cambodia.
 
-![Magawa](./magawa.jpg)
+![Magawa](./src/static/images/magawa.jpg)
 
 ## License and Author
 
