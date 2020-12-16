@@ -1,43 +1,34 @@
+import { Selectors } from 'small-store';
+
 import { GameFinalStatus, GameStatus } from '../../lib/game-status.enum';
-import { Selectors } from '../store';
 import { GameState } from './game-state.interface';
 
-export enum GameSelector {
-  Player = 'player',
-  IsRunning = 'isRunning',
-  IsPaused = 'isPaused',
-  IsFinished = 'isFinished',
-  IsClosed = 'isClosed',
-  IsWon = 'isWon',
-  Width = 'width'
-}
-
-export const gameSelectors: Selectors<GameState, GameSelector> = {
-  [GameSelector.Player]: ({ player }): string | null => {
+export const gameSelectors: Selectors<GameState> = {
+  player: ({ player }): string | null => {
     return player;
   },
 
-  [GameSelector.IsRunning]: ({ status }): boolean => {
+  isRunning: ({ status }): boolean => {
     return status === GameStatus.Running;
   },
 
-  [GameSelector.IsPaused]: ({ status }): boolean => {
+  isPaused: ({ status }): boolean => {
     return status === GameStatus.Paused;
   },
 
-  [GameSelector.IsFinished]: ({ status }): boolean => {
+  isFinished: ({ status }): boolean => {
     return status === GameStatus.Finished;
   },
 
-  [GameSelector.IsClosed]: ({ status }): boolean => {
+  isClosed: ({ status }): boolean => {
     return status === GameStatus.Closed;
   },
 
-  [GameSelector.IsWon]: ({ finalStatus }): boolean => {
+  isWon: ({ finalStatus }): boolean => {
     return finalStatus === GameFinalStatus.Won;
   },
 
-  [GameSelector.Width]: ({ tileSize, tilesX }): number => {
+  width: ({ tileSize, tilesX }): number => {
     return tileSize * tilesX;
   }
 };

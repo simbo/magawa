@@ -1,12 +1,11 @@
 import { differenceInMilliseconds, subMilliseconds } from 'date-fns';
+import { Actions } from 'small-store';
 
 import { gameDifficultySettings } from '../../lib/game-difficulty-settings';
 import { GameDifficultySettings } from '../../lib/game-difficulty-settings.interface';
 import { GameDifficulty } from '../../lib/game-difficulty.enum';
 import { GameFinalStatus, GameStatus } from '../../lib/game-status.enum';
 import { storage } from '../../lib/storage';
-import { Actions } from '../store';
-import { gameSelectors } from './game-selectors';
 import { GameState } from './game-state.interface';
 
 export enum GameAction {
@@ -22,7 +21,7 @@ export enum GameAction {
   SetFlagsCount = 'setFlagsCount'
 }
 
-export interface GameActionPayload {
+export interface GameActionPayloads {
   [GameAction.SetSettings]: {
     player: string;
     difficulty: GameDifficulty;
@@ -36,10 +35,10 @@ export interface GameActionPayload {
   };
 }
 
-export const gameActions: Actions<GameState, GameAction, GameActionPayload> = {
-  [GameAction.SetSettings]: (state, { player, difficulty, settings }) => {
+export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
+  [GameAction.SetSettings]: ({ player, difficulty, settings }) => state => {
     if (!/^\w+$/.test(player)) {
-      return;
+      return state;
     }
     difficulty =
       difficulty >= 0 && difficulty <= GameDifficulty.Custom
@@ -55,7 +54,7 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayload> = {
         : gameDifficultySettings[difficulty];
     const { tilesX, tilesY, minesCount } = difficultySettings;
     storage.set({ player, difficulty, difficultySettings });
-    return { player, difficulty, tilesX, tilesY, minesCount };
+    return { ...state, player, difficulty, tilesX, tilesY, minesCount };
   },
 
   [GameAction.Start]: () => {
@@ -78,24 +77,20 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayload> = {
     };
   },
 
-  [GameAction.Restart]: (state, payload, dispatch) => {
-    dispatch(GameAction.Start);
-    return;
-  },
-
-  [GameAction.Pause]: state => {
+  [GameAction.Pause]: () => state => {
     if (state.status !== GameStatus.Running) {
-      return;
+      return state;
     }
     return {
+      ...state,
       status: GameStatus.Paused,
       pausedAt: new Date()
     };
   },
 
-  [GameAction.Unpause]: state => {
+  [GameAction.Unpause]: () => state => {
     if (state.status !== GameStatus.Paused) {
-      return;
+      return state;
     }
     const pauseDuration = differenceInMilliseconds(
       state.pausedAt as Date,
@@ -105,25 +100,19 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayload> = {
       ? subMilliseconds(state.startedAt as Date, pauseDuration)
       : null;
     return {
+      ...state,
       status: GameStatus.Running,
       startedAt,
       pausedAt: null
     };
   },
 
-  [GameAction.TogglePause]: (state, payload, dispatch) => {
-    if (gameSelectors.isPaused(state)) {
-      dispatch(GameAction.Unpause);
-    } else {
-      dispatch(GameAction.Pause);
-    }
-  },
-
-  [GameAction.Finish]: (state, { finalStatus }) => {
+  [GameAction.Finish]: ({ finalStatus }) => state => {
     if (state.status !== GameStatus.Running) {
-      return;
+      return state;
     }
     return {
+      ...state,
       finishedAt: new Date(),
       status: GameStatus.Finished,
       finalStatus
@@ -138,10 +127,10 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayload> = {
     };
   },
 
-  [GameAction.SetFlagsCount]: (state, { flagsCount }) => {
+  [GameAction.SetFlagsCount]: ({ flagsCount }) => state => {
     if (state.status !== GameStatus.Running || isNaN(flagsCount)) {
-      return;
+      return state;
     }
-    return { flagsCount };
+    return { ...state, flagsCount };
   }
 };

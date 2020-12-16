@@ -34,9 +34,7 @@ See [ToDo](./TODO.md) for planned features.
 - [Preact](https://preactjs.com/) for DOM manipulation
 - [PixiJS](https://www.pixijs.com/) for GFX
 - [Parcel](https://parceljs.org/) as bundler
-- a selfmade immutable [mini-store](./src/scripts/store/store.ts) using
-  [rxjs](https://rxjs-dev.firebaseapp.com/) and
-  [immer](https://immerjs.github.io/immer/docs/introduction)
+- a selfmade, immutable, reactive and [small store](https://github.com/simbo/small-store)
 - also Typescript, Pug, SCSS, css-reset-and-normalize, date-fns and others...
 
 ## Development

@@ -37,7 +37,6 @@
     "css-reset-and-normalize": "^2.3.5",
     "date-fns": "^2.16.1",
     "history": "^4.10.1",
-    "immer": "^8.0.0",
     "lz-string": "^1.4.4",
     "nanoid": "^3.1.20",
     "pixi.js": "^5.3.3",
@@ -45,6 +44,7 @@
     "preact-router": "^3.2.1",
     "rxjs": "^6.6.3",
     "shuffle-array": "^1.0.1",
+    "small-store": "^1.0.2",
     "store": "^2.0.12"
   },
   "devDependencies": {
