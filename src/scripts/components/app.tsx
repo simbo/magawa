@@ -6,7 +6,7 @@ import { takeUntil } from 'rxjs/operators';
 
 import { AppRoute } from '../lib/app-route.enum';
 import { GameState } from '../store/game/game-state.interface';
-import { gameStore, GameStoreContext } from '../store/game/game-store';
+import { gameStore, gameStoreContext } from '../store/game/game-store';
 import { AboutView } from './about-view';
 import { GameView } from './game-view';
 import { HighscoresView } from './highscores-view';
@@ -21,9 +21,7 @@ export class App extends Component<{}, AppState> {
 
   constructor() {
     super();
-    gameStore.state$
-      .pipe(takeUntil(this.unsubscribeSubject))
-      .subscribe(gameState => this.setState({ gameState }));
+    gameStore.state$.pipe(takeUntil(this.unsubscribeSubject)).subscribe(gameState => this.setState({ gameState }));
   }
 
   public componentWillUnmount(): void {
@@ -33,14 +31,14 @@ export class App extends Component<{}, AppState> {
   public render(props: never, { gameState }: AppState): VNode {
     return (
       <div class="c-app">
-        <GameStoreContext.Provider value={gameState}>
+        <gameStoreContext.Provider value={gameState}>
           <Router history={createHashHistory()}>
             <GameView path={AppRoute.Game} />
             <HighscoresView path={AppRoute.Highscores} />
             <AboutView path={AppRoute.About} />
             <MenuView path={AppRoute.Home} />
           </Router>
-        </GameStoreContext.Provider>
+        </gameStoreContext.Provider>
       </div>
     );
   }

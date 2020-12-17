@@ -40,10 +40,7 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
     if (!/^\w+$/.test(player)) {
       return state;
     }
-    difficulty =
-      difficulty >= 0 && difficulty <= GameDifficulty.Custom
-        ? difficulty
-        : state.difficulty;
+    difficulty = difficulty >= 0 && difficulty <= GameDifficulty.Custom ? difficulty : state.difficulty;
     const difficultySettings =
       difficulty === GameDifficulty.Custom
         ? settings || {
@@ -92,13 +89,8 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
     if (state.status !== GameStatus.Paused) {
       return state;
     }
-    const pauseDuration = differenceInMilliseconds(
-      state.pausedAt as Date,
-      new Date()
-    );
-    const startedAt = state.startedAt
-      ? subMilliseconds(state.startedAt as Date, pauseDuration)
-      : null;
+    const pauseDuration = differenceInMilliseconds(state.pausedAt as Date, new Date());
+    const startedAt = state.startedAt ? subMilliseconds(state.startedAt as Date, pauseDuration) : null;
     return {
       ...state,
       status: GameStatus.Running,

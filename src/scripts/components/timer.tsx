@@ -6,7 +6,7 @@ import { formatDuration } from '../lib/format-duration.function';
 import { IconName } from '../lib/icon-name.enum';
 import { GameAction } from '../store/game/game-actions';
 import { gameSelectors } from '../store/game/game-selectors';
-import { gameStore, GameStoreContext } from '../store/game/game-store';
+import { gameStore, gameStoreContext } from '../store/game/game-store';
 import { Icon } from './icon';
 
 export class Timer extends Component {
@@ -17,7 +17,7 @@ export class Timer extends Component {
   }
 
   public render(): VNode {
-    const gameState = useContext(GameStoreContext);
+    const gameState = useContext(gameStoreContext);
     const isPaused = gameSelectors.isPaused(gameState);
     const isFinished = gameSelectors.isFinished(gameState);
     if (isFinished || isPaused) {
@@ -25,10 +25,7 @@ export class Timer extends Component {
     } else {
       this.startTimeout(gameState.startedAt as Date);
     }
-    const duration = this.getDuration(
-      gameState.startedAt as Date,
-      gameState.pausedAt
-    );
+    const duration = this.getDuration(gameState.startedAt as Date, gameState.pausedAt);
     const label = isPaused ? 'Continue' : 'Pause';
     const icon = isPaused ? IconName.Zzz : IconName.Stopwatch;
     return (

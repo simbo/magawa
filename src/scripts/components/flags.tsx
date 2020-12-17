@@ -2,12 +2,12 @@ import { Component, h, VNode } from 'preact';
 import { useContext } from 'preact/hooks';
 
 import { IconName } from '../lib/icon-name.enum';
-import { GameStoreContext } from '../store/game/game-store';
+import { gameStoreContext } from '../store/game/game-store';
 import { Icon } from './icon';
 
 export class Flags extends Component {
   public render(): VNode {
-    const { flagsCount, minesCount } = useContext(GameStoreContext);
+    const { flagsCount, minesCount } = useContext(gameStoreContext);
     return (
       <div class="c-flags" title="Flags / Mines">
         <div class="c-flags__label">

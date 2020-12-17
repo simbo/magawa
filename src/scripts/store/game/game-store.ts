@@ -1,10 +1,7 @@
 import { createContext } from 'preact';
 import { Store } from 'small-store';
 
-import {
-  DEFAULT_GAME_DIFFICULTY,
-  gameDifficultySettings
-} from '../../lib/game-difficulty-settings';
+import { DEFAULT_GAME_DIFFICULTY, gameDifficultySettings } from '../../lib/game-difficulty-settings';
 import { GameStatus } from '../../lib/game-status.enum';
 import { storage } from '../../lib/storage';
 import { GameAction, GameActionPayloads, gameActions } from './game-actions';
@@ -35,9 +32,6 @@ const initialState: GameState = {
   flagsCount: 0
 };
 
-export const gameStore = new Store<GameState, GameAction, GameActionPayloads>(
-  initialState,
-  gameActions
-);
+export const gameStore = new Store<GameState, GameAction, GameActionPayloads>(initialState, gameActions);
 
-export const GameStoreContext = createContext(initialState);
+export const gameStoreContext = createContext(initialState);

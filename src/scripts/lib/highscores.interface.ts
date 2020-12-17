@@ -1,9 +1,6 @@
 import { GameDifficulty } from './game-difficulty.enum';
 
-export type HighscoreGameDifficulty =
-  | GameDifficulty.Easy
-  | GameDifficulty.Medium
-  | GameDifficulty.Hard;
+export type HighscoreGameDifficulty = GameDifficulty.Easy | GameDifficulty.Medium | GameDifficulty.Hard;
 
 export interface HighscoresEntry {
   rank?: number;

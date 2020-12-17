@@ -41,18 +41,11 @@ class Storage {
   }
 
   private read(): void {
-    this.data = JSON.parse(
-      decompressFromUTF16(
-        this.storage.get(StorageKey.Data, this.defaultData)
-      ) as string
-    );
+    this.data = JSON.parse(decompressFromUTF16(this.storage.get(StorageKey.Data, this.defaultData)) as string);
   }
 
   private write(): void {
-    this.storage.set(
-      StorageKey.Data,
-      compressToUTF16(JSON.stringify(this.data))
-    );
+    this.storage.set(StorageKey.Data, compressToUTF16(JSON.stringify(this.data)));
   }
 
   private verifyDataVersion(): void {

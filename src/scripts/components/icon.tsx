@@ -18,11 +18,7 @@ export class Icon extends Component<IconProps> {
     const titleAttr = title && title.length ? title : false;
     return (
       <div class="c-icon">
-        <img
-          src={`icons/${name}.png`}
-          {...(titleAttr ? { title: titleAttr } : {})}
-          alt={alt}
-        />
+        <img src={`icons/${name}.png`} {...(titleAttr ? { title: titleAttr } : {})} alt={alt} />
       </div>
     );
   }

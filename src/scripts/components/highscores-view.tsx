@@ -4,10 +4,7 @@ import { formatDate } from '../lib/format-date.function';
 import { DEFAULT_GAME_DIFFICULTY } from '../lib/game-difficulty-settings';
 import { GameDifficulty } from '../lib/game-difficulty.enum';
 import { highscoresManager } from '../lib/highscores-manager';
-import {
-  HighscoreGameDifficulty,
-  HighscoresList
-} from '../lib/highscores.interface';
+import { HighscoreGameDifficulty, HighscoresList } from '../lib/highscores.interface';
 import { IconName } from '../lib/icon-name.enum';
 import { toNumber } from '../lib/to-number.function';
 import { BackButton } from './back-button';
@@ -23,8 +20,7 @@ interface HighscoresViewState {
 
 export class HighscoresView extends Component<{}, HighscoresViewState> {
   private readonly difficulties = Object.entries(GameDifficulty).filter(
-    ([key, value]) =>
-      typeof value === 'number' && value !== GameDifficulty.Custom
+    ([key, value]) => typeof value === 'number' && value !== GameDifficulty.Custom
   ) as [string, HighscoreGameDifficulty][];
 
   private readonly refSelect = createRef<HTMLSelectElement>();
@@ -38,10 +34,7 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
     this.request(difficulty, player);
   }
 
-  public render(
-    props: never,
-    { difficulty, player, list, updated }: HighscoresViewState
-  ): VNode {
+  public render(props: never, { difficulty, player, list, updated }: HighscoresViewState): VNode {
     return (
       <div class="c-highscores-view">
         <h1 class="c-highscores-view__title e-title">
@@ -49,10 +42,7 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
         </h1>
         <div class="c-highscores-view__options">
           <div class="c-highscores-view__option">
-            <label
-              class="c-highscores-view__label e-label"
-              htmlFor="difficulty"
-            >
+            <label class="c-highscores-view__label e-label" htmlFor="difficulty">
               Difficulty
             </label>
             <select
@@ -63,11 +53,7 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
               name="difficulty"
             >
               {this.difficulties.map(([key, value]) => (
-                <option
-                  class="c-highscores-view__option e-option"
-                  value={value}
-                  selected={difficulty === value}
-                >
+                <option class="c-highscores-view__option e-option" value={value} selected={difficulty === value}>
                   {key}
                 </option>
               ))}
@@ -91,19 +77,13 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
         <div class="c-highscores-view__table">
           <HighscoresTable list={list} highlight="CrjD8A1cqGjxtpVT70aMM" />
         </div>
-        {updated ? (
-          <div class="c-highscores-view__updated">
-            Updated at {formatDate(updated)}
-          </div>
-        ) : (
-          ''
-        )}
+        {updated ? <div class="c-highscores-view__updated">Updated at {formatDate(updated)}</div> : ''}
         <BackButton />
       </div>
     );
   }
 
-  private readonly onChange = (event: Event) => {
+  private readonly onChange = (event: Event): void => {
     event.preventDefault();
     const difficulty = toNumber(this.refSelect.current?.value);
     const player = this.refInput.current?.value;

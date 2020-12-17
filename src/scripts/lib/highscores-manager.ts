@@ -71,9 +71,7 @@ class HighscoresManager {
         };
         if (player && player.length) {
           player = player.toLowerCase();
-          highscores.list = highscores.list.filter(
-            entry => entry.player.toLowerCase() === player
-          );
+          highscores.list = highscores.list.filter(entry => entry.player.toLowerCase() === player);
         }
         if (typeof maxEntries === 'number' && maxEntries > 0) {
           highscores.list = highscores.list.slice(0, maxEntries);
@@ -88,9 +86,7 @@ class HighscoresManager {
   }
 
   private request(): Observable<Highscores> {
-    return from<Promise<HighscoresCompressed>>(
-      fetch(this.storageURI).then(response => response.json())
-    ).pipe(
+    return from<Promise<HighscoresCompressed>>(fetch(this.storageURI).then(async response => response.json())).pipe(
       map(compressed => this.decompress(compressed)),
       tap(highscores => {
         this.highscores = highscores;
@@ -101,6 +97,7 @@ class HighscoresManager {
   private send(highscores: Highscores): Observable<Highscores> {
     return from<Promise<Response>>(
       fetch(this.storageURI, {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         headers: { 'Content-Type': 'application/json;charset=utf-8' },
         method: 'put',
         body: JSON.stringify(this.compress(highscores))
@@ -113,14 +110,8 @@ class HighscoresManager {
     );
   }
 
-  private findId(
-    highscores: Highscores,
-    entryId: string,
-    difficulty: HighscoreGameDifficulty
-  ): HighscoresEntry {
-    return highscores[difficulty].find(
-      ({ id }) => id === entryId
-    ) as HighscoresEntry;
+  private findId(highscores: Highscores, entryId: string, difficulty: HighscoreGameDifficulty): HighscoresEntry {
+    return highscores[difficulty].find(({ id }) => id === entryId) as HighscoresEntry;
   }
 
   private sortList(list: HighscoresList): HighscoresList {
@@ -139,9 +130,7 @@ class HighscoresManager {
   }
 
   private decompress([compressed]: HighscoresCompressed): Highscores {
-    return Object.entries(
-      JSON.parse(decompressFromUTF16(compressed) as string)
-    ).reduce(
+    return Object.entries(JSON.parse(decompressFromUTF16(compressed) as string)).reduce(
       (highscores, [key, value]) => ({
         ...highscores,
         [key]:

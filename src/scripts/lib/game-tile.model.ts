@@ -23,11 +23,7 @@ export class GameTile {
   private nearbyMines = 0;
   private readonly textures: GameTileIcons = {};
 
-  constructor(
-    public readonly x: number,
-    public readonly y: number,
-    private readonly size: number
-  ) {
+  constructor(public readonly x: number, public readonly y: number, private readonly size: number) {
     this.posX = this.size * this.x;
     this.posY = this.size * this.y;
     this.container = new PIXI.Container();
@@ -53,15 +49,11 @@ export class GameTile {
   }
 
   private get lineColor(): number {
-    return this.covered
-      ? GameTileColor.LineCovered
-      : GameTileColor.LineUncovered;
+    return this.covered ? GameTileColor.LineCovered : GameTileColor.LineUncovered;
   }
 
   private get fillColor(): number {
-    return this.covered
-      ? GameTileColor.FillCovered
-      : GameTileColor.FillUncovered;
+    return this.covered ? GameTileColor.FillCovered : GameTileColor.FillUncovered;
   }
 
   public populate(isMined: boolean, nearbyMines: number): void {
@@ -108,11 +100,7 @@ export class GameTile {
     }
   }
 
-  private drawIcon(
-    name: IconName,
-    size = 1,
-    [anchorX, anchorY]: [number, number] = [0.5, 0.5]
-  ): void {
+  private drawIcon(name: IconName, size = 1, [anchorX, anchorY]: [number, number] = [0.5, 0.5]): void {
     const icon = new PIXI.Sprite(this.textures[name] as PIXI.Texture);
     icon.anchor.set(anchorX, anchorY);
     icon.width = this.size * size;

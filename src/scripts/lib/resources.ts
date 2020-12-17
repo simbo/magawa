@@ -30,9 +30,7 @@ class Resources {
     return this.items.has(key);
   }
 
-  private onLoaded(
-    items: Partial<Record<ResourceName, PIXI.LoaderResource>>
-  ): void {
+  private onLoaded(items: Partial<Record<ResourceName, PIXI.LoaderResource>>): void {
     Object.entries(items).forEach(([key, value]) => {
       if (value && !value.error) {
         this.items.set(key as ResourceName, value);
@@ -44,8 +42,5 @@ class Resources {
 }
 
 export const resources = new Resources(
-  ...(Object.values(IconName).map(name => [
-    name,
-    `icons/${name}.png`
-  ]) as Resource[])
+  ...(Object.values(IconName).map(name => [name, `icons/${name}.png`]) as Resource[])
 );

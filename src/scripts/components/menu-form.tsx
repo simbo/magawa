@@ -52,10 +52,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
     this.refPlayerInput.current?.focus();
   }
 
-  public render(
-    props: never,
-    { difficulty, tilesX, tilesY, minesCount, player }: MenuFormState
-  ): VNode {
+  public render(props: never, { difficulty, tilesX, tilesY, minesCount, player }: MenuFormState): VNode {
     const readonly = difficulty !== GameDifficulty.Custom;
     return (
       <form class="c-menu-form" onSubmit={this.onSubmit}>
@@ -85,11 +82,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
             onChange={this.onChangeDifficulty}
           >
             {this.difficulties.map(([key, value]) => (
-              <option
-                value={value}
-                selected={difficulty === value}
-                class="c-menu-form__option e-option"
-              >
+              <option value={value} selected={difficulty === value} class="c-menu-form__option e-option">
                 {key}
               </option>
             ))}
@@ -143,10 +136,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
             readOnly={readonly}
           />
         </div>
-        <button
-          class="c-menu-form__button e-button e-button--block e-button--primary"
-          type="submit"
-        >
+        <button class="c-menu-form__button e-button e-button--block e-button--primary" type="submit">
           Start Game
         </button>
       </form>
@@ -171,9 +161,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
     }
   };
 
-  private readonly onChangeDifficulty = (
-    event: JSX.TargetedEvent<HTMLSelectElement, Event>
-  ): void => {
+  private readonly onChangeDifficulty = (event: JSX.TargetedEvent<HTMLSelectElement, Event>): void => {
     const difficulty: GameDifficulty = toNumber(event.currentTarget.value);
     const player = this.refPlayerInput.current?.value;
     if (difficulty === GameDifficulty.Custom) {

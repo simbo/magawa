@@ -82,9 +82,7 @@ export class GameBoard {
     for (let y = 0; y < this.tilesY; y++) {
       for (let x = 0; x < this.tilesX; x++) {
         const tile = new GameTile(x, y, this.tileSize);
-        tile.container.on('pointerdown', (iEvent: PIXI.InteractionEvent) =>
-          this.onTileClick(iEvent, x, y)
-        );
+        tile.container.on('pointerdown', (iEvent: PIXI.InteractionEvent) => this.onTileClick(iEvent, x, y));
         this.tiles.push(tile);
         this.gfx.stage.addChild(tile.container);
       }
@@ -104,9 +102,7 @@ export class GameBoard {
     } while (
       i < 10000 && // set a max value for crazy custom game settings
       (minesIndex[this.getTileIndex(initClickX, initClickY)] ||
-        this.getNearbyTileCoordinates(initClickX, initClickY).some(
-          ([x, y]) => minesIndex[this.getTileIndex(x, y)]
-        ))
+        this.getNearbyTileCoordinates(initClickX, initClickY).some(([x, y]) => minesIndex[this.getTileIndex(x, y)]))
     );
     this.minesIndex = minesIndex;
   }
@@ -115,31 +111,20 @@ export class GameBoard {
     this.tiles.forEach((tile, i) =>
       tile.populate(
         this.minesIndex[i],
-        this.getNearbyTileCoordinates(tile.x, tile.y).filter(
-          ([x, y]) => this.minesIndex[this.getTileIndex(x, y)]
-        ).length
+        this.getNearbyTileCoordinates(tile.x, tile.y).filter(([x, y]) => this.minesIndex[this.getTileIndex(x, y)])
+          .length
       )
     );
   }
 
-  private onTileClick(
-    iEvent: PIXI.InteractionEvent,
-    x: number,
-    y: number
-  ): void {
+  private onTileClick(iEvent: PIXI.InteractionEvent, x: number, y: number): void {
     if (!this.minesIndex.length) {
       this.firstClick();
       this.initMines(x, y);
       this.populateTiles();
     }
     const event = iEvent.data.originalEvent as MouseEvent;
-    if (
-      event.altKey ||
-      event.ctrlKey ||
-      event.metaKey ||
-      event.shiftKey ||
-      event.button > 1
-    ) {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey || event.button > 1) {
       this.toggleFlag(x, y);
     } else {
       this.uncoverTile(x, y);
@@ -157,9 +142,7 @@ export class GameBoard {
       [x - 1, y + 0],                 [x + 1, y + 0],
       [x - 1, y + 1], [x + 0, y + 1], [x + 1, y + 1]
     ];
-    return nearbyTiles.filter(
-      ([a, b]) => a >= 0 && a < this.tilesX && b >= 0 && b < this.tilesY
-    );
+    return nearbyTiles.filter(([a, b]) => a >= 0 && a < this.tilesX && b >= 0 && b < this.tilesY);
   }
 
   private uncoverTile(x: number, y: number): void {
@@ -176,9 +159,7 @@ export class GameBoard {
         }
       });
     } else if (tile.hasNearbyMines === 0) {
-      this.getNearbyTileCoordinates(x, y).forEach(([a, b]) =>
-        this.uncoverTile(a, b)
-      );
+      this.getNearbyTileCoordinates(x, y).forEach(([a, b]) => this.uncoverTile(a, b));
     }
     this.updateBoardState();
   }
@@ -197,8 +178,7 @@ export class GameBoard {
   private isBoardSolved(): boolean {
     return this.tiles.every(
       tile =>
-        (tile.isMined && (tile.isFlagged || tile.isCovered)) ||
-        (!tile.isMined && !tile.isFlagged && !tile.isCovered)
+        (tile.isMined && (tile.isFlagged || tile.isCovered)) || (!tile.isMined && !tile.isFlagged && !tile.isCovered)
     );
   }
 

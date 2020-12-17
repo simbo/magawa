@@ -19,9 +19,8 @@ export class Congratulations extends Component<CongratulationsProps> {
         </div>
         {entry ? (
           <div class="c-congratulations__text">
-            You won in <strong>{formatDuration(entry.time)}</strong> claiming
-            rank <strong>{entry.rank}</strong> in highscores for difficulty{' '}
-            <em>{formatDifficulty(entry.difficulty)}</em>.
+            You won in <strong>{formatDuration(entry.time)}</strong> claiming rank <strong>{entry.rank}</strong> in
+            highscores for difficulty <em>{formatDifficulty(entry.difficulty)}</em>.
           </div>
         ) : (
           ''

@@ -8,7 +8,7 @@ import { AppRoute } from '../lib/app-route.enum';
 import { GameBoard } from '../lib/game-board.model';
 import { GameAction } from '../store/game/game-actions';
 import { gameSelectors } from '../store/game/game-selectors';
-import { gameStore, GameStoreContext } from '../store/game/game-store';
+import { gameStore, gameStoreContext } from '../store/game/game-store';
 
 export class GameGfx extends Component {
   private readonly viewRef = createRef<HTMLCanvasElement>();
@@ -22,23 +22,18 @@ export class GameGfx extends Component {
 
   constructor() {
     super();
-    gameStore.actions$
-      .pipe(takeUntil(this.unsubscribeSubject))
-      .subscribe(({ name, state }) => {
-        if (name === GameAction.Restart) {
-          this.board.initBoard();
-        } else if (name === GameAction.Pause && gameSelectors.isPaused(state)) {
-          this.board.showPauseOverlay();
-        } else if (
-          name === GameAction.Unpause &&
-          gameSelectors.isRunning(state)
-        ) {
-          this.board.hidePauseOverlay();
-        }
-        if (!gameSelectors.player(state)) {
-          route(AppRoute.Home);
-        }
-      });
+    gameStore.actions$.pipe(takeUntil(this.unsubscribeSubject)).subscribe(({ name, state }) => {
+      if (name === GameAction.Restart) {
+        this.board.initBoard();
+      } else if (name === GameAction.Pause && gameSelectors.isPaused(state)) {
+        this.board.showPauseOverlay();
+      } else if (name === GameAction.Unpause && gameSelectors.isRunning(state)) {
+        this.board.hidePauseOverlay();
+      }
+      if (!gameSelectors.player(state)) {
+        route(AppRoute.Home);
+      }
+    });
   }
 
   public componentDidMount(): void {
@@ -49,8 +44,7 @@ export class GameGfx extends Component {
       this.tilesY,
       this.minesCount,
       () => gameStore.dispatch(GameAction.FirstClick),
-      flagsCount =>
-        gameStore.dispatch(GameAction.SetFlagsCount, { flagsCount }),
+      flagsCount => gameStore.dispatch(GameAction.SetFlagsCount, { flagsCount }),
       () => gameStore.dispatch(GameAction.Unpause),
       finalStatus => gameStore.dispatch(GameAction.Finish, { finalStatus }),
       () => route(AppRoute.Home)
@@ -62,7 +56,7 @@ export class GameGfx extends Component {
   }
 
   public render(): VNode {
-    const gameState = useContext(GameStoreContext);
+    const gameState = useContext(gameStoreContext);
     if (!this.board) {
       const { tileSize, tilesX, tilesY, minesCount } = gameState;
       this.tileSize = tileSize;
@@ -72,11 +66,7 @@ export class GameGfx extends Component {
     }
     return (
       <div class="c-game-gfx">
-        <canvas
-          class="c-game-gfx__canvas"
-          ref={this.viewRef}
-          onContextMenu={this.onRightClick}
-        ></canvas>
+        <canvas class="c-game-gfx__canvas" ref={this.viewRef} onContextMenu={this.onRightClick}></canvas>
         {/* {isFinished || isPaused ? <GameOverlay /> : ''} */}
       </div>
     );

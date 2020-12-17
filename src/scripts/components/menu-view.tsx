@@ -15,17 +15,11 @@ export class MenuView extends Component {
         </h1>
         <p className="e-subtitle">A Minesweeper Clone.</p>
         <MenuForm />
-        <Link
-          href={AppRoute.Highscores}
-          class="c-menu-view__button e-button e-button--block"
-        >
+        <Link href={AppRoute.Highscores} class="c-menu-view__button e-button e-button--block">
           Highscores
           <Icon name={IconName.Trophy} />
         </Link>
-        <Link
-          href={AppRoute.About}
-          class="c-menu-view__button e-button e-button--block"
-        >
+        <Link href={AppRoute.About} class="c-menu-view__button e-button e-button--block">
           About
           <Icon name={IconName.Book} />
         </Link>

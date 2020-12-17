@@ -6,14 +6,10 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import { GameDifficulty } from '../lib/game-difficulty.enum';
 import { highscoresManager } from '../lib/highscores-manager';
-import {
-  HighscoreGameDifficulty,
-  HighscoresEntry,
-  HighscoresForDifficulty
-} from '../lib/highscores.interface';
+import { HighscoreGameDifficulty, HighscoresEntry, HighscoresForDifficulty } from '../lib/highscores.interface';
 import { GameAction } from '../store/game/game-actions';
 import { gameSelectors } from '../store/game/game-selectors';
-import { gameStore, GameStoreContext } from '../store/game/game-store';
+import { gameStore, gameStoreContext } from '../store/game/game-store';
 import { BackButton } from './back-button';
 import { Congratulations } from './congratulations';
 import { Flags } from './flags';
@@ -54,27 +50,19 @@ export class GameView extends Component<{}, GameViewState> {
   }
 
   public render(props: never, { highscores, entry }: GameViewState): VNode {
-    const gameState = useContext(GameStoreContext);
+    const gameState = useContext(gameStoreContext);
     if (gameSelectors.isClosed(gameState)) {
       return <div></div>;
     }
     const isWon = gameSelectors.isWon(gameState);
     const { difficulty, startedAt, finishedAt, player } = gameState;
     if (isWon && !this.highscoreSaved && difficulty !== GameDifficulty.Custom) {
-      this.saveHighscore(
-        startedAt as Date,
-        finishedAt as Date,
-        player as string,
-        difficulty
-      );
+      this.saveHighscore(startedAt as Date, finishedAt as Date, player as string, difficulty);
     }
     const width = gameSelectors.width(gameState);
     return (
       <div class="c-game-view">
-        <div
-          class="c-game-view__container"
-          style={`width:${width}px; min-width:${width * 0.5}px`}
-        >
+        <div class="c-game-view__container" style={`width:${width}px; min-width:${width * 0.5}px`}>
           <div class="c-game-view__bar">
             <div class="c-game-view__bar-item">
               <Timer />
@@ -101,12 +89,7 @@ export class GameView extends Component<{}, GameViewState> {
     );
   }
 
-  private saveHighscore(
-    startedAt: Date,
-    finishedAt: Date,
-    player: string,
-    difficulty: HighscoreGameDifficulty
-  ): void {
+  private saveHighscore(startedAt: Date, finishedAt: Date, player: string, difficulty: HighscoreGameDifficulty): void {
     this.highscoreSaved = true;
     highscoresManager
       .add(differenceInMilliseconds(finishedAt, startedAt), player, difficulty)

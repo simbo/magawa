@@ -1,9 +1,7 @@
+/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/naming-convention */
 const isProd = process.env.NODE_ENV === 'production';
 
-const pixijsVersion = require('./package.json').dependencies['pixi.js'].replace(
-  /[^0-9.]/g,
-  ''
-);
+const pixijsVersion = require('./package.json').dependencies['pixi.js'].replace(/[^0-9.]/g, '');
 
 module.exports = {
   doctype: null,

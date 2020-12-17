@@ -16,40 +16,24 @@ export class HighscoresTable extends Component<HighscoresTableProps> {
       <table class="c-highscores-table">
         <thead>
           <tr class="c-highscores-table__head-row">
-            <th class="c-highscores-table__head-cell c-highscores-table__head-cell--rank">
-              #
-            </th>
-            <th class="c-highscores-table__head-cell c-highscores-table__head-cell--name">
-              Name
-            </th>
-            <th class="c-highscores-table__head-cell c-highscores-table__head-cell--difficulty">
-              Difficulty
-            </th>
-            <th class="c-highscores-table__head-cell c-highscores-table__head-cell--time">
-              Time
-            </th>
+            <th class="c-highscores-table__head-cell c-highscores-table__head-cell--rank">#</th>
+            <th class="c-highscores-table__head-cell c-highscores-table__head-cell--name">Name</th>
+            <th class="c-highscores-table__head-cell c-highscores-table__head-cell--difficulty">Difficulty</th>
+            <th class="c-highscores-table__head-cell c-highscores-table__head-cell--time">Time</th>
           </tr>
         </thead>
         <tbody>
           {(list || []).map(({ id, rank, player, difficulty, time, date }) => (
             <tr
               title={`${player} 🏆 ${formatDate(date)}`}
-              class={`c-highscores-table__row ${
-                id === highlight ? 'c-highscores-table__row--highlight' : ''
-              }`}
+              class={`c-highscores-table__row ${id === highlight ? 'c-highscores-table__row--highlight' : ''}`}
             >
-              <td class="c-highscores-table__cell c-highscores-table__cell--rank">
-                {rank}
-              </td>
-              <td class="c-highscores-table__cell c-highscores-table__cell--name">
-                {player}
-              </td>
+              <td class="c-highscores-table__cell c-highscores-table__cell--rank">{rank}</td>
+              <td class="c-highscores-table__cell c-highscores-table__cell--name">{player}</td>
               <td class="c-highscores-table__cell c-highscores-table__cell--difficulty">
                 {formatDifficulty(difficulty)}
               </td>
-              <td class="c-highscores-table__cell c-highscores-table__cell--time">
-                {formatDuration(time)}
-              </td>
+              <td class="c-highscores-table__cell c-highscores-table__cell--time">{formatDuration(time)}</td>
             </tr>
           ))}
         </tbody>
@@ -57,24 +41,15 @@ export class HighscoresTable extends Component<HighscoresTableProps> {
           <tfoot>
             <tr class="c-highscores-table__foot-row">
               {list === null ? (
-                <td
-                  colSpan={4}
-                  class="c-highscores-table__foot-cell c-highscores-table__foot-cell--error"
-                >
+                <td colSpan={4} class="c-highscores-table__foot-cell c-highscores-table__foot-cell--error">
                   Error loading highscores.
                 </td>
               ) : list === undefined ? (
-                <td
-                  colSpan={4}
-                  class="c-highscores-table__foot-cell c-highscores-table__foot-cell--loading"
-                >
+                <td colSpan={4} class="c-highscores-table__foot-cell c-highscores-table__foot-cell--loading">
                   Loading...
                 </td>
               ) : (
-                <td
-                  colSpan={4}
-                  class="c-highscores-table__foot-cell c-highscores-table__foot-cell--empty"
-                >
+                <td colSpan={4} class="c-highscores-table__foot-cell c-highscores-table__foot-cell--empty">
                   No entries found.
                 </td>
               )}
