@@ -19,6 +19,7 @@
     "removeComments": true,
     "sourceMap": true,
     "strict": true,
+    "strictPropertyInitialization": true,
     "target": "es2015"
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"]
