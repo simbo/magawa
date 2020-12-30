@@ -26,6 +26,7 @@ See the live version at [simbo.codes/magawa](https://simbo.codes/magawa)
 - save game settings in storage
 - quick restart function
 - responsive interface
+- legacy support for non-webgl plattforms
 
 See [ToDo](./TODO.md) for planned features.
 
