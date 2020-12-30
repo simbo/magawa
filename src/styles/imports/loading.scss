@@ -1,12 +1,24 @@
-body.loading {
+body.loading,
+body.error {
   position: relative;
   min-height: 100vh;
 
   &::before {
-    content: 'Loading...';
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+}
+
+body.loading {
+  &::before {
+    content: 'Loading...';
+  }
+}
+
+body.error {
+  &::before {
+    content: 'Something went wrong... :(';
   }
 }

@@ -14,3 +14,12 @@ declare namespace PIXI {
     export function skipHello(): void;
   }
 }
+
+declare global {
+  interface Window {
+    magawa: {
+      pixiVersion: string;
+      pixiLoaded: () => void;
+    };
+  }
+}
