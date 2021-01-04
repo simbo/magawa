@@ -1,14 +1,13 @@
 .version {
+  align-self: flex-end;
   display: flex;
-  position: fixed;
-  right: 0.5rem;
-  bottom: 0.5rem;
+  margin: 0 1rem 1rem 0;
   font-size: 0.65em;
   color: $colorSecondary;
-  z-index: -1;
 
   &:hover {
     opacity: 1;
+    color: $colorText;
   }
 
   &__label {
