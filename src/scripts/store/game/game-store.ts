@@ -5,6 +5,7 @@ import { DEFAULT_GAME_DIFFICULTY, gameDifficultySettings } from '../../lib/game-
 import { GameStatus } from '../../lib/game-status.enum';
 import { storage } from '../../lib/storage';
 import { GameAction, GameActionPayloads, gameActions } from './game-actions';
+import { gameEffects } from './game-effects';
 import { GameState } from './game-state.interface';
 
 const {
@@ -32,6 +33,6 @@ const initialState: GameState = {
   flagsCount: 0
 };
 
-export const gameStore = new Store<GameState, GameAction, GameActionPayloads>(initialState, gameActions);
+export const gameStore = new Store<GameState, GameAction, GameActionPayloads>(initialState, gameActions, gameEffects);
 
 export const gameStoreContext = createContext(initialState);
