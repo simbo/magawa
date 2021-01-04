@@ -11,10 +11,27 @@ jobs:
     steps:
       - name: 🛎 Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
 
-      - name: 📄 Read .nvmrc
-        run: echo "::set-output name=NVMRC::$(cat .nvmrc)"
+      - name: 👀 Read node.js Version
+        run: |
+          version=$(cat .nvmrc | xargs)
+          echo "::set-output name=NVMRC::$version"
         id: nvm
+
+      - name: 👀 Read current Version
+        run: |
+          version=$(cat package.json | grep \"version\" | cut -d '"' -f 4)
+          echo "::set-output name=version::$version"
+        id: current-version
+
+      - name: 👀 Retrieve released Version
+        run: |
+          version=$(curl -so- https://simbo.codes/magawa/index.html | sed -r -e 's/^.*"version__label">v([0-9]+\.[0-9]+\.[0-9]+).*$/\1/')
+          version=$([[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo $version || echo 0)
+          echo "::set-output name=version::$version"
+        id: released-version
 
       - name: 🛠 Setup node.js
         uses: actions/setup-node@v2.1.2
@@ -36,7 +53,25 @@ jobs:
       - name: 🗑 Remove artifacts
         run: rm dist/report.html
 
+      - name: 📋 Get Commits since last Release
+        if: steps.released-version.outputs.version != steps.current-version.outputs.version
+        uses: simbo/changes-since-last-release-action@v1
+        id: changes
+
+      - name: 🎁 Create Tag and GitHub Release
+        if: steps.released-version.outputs.version != steps.current-version.outputs.version
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.current-version.outputs.version }}
+          release_name: Release ${{ steps.current-version.outputs.version }}
+          body: |
+            Changes since ${{ steps.changes.outputs.last-tag }}:
+            ${{ steps.changes.outputs.log }}
+
       - name: 🚚 Deploy
+        if: steps.released-version.outputs.version != steps.current-version.outputs.version
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
           BRANCH: gh-pages
