@@ -1,16 +1,14 @@
 import { compressToUTF16, decompressFromUTF16 } from 'lz-string';
-import { createStore } from 'store/src/store-engine';
-import cookieStorage from 'store/storages/cookieStorage';
-import localStorage from 'store/storages/localStorage';
 
 import { GameDifficulty, GameDifficultySettings } from './game-difficulty';
-
-const STORAGE_DATA_VERSION = 1;
 
 enum StorageKey {
   DataVersion = 'dataVersion',
   Data = 'data'
 }
+
+const STORAGE_DATA_VERSION = 1;
+const STORAGE_KEY_PREFIX = 'magawa';
 
 interface StorageData {
   player: string | null;
@@ -19,11 +17,9 @@ interface StorageData {
 }
 
 class Storage {
-  private readonly version = STORAGE_DATA_VERSION;
-  private readonly storage = createStore([localStorage, cookieStorage]);
-  private readonly defaultData = compressToUTF16(JSON.stringify({}));
-
   private data!: StorageData;
+  private readonly dataKey = `${STORAGE_KEY_PREFIX}_${StorageKey.Data}`;
+  private readonly versionKey = `${STORAGE_KEY_PREFIX}_${StorageKey.DataVersion}`;
 
   constructor() {
     this.verifyDataVersion();
@@ -40,19 +36,34 @@ class Storage {
   }
 
   private read(): void {
-    this.data = JSON.parse(decompressFromUTF16(this.storage.get(StorageKey.Data, this.defaultData)) as string);
+    let data: StorageData;
+    try {
+      data = JSON.parse(decompressFromUTF16(window.localStorage.getItem(this.dataKey) || ''));
+    } catch {
+      data = { ...this.data };
+    }
+    this.data = data;
   }
 
   private write(): void {
-    this.storage.set(StorageKey.Data, compressToUTF16(JSON.stringify(this.data)));
+    window.localStorage.setItem(this.dataKey, compressToUTF16(JSON.stringify(this.data || {})));
+    window.localStorage.setItem(this.versionKey, JSON.stringify(`${STORAGE_DATA_VERSION}`));
   }
 
   private verifyDataVersion(): void {
-    const version = this.storage.get(StorageKey.DataVersion, this.version);
-    if (version !== this.version) {
-      this.storage.clearAll();
+    let version: number;
+    try {
+      version = Number.parseInt(
+        JSON.parse(window.localStorage.getItem(this.versionKey) || `${STORAGE_DATA_VERSION}`),
+        10
+      );
+    } catch {
+      version = STORAGE_DATA_VERSION;
     }
-    this.storage.set(StorageKey.DataVersion, this.version);
+    if (version !== STORAGE_DATA_VERSION) {
+      window.localStorage.removeItem(this.dataKey);
+      window.localStorage.removeItem(this.versionKey);
+    }
   }
 }
 
