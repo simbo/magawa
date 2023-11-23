@@ -31,7 +31,7 @@
     "preview": "vite preview",
     "start": "npm run dev",
     "test": "echo \"No tests specified. Skipping...\" && exit 0",
-    "upgrade": "npx --yes npm-check-updates -u -t minor && npx --yes npm-check-updates --interactive --reject typescript,@types/node && npm i"
+    "upgrade": "npx --yes npm-check-updates -u -t minor --reject typescript && npx --yes npm-check-updates --interactive --reject typescript,@types/node && npm i"
   },
   "alias": {
     "react": "preact/compat",
@@ -44,7 +44,7 @@
     "history": "^5.3.0",
     "lz-string": "^1.5.0",
     "nanoid": "^5.0.3",
-    "pixi.js": "^7.3.2",
+    "path-slashes": "^2.0.1",
     "preact": "^10.19.2",
     "preact-async-route": "^2.2.1",
     "preact-router": "^4.1.2",
@@ -72,7 +72,7 @@
     "rollup-plugin-html-minifier": "^2.0.0",
     "sass": "^1.69.5",
     "typescript": "^5.2.2",
-    "vite": "^5.0.0",
+    "vite": "^5.0.2",
     "vite-plugin-pug": "^0.3.2"
   }
 }

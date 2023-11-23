@@ -1,17 +1,16 @@
-import { Container, Graphics, Sprite, Text } from 'pixi.js';
-
-import { Asset, getAsset } from './game-assets';
+import { PaintResourceName } from './paint-assets';
+import { PaintContainer, PaintContainerOnClick } from './paint-container';
+import { PaintText } from './paint-text';
+import { PaintTexture } from './paint-texture';
 
 enum GameTileColor {
-  LineCovered = 0xf9_ed_cc,
-  FillCovered = 0x6b_8e_23,
-  LineUncovered = 0xeb_df_be,
-  // eslint-disable-next-line @typescript-eslint/no-duplicate-enum-values
-  FillUncovered = 0xf9_ed_cc
+  Line = '#ebdfbe',
+  FillCovered = '#6b8e23',
+  FillUncovered = '#f9edcc'
 }
 
 export class GameTile {
-  public readonly container: Container;
+  public readonly container: PaintContainer;
   public readonly posX: number;
   public readonly posY: number;
 
@@ -23,13 +22,13 @@ export class GameTile {
   constructor(
     public readonly x: number,
     public readonly y: number,
-    private readonly size: number
+    private readonly size: number,
+    onClick: PaintContainerOnClick
   ) {
     this.posX = this.size * this.x;
     this.posY = this.size * this.y;
-    this.container = new Container();
-    this.container.eventMode = 'static';
-    this.draw();
+    this.container = new PaintContainer({ width: this.size, height: this.size, x: this.posX, y: this.posY, onClick });
+    this.updateContainer();
   }
 
   public get isMined(): boolean {
@@ -48,70 +47,58 @@ export class GameTile {
     return this.nearbyMines;
   }
 
-  private get lineColor(): number {
-    return this.covered ? GameTileColor.LineCovered : GameTileColor.LineUncovered;
-  }
-
-  private get fillColor(): number {
-    return this.covered ? GameTileColor.FillCovered : GameTileColor.FillUncovered;
-  }
-
   public populate(isMined: boolean, nearbyMines: number): void {
     this.mined = isMined;
     this.nearbyMines = nearbyMines;
   }
 
   public uncover(): void {
-    this.container.eventMode = 'none';
+    this.container.interactive = false;
     this.covered = false;
     this.flagged = false;
-    this.draw();
+    this.updateContainer();
   }
 
   public toggleFlag(): void {
     this.flagged = !this.flagged;
-    this.draw();
+    this.updateContainer();
   }
 
-  private draw(): void {
-    this.container.removeChildren();
-    const tile = new Graphics();
-    tile.lineStyle(1, this.lineColor);
-    tile.beginFill(this.fillColor);
-    tile.drawRect(this.posX, this.posY, this.size, this.size);
-    tile.endFill();
-    this.container.addChild(tile);
+  private updateContainer(): void {
+    this.container.clear();
+    this.container.fillStyle = this.covered ? GameTileColor.FillCovered : GameTileColor.FillUncovered;
+    this.container.strokeStyle = GameTileColor.Line;
     if (this.covered) {
       if (this.flagged) {
-        this.drawIcon(Asset.Flag, 0.65, [0.4, 0.6]);
+        this.container.add(
+          new PaintTexture({
+            asset: PaintResourceName.Flag,
+            width: this.size * 0.65,
+            height: this.size * 0.65,
+            x: (this.size - this.size * 0.65) / 2,
+            y: (this.size - this.size * 0.65) / 2
+          })
+        );
       }
       return;
     }
     if (this.mined) {
-      this.drawIcon(Asset.Boom);
+      this.container.add(
+        new PaintTexture({
+          asset: PaintResourceName.Boom,
+          width: this.size,
+          height: this.size
+        })
+      );
     } else if (this.nearbyMines > 0) {
-      this.drawText(this.nearbyMines.toString());
+      this.container.add(
+        new PaintText({
+          text: `${this.nearbyMines}`,
+          fillStyle: 'black',
+          x: this.size / 2,
+          y: this.size / 2
+        })
+      );
     }
-  }
-
-  private drawIcon(name: Asset, size = 1, [anchorX, anchorY]: [number, number] = [0.5, 0.5]): void {
-    getAsset(name)
-      .then(texture => {
-        const icon = new Sprite(texture);
-        icon.anchor.set(anchorX, anchorY);
-        icon.width = this.size * size;
-        icon.height = this.size * size;
-        icon.x = this.size / 2 + this.posX;
-        icon.y = this.size / 2 + this.posY;
-        this.container.addChild(icon);
-      })
-      .catch(error => console.error(error));
-  }
-
-  private drawText(str: string): void {
-    const text = new Text(str);
-    text.x = this.size / 2 - text.width / 2 + this.posX;
-    text.y = this.size / 2 - text.height / 2 + this.posY;
-    this.container.addChild(text);
   }
 }

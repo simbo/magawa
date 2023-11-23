@@ -1,18 +1,17 @@
-import { Application, FederatedPointerEvent, Graphics } from 'pixi.js';
 import shuffle from 'shuffle-array';
 
 import { GameFinalStatus } from './game-status';
 import { GameTile } from './game-tile';
+import { PaintContainer } from './paint-container';
+import { PaintEngine } from './paint-engine';
 
 export class GameBoard {
-  private gfx!: Application;
+  private paintEngine!: PaintEngine;
   private width!: number;
   private height!: number;
   private minesIndex!: boolean[];
   private tiles!: GameTile[];
-  private pauseOverlay!: Graphics | null;
-  private lostOverlay!: Graphics | null;
-  private wonOverlay!: Graphics | null;
+  private pauseOverlay!: PaintContainer | null;
   private flagsCount!: number;
   private triggeredMinedTile!: GameTile | null;
 
@@ -31,34 +30,17 @@ export class GameBoard {
     this.initBoard();
   }
 
-  public showPauseOverlay(): void {
-    const overlayName = 'pauseOverlay';
-    if (!this.pauseOverlay) {
-      this.pauseOverlay = this.drawOverlay(0x6b_8e_23);
-      this.pauseOverlay.name = overlayName;
-      this.pauseOverlay.on('pointerdown', this.unpause);
-    } else if (!this.gfx.stage.getChildByName(overlayName)) {
-      this.gfx.stage.addChild(this.pauseOverlay);
-    }
-  }
-
-  public hidePauseOverlay(): void {
-    // eslint-disable-next-line unicorn/prefer-dom-node-remove
-    this.gfx.stage.removeChild(this.pauseOverlay as Graphics);
-  }
-
   public initBoard(): void {
     this.width = this.tilesX * this.tileSize;
     this.height = this.tilesY * this.tileSize;
-    if (this.gfx) {
-      this.gfx.stage.removeChildren();
+    if (this.paintEngine) {
+      this.paintEngine.clear();
     } else {
-      this.gfx = new Application({
-        view: this.view,
+      this.paintEngine = new PaintEngine({
+        canvas: this.view,
         width: this.width,
         height: this.height,
-        resolution: 2,
-        hello: APP_IS_DEV
+        pixelDensity: 2
       });
     }
     this.flagsCount = 0;
@@ -66,30 +48,39 @@ export class GameBoard {
     this.minesIndex = [];
     this.triggeredMinedTile = null;
     this.pauseOverlay = null;
-    this.lostOverlay = null;
-    this.wonOverlay = null;
     this.initTiles();
   }
 
-  private showLostOverlay(): void {
-    this.lostOverlay = this.drawOverlay(0xff_00_00, 0.2);
-    this.lostOverlay.on('pointerdown', this.close);
+  public showPauseOverlay(): void {
+    if (!this.pauseOverlay) {
+      this.pauseOverlay = new PaintContainer({
+        fillStyle: '#6b8e23',
+        width: this.width,
+        height: this.height,
+        onClick: () => this.unpause()
+      });
+      this.paintEngine.add(this.pauseOverlay);
+    }
+    this.pauseOverlay.active = true;
+    this.paintEngine.render();
   }
 
-  private showWonOverlay(): void {
-    this.wonOverlay = this.drawOverlay(0x00_ff_00, 0.2);
-    this.wonOverlay.on('pointerdown', this.close);
+  public hidePauseOverlay(): void {
+    if (this.pauseOverlay) {
+      this.pauseOverlay.active = false;
+      this.paintEngine.render();
+    }
   }
 
   private initTiles(): void {
     for (let y = 0; y < this.tilesY; y++) {
       for (let x = 0; x < this.tilesX; x++) {
-        const tile = new GameTile(x, y, this.tileSize);
-        tile.container.on('pointerdown', (event: FederatedPointerEvent) => this.onTileClick(event, x, y));
+        const tile = new GameTile(x, y, this.tileSize, ({ event }) => this.onTileClick(event, x, y));
         this.tiles.push(tile);
-        this.gfx.stage.addChild(tile.container);
+        this.paintEngine.add(tile.container);
       }
     }
+    this.paintEngine.render();
   }
 
   private initMines(initClickX: number, initClickY: number): void {
@@ -120,7 +111,7 @@ export class GameBoard {
     );
   }
 
-  private onTileClick(event: FederatedPointerEvent, x: number, y: number): void {
+  private onTileClick(event: PointerEvent, x: number, y: number): void {
     if (this.minesIndex.length === 0) {
       this.firstClick();
       this.initMines(x, y);
@@ -188,22 +179,16 @@ export class GameBoard {
     const lost = !!this.triggeredMinedTile;
     const won = !lost && this.isBoardSolved();
     if (lost || won) {
-      if (won) {
-        this.showWonOverlay();
-      } else {
-        this.showLostOverlay();
-      }
+      const fillStyle = won ? 'rgba(0, 255, 0, 0.2)' : 'rgba(255, 0, 0, 0.2)';
+      const overlay = new PaintContainer({
+        fillStyle,
+        width: this.width,
+        height: this.height,
+        onClick: () => this.close()
+      });
+      this.paintEngine.add(overlay);
       this.finish(won ? GameFinalStatus.Won : GameFinalStatus.Lost);
     }
-  }
-
-  private drawOverlay(color: number, alpha?: number): Graphics {
-    const overlay = new Graphics();
-    overlay.eventMode = 'static';
-    overlay.beginFill(color, alpha);
-    overlay.drawRect(0, 0, this.width, this.height);
-    overlay.endFill();
-    this.gfx.stage.addChild(overlay);
-    return overlay;
+    this.paintEngine.render();
   }
 }

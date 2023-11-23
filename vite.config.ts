@@ -22,8 +22,7 @@ export default defineConfig(async ({ command }) => {
     APP_IS_PROD: mode === 'production',
     APP_IS_DEV: mode === 'development',
     APP_VERSION: packageJson.version,
-    APP_URI: mode === 'production' ? '//simbo.codes/magawa/' : `//localhost:${port}/magawa/`,
-    APP_PIXIJS_VERSION: packageJson.dependencies['pixi.js'].replaceAll(/[^\d.]/g, '')
+    APP_URI: mode === 'production' ? '//simbo.codes/magawa/' : `//localhost:${port}/magawa/`
   };
 
   const config: UserConfig = {

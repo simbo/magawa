@@ -33,11 +33,11 @@ See [ToDo](./TODO.md) for planned features.
 ## Tech Stack
 
 - [Preact](https://preactjs.com/) for DOM manipulation
-- [PixiJS](https://www.pixijs.com/) for GFX
 - [Vite](https://vitejs.dev/) as bundler
 - a selfmade, immutable, reactive and
   [small store](https://github.com/simbo/small-store)
-- also Typescript, Pug, SCSS, css-reset-and-normalize, date-fns and others...
+- also Typescript, Nunjucks, SCSS, css-reset-and-normalize, date-fns and
+  others...
 
 ## Development
 
