@@ -3,9 +3,7 @@ import { route } from 'preact-router';
 import { take } from 'rxjs/operators';
 
 import { AppRoute } from '../lib/app-route.enum';
-import { gameDifficultySettings } from '../lib/game-difficulty-settings';
-import { GameDifficulty } from '../lib/game-difficulty.enum';
-import { toNumber } from '../lib/to-number.function';
+import { GameDifficulty, gameDifficultySettings } from '../lib/game-difficulty';
 import { GameAction } from '../store/game/game-actions';
 import { gameStore } from '../store/game/game-store';
 
@@ -17,10 +15,11 @@ interface MenuFormState {
   player: string | null;
 }
 
-export class MenuForm extends Component<{}, MenuFormState> {
-  private readonly difficulties = Object.entries(GameDifficulty).filter(
-    ([key, value]) => typeof value === 'number'
-  ) as [string, GameDifficulty][];
+export class MenuForm extends Component<object, MenuFormState> {
+  private readonly difficulties = Object.entries(GameDifficulty).filter(([, value]) => typeof value === 'number') as [
+    string,
+    GameDifficulty
+  ][];
 
   private readonly refPlayerInput = createRef<HTMLInputElement>();
 
@@ -31,7 +30,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
   private readonly maxTilesY: number;
   private readonly maxMinesCount: number;
 
-  constructor(props: never, state: MenuFormState) {
+  constructor(props: object, state: MenuFormState) {
     super(props, state);
     const settingsEasy = gameDifficultySettings[GameDifficulty.Easy];
     this.minTilesX = settingsEasy.tilesX;
@@ -52,7 +51,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
     this.refPlayerInput.current?.focus();
   }
 
-  public render(props: never, { difficulty, tilesX, tilesY, minesCount, player }: MenuFormState): VNode {
+  public render(_props: object, { difficulty, tilesX, tilesY, minesCount, player }: MenuFormState): VNode {
     const readonly = difficulty !== GameDifficulty.Custom;
     return (
       <form class="c-menu-form" onSubmit={this.onSubmit}>
@@ -149,12 +148,12 @@ export class MenuForm extends Component<{}, MenuFormState> {
     if (form.checkValidity()) {
       const data = new FormData(form);
       gameStore.dispatch(GameAction.SetSettings, {
-        player: data.get('player') as string,
-        difficulty: toNumber(data.get('difficulty')),
+        player: `${data.get('player')}`,
+        difficulty: Number.parseInt(`${data.get('difficulty')}`, 10),
         settings: {
-          tilesX: toNumber(data.get('tilesX')),
-          tilesY: toNumber(data.get('tilesY')),
-          minesCount: toNumber(data.get('minesCount'))
+          tilesX: Number.parseInt(`${data.get('tilesX')}`, 10),
+          tilesY: Number.parseInt(`${data.get('tilesY')}`, 10),
+          minesCount: Number.parseInt(`${data.get('minesCount')}`, 10)
         }
       });
       route(AppRoute.Game);
@@ -162,7 +161,7 @@ export class MenuForm extends Component<{}, MenuFormState> {
   };
 
   private readonly onChangeDifficulty = (event: JSX.TargetedEvent<HTMLSelectElement, Event>): void => {
-    const difficulty: GameDifficulty = toNumber(event.currentTarget.value);
+    const difficulty: GameDifficulty = Number.parseInt(`${event.currentTarget.value}`, 10);
     const player = this.refPlayerInput.current?.value;
     if (difficulty === GameDifficulty.Custom) {
       this.setState(state => ({ ...state, difficulty, player }));

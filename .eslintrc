@@ -10,14 +10,18 @@
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": "latest",
-    "project": "tsconfig.json",
+    "project": "tsconfig.eslint.json",
     "sourceType": "module"
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
+    "unicorn/consistent-function-scoping": ["error", { "checkArrowFunctions": false }],
+    "no-console": "warn",
     "unicorn/no-array-for-each": "off",
     "unicorn/no-array-reduce": "off",
+    "unicorn/no-for-loop": "off",
     "unicorn/no-null": "off",
+    "unicorn/number-literal-case": "off",
     "unicorn/prevent-abbreviations": "off"
   }
 }

@@ -2,78 +2,96 @@ name: CI
 
 on:
   push:
-    branches: [master]
+    branches:
+      - main
+    tags:
+      - v*
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: 🛎 Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: 👀 Read node.js Version
-        run: |
-          version=$(cat .nvmrc | xargs)
-          echo "::set-output name=NVMRC::$version"
-        id: nvm
-
-      - name: 👀 Read current Version
-        run: |
-          version=$(cat package.json | grep \"version\" | cut -d '"' -f 4)
-          echo "::set-output name=version::$version"
-        id: current-version
-
-      - name: 👀 Retrieve released Version
-        run: |
-          version=$(curl -so- https://simbo.codes/magawa/index.html | sed -r -e 's/^.*"version__label">v([0-9]+\.[0-9]+\.[0-9]+).*$/\1/')
-          version=$([[ $version =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] && echo $version || echo 0)
-          echo "::set-output name=version::$version"
-        id: released-version
-
       - name: 🛠 Setup node.js
-        uses: actions/setup-node@v2.1.2
+        uses: actions/setup-node@v4
         with:
-          node-version: '${{ steps.nvm.outputs.NVMRC }}'
+          node-version-file: '.nvmrc'
 
       - name: 📦 Install
-        run: yarn install
+        run: npm ci --no-audit
 
       - name: 🕵️ Lint
-        run: yarn lint
+        run: npm run lint
 
       - name: 🧪 Test
-        run: yarn test
+        run: npm run test
 
       - name: 👷‍♂️ Build
-        run: yarn build
+        run: npm run build
 
       - name: 🗑 Remove artifacts
         run: rm dist/report.html
 
+      - name: 👀 Check if this should be released and determine current and deployed version
+        id: versioning
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" = "push" && "$GITHUB_REF" = "refs/tags/v*" ]]; then
+            currentVersion=$(cat package.json | grep \"version\" | cut -d '"' -f 4)
+            tagVersion="${GITHUB_REF_NAME:1}"
+            deployedVersion="$(curl -so- https://simbo.codes/magawa/index.html | sed -r -e 's/^.*"version__label">v([0-9]+\.[0-9]+\.[0-9]+).*$/\1/')"
+            versionPattern="^[0-9]+\.[0-9]+\.[0-9]+$"
+            if [[ $currentVersion =~ $versionPattern && $tagVersion =~ $versionPattern && $deployedVersion =~ $versionPattern && $currentVersion = $tagVersion ]]; then
+              echo "currentVersion=$currentVersion" >> "$GITHUB_OUTPUT"
+              echo "tagVersion=$tagVersion" >> "$GITHUB_OUTPUT"
+              echo "deployedVersion=$deployedVersion" >> "$GITHUB_OUTPUT"
+              echo "release=true" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+          echo "currentVersion=0" >> "$GITHUB_OUTPUT"
+          echo "tagVersion=0" >> "$GITHUB_OUTPUT"
+          echo "deployedVersion=0" >> "$GITHUB_OUTPUT"
+          echo "release=false" >> "$GITHUB_OUTPUT"
+
       - name: 📋 Get Commits since last Release
-        if: steps.released-version.outputs.version != steps.current-version.outputs.version
-        uses: simbo/changes-since-last-release-action@v1
         id: changes
+        # if: ${{ steps.versioning.outputs.release == 'true' }}
+        uses: simbo/changes-since-last-release-action@v1
 
-      - name: 🎁 Create Tag and GitHub Release
-        if: steps.released-version.outputs.version != steps.current-version.outputs.version
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ steps.current-version.outputs.version }}
-          release_name: Release ${{ steps.current-version.outputs.version }}
-          body: |
-            Changes since ${{ steps.changes.outputs.last-tag }}:
-            ${{ steps.changes.outputs.log }}
+      - run: |
+          echo "${{ steps.versioning.outputs.currentVersion }}"
+          echo "${{ steps.versioning.outputs.tagVersion }}"
+          echo "${{ steps.versioning.outputs.deployedVersion }}"
+          echo "${{ steps.versioning.outputs.release }}"
+          echo "${{ steps.changes.outputs.log }}"
 
-      - name: 🚚 Deploy
-        if: steps.released-version.outputs.version != steps.current-version.outputs.version
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          BRANCH: gh-pages
-          FOLDER: dist
-          CLEAN: true
+      # - name: 🎁 Create Tag and GitHub Release
+      #   if: ${{ steps.versioning.outputs.release == 'true' }}
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ steps.current-version.outputs.version }}
+      #     release_name: Release ${{ steps.current-version.outputs.version }}
+      #     body: |
+      #       Changes since ${{ steps.changes.outputs.last-tag }}:
+      #       ${{ steps.changes.outputs.log }}
+
+      # - name: 🚚 Deploy
+      #   if: ${{ steps.versioning.outputs.release == 'true' }}
+      #   uses: JamesIves/github-pages-deploy-action@v4
+      #   with:
+      #     folder: dist
+      #     commit-message: Release ${{ github.ref_name }} from main @ ${{ github.sha }}

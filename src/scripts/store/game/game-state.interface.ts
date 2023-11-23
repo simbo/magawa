@@ -1,5 +1,5 @@
-import { GameDifficulty } from '../../lib/game-difficulty.enum';
-import { GameFinalStatus, GameStatus } from '../../lib/game-status.enum';
+import { GameDifficulty } from '../../lib/game-difficulty';
+import { GameFinalStatus, GameStatus } from '../../lib/game-status';
 
 export interface GameState {
   player: string | null;

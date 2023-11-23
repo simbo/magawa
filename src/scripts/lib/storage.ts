@@ -3,8 +3,7 @@ import { createStore } from 'store/src/store-engine';
 import cookieStorage from 'store/storages/cookieStorage';
 import localStorage from 'store/storages/localStorage';
 
-import { GameDifficultySettings } from './game-difficulty-settings.interface';
-import { GameDifficulty } from './game-difficulty.enum';
+import { GameDifficulty, GameDifficultySettings } from './game-difficulty';
 
 const STORAGE_DATA_VERSION = 1;
 

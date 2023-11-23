@@ -1,11 +1,30 @@
-$fontSans: #{'-apple-system', 'system-ui', 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
-  'Segoe UI Emoji', 'Segoe UI Symbol'};
+$fontSans:
+  #{'-apple-system',
+  'system-ui',
+  'Segoe UI',
+  Helvetica,
+  Arial,
+  sans-serif,
+  'Apple Color Emoji',
+  'Segoe UI Emoji',
+  'Segoe UI Symbol'};
 
-$fontMono: #{SFMono-Regular, Consolas, 'Liberation Mono', Menlo, Courier, monospace};
+$fontMono:
+  #{SFMono-Regular,
+  Consolas,
+  'Liberation Mono',
+  Menlo,
+  Courier,
+  monospace};
 
-$fontSerif: #{Georgia, Cambria, 'Times New Roman', Times, serif};
+$fontSerif:
+  #{Georgia,
+  Cambria,
+  'Times New Roman',
+  Times,
+  serif};
 
-$lineHeight: (20/14);
+$lineHeight: math.div(20, 14);
 
 $colorBackground: #f8fafc;
 $colorText: #1e293b;

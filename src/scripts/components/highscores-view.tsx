@@ -1,15 +1,14 @@
 import { Component, createRef, h, VNode } from 'preact';
+import { Link } from 'preact-router';
 
+import { AppRoute } from '../lib/app-route.enum';
 import { formatDate } from '../lib/format-date.function';
-import { DEFAULT_GAME_DIFFICULTY } from '../lib/game-difficulty-settings';
-import { GameDifficulty } from '../lib/game-difficulty.enum';
+import { DEFAULT_GAME_DIFFICULTY, GameDifficulty } from '../lib/game-difficulty';
 import { highscoresManager } from '../lib/highscores-manager';
 import { HighscoreGameDifficulty, HighscoresList } from '../lib/highscores.interface';
 import { IconName } from '../lib/icon-name.enum';
-import { toNumber } from '../lib/to-number.function';
-import { BackButton } from './back-button';
+
 import { HighscoresTable } from './highscores-table';
-import { Icon } from './icon';
 
 interface HighscoresViewState {
   difficulty: HighscoreGameDifficulty;
@@ -18,15 +17,15 @@ interface HighscoresViewState {
   updated?: Date | null;
 }
 
-export class HighscoresView extends Component<{}, HighscoresViewState> {
+export class HighscoresView extends Component<object, HighscoresViewState> {
   private readonly difficulties = Object.entries(GameDifficulty).filter(
-    ([key, value]) => typeof value === 'number' && value !== GameDifficulty.Custom
+    ([, value]) => typeof value === 'number' && value !== GameDifficulty.Custom
   ) as [string, HighscoreGameDifficulty][];
 
   private readonly refSelect = createRef<HTMLSelectElement>();
   private readonly refInput = createRef<HTMLInputElement>();
 
-  constructor(props: never, state: HighscoresViewState) {
+  constructor(props: object, state: HighscoresViewState) {
     super(props, state);
     const difficulty = DEFAULT_GAME_DIFFICULTY;
     const player = '';
@@ -34,11 +33,11 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
     this.request(difficulty, player);
   }
 
-  public render(props: never, { difficulty, player, list, updated }: HighscoresViewState): VNode {
+  public render(_props: object, { difficulty, player, list, updated }: HighscoresViewState): VNode {
     return (
       <div class="c-highscores-view">
         <h1 class="c-highscores-view__title e-title">
-          Highscores <Icon name={IconName.Trophy} />
+          Highscores <img class="e-icon" src={`icons/${IconName.Trophy}.png`} />
         </h1>
         <div class="c-highscores-view__options">
           <div class="c-highscores-view__option">
@@ -78,14 +77,18 @@ export class HighscoresView extends Component<{}, HighscoresViewState> {
           <HighscoresTable list={list} highlight="CrjD8A1cqGjxtpVT70aMM" />
         </div>
         {updated ? <div class="c-highscores-view__updated">Updated at {formatDate(updated)}</div> : ''}
-        <BackButton />
+        <div className="e-back-button">
+          <Link href={AppRoute.Home} class="e-back-button__button e-button">
+            ← Back
+          </Link>
+        </div>
       </div>
     );
   }
 
   private readonly onChange = (event: Event): void => {
     event.preventDefault();
-    const difficulty = toNumber(this.refSelect.current?.value);
+    const difficulty = Number.parseInt(`${this.refSelect.current?.value}`, 10);
     const player = this.refInput.current?.value;
     this.request(difficulty, player);
   };

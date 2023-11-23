@@ -37,7 +37,7 @@ export class HighscoresTable extends Component<HighscoresTableProps> {
             </tr>
           ))}
         </tbody>
-        {!list || !list.length ? (
+        {!list || list.length === 0 ? (
           <tfoot>
             <tr class="c-highscores-table__foot-row">
               {list === null ? (

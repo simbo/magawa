@@ -1,15 +1,15 @@
 import { Component, h, VNode } from 'preact';
+import { Link } from 'preact-router';
 
+import { AppRoute } from '../lib/app-route.enum';
 import { IconName } from '../lib/icon-name.enum';
-import { BackButton } from './back-button';
-import { Icon } from './icon';
 
 export class AboutView extends Component {
   public render(): VNode {
     return (
       <div class="c-about-view">
         <h1 className="c-about-view__title e-title">
-          About <Icon name={IconName.Book}></Icon>
+          About <img class="e-icon" src={`icons/${IconName.Book}.png`} />
         </h1>
         <h2>How to play</h2>
         <p>
@@ -23,26 +23,25 @@ export class AboutView extends Component {
         <dl>
           <dt>Uncover</dt>
           <dd>
-            <Icon name={IconName.LeftClick} title="Left Click" />
+            <img class="e-icon" src={`icons/${IconName.LeftClick}.png`} title="Left Click" />
           </dd>
         </dl>
         <dl>
           <dt>Flag</dt>
           <dd>
-            <Icon name={IconName.RightClick} title="Right Click" />
+            <img class="e-icon" src={`icons/${IconName.RightClick}.png`} title="Right Click" />
           </dd>
           <dd>
-            <kbd>⇧</kbd>+<Icon name={IconName.LeftClick} title="Left Click" />
+            <kbd>⇧</kbd>+ <img class="e-icon" src={`icons/${IconName.LeftClick}.png`} title="Left Click" />
           </dd>
           <dd>
-            <kbd>Alt</kbd>+<Icon name={IconName.LeftClick} title="Left Click" />
+            <kbd>Alt</kbd>+ <img class="e-icon" src={`icons/${IconName.LeftClick}.png`} title="Left Click" />
           </dd>
           <dd>
-            <kbd>Ctrl</kbd>+
-            <Icon name={IconName.LeftClick} title="Left Click" />
+            <kbd>Ctrl</kbd>+ <img class="e-icon" src={`icons/${IconName.LeftClick}.png`} title="Left Click" />
           </dd>
           <dd>
-            <kbd>⌘</kbd>+<Icon name={IconName.LeftClick} title="Left Click" />
+            <kbd>⌘</kbd>+ <img class="e-icon" src={`icons/${IconName.LeftClick}.png`} title="Left Click" />
           </dd>
         </dl>
         <dl>
@@ -59,10 +58,15 @@ export class AboutView extends Component {
         <img class="c-about-view__image" src="images/magawa.jpg" alt="Magawa" title="Magawa" />
         <p>
           This game is named after the giant pouched rat <em>Magawa</em>, who received a gold medal in september 2020
-          for its success and bravery in clearing mine fields in Cambodia.
+          for its success and bravery in clearing mine fields in Cambodia. (
+          <a href="https://en.wikipedia.org/wiki/Magawa">Wikipedia: Magawa</a>)
         </p>
         <hr />
-        <BackButton />
+        <div className="e-back-button">
+          <Link href={AppRoute.Home} class="e-back-button__button e-button">
+            ← Back
+          </Link>
+        </div>
       </div>
     );
   }

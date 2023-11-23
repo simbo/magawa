@@ -3,7 +3,6 @@ import { useContext } from 'preact/hooks';
 
 import { IconName } from '../lib/icon-name.enum';
 import { gameStoreContext } from '../store/game/game-store';
-import { Icon } from './icon';
 
 export class Flags extends Component {
   public render(): VNode {
@@ -14,7 +13,7 @@ export class Flags extends Component {
           {flagsCount}/{minesCount}
         </div>
         <div class="c-flags__icon">
-          <Icon name={IconName.FlagOnGreen} />
+          <img class="e-icon" src={`icons/${IconName.FlagOnGreen}.png`} />
         </div>
       </div>
     );

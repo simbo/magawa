@@ -1,17 +1,12 @@
+import '../styles/main.scss';
+
 import { h, render } from 'preact';
 
 import { App } from './components/app';
-import { resources } from './lib/resources';
-import { gameStore } from './store/game/game-store';
+import { SvgIcon } from './custom-elements/svg-icon/svg-icon';
 
-if (process.env.NODE_ENV !== 'production') {
-  gameStore.actions$.subscribe(({ name, payload, state }) =>
-    // eslint-disable-next-line no-console
-    console.log('Action:', name, '\nPayload:', payload, '\nState:', state)
-  );
-}
+customElements.define('svg-icon', SvgIcon);
 
-resources.loaded$.subscribe(() => {
-  document.body.className = '';
-  render(<App />, document.body);
-});
+document.body.classList.remove('loading');
+
+render(<App />, document.body);

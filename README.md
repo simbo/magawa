@@ -34,8 +34,9 @@ See [ToDo](./TODO.md) for planned features.
 
 - [Preact](https://preactjs.com/) for DOM manipulation
 - [PixiJS](https://www.pixijs.com/) for GFX
-- [Parcel](https://parceljs.org/) as bundler
-- a selfmade, immutable, reactive and [small store](https://github.com/simbo/small-store)
+- [Vite](https://vitejs.dev/) as bundler
+- a selfmade, immutable, reactive and
+  [small store](https://github.com/simbo/small-store)
 - also Typescript, Pug, SCSS, css-reset-and-normalize, date-fns and others...
 
 ## Development
@@ -56,8 +57,8 @@ changes to master.
 
 ## Trivia
 
-This game is named after the giant pouched rat _Magawa_, who received a gold medal
-in september 2020 for its success and bravery in clearing mine fields in
+This game is named after the giant pouched rat _Magawa_, who received a gold
+medal in september 2020 for its success and bravery in clearing mine fields in
 Cambodia.
 
 ![Magawa](./src/static/images/magawa.jpg)

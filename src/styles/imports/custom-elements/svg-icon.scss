@@ -1,0 +1,28 @@
+svg-icon {
+  width: 1em;
+  height: 1em;
+  font-size: 1em;
+  line-height: 1;
+  vertical-align: middle;
+  align-items: center;
+  justify-content: center;
+
+  &.is-inline {
+    display: inline-block;
+    transform: translateY(-0.125em);
+  }
+
+  &,
+  &.is-block {
+    display: block;
+    transform: none;
+  }
+
+  svg {
+    display: block;
+    height: auto;
+    width: 100%;
+    max-width: 100%;
+    max-height: 100%;
+  }
+}

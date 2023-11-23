@@ -1,11 +1,10 @@
 import { differenceInMilliseconds, subMilliseconds } from 'date-fns';
 import { Actions } from 'small-store';
 
-import { gameDifficultySettings } from '../../lib/game-difficulty-settings';
-import { GameDifficultySettings } from '../../lib/game-difficulty-settings.interface';
-import { GameDifficulty } from '../../lib/game-difficulty.enum';
-import { GameFinalStatus, GameStatus } from '../../lib/game-status.enum';
+import { GameDifficulty, gameDifficultySettings, GameDifficultySettings } from '../../lib/game-difficulty';
+import { GameFinalStatus, GameStatus } from '../../lib/game-status';
 import { storage } from '../../lib/storage';
+
 import { GameState } from './game-state.interface';
 
 export enum GameAction {
@@ -36,23 +35,25 @@ export interface GameActionPayloads {
 }
 
 export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
-  [GameAction.SetSettings]: ({ player, difficulty, settings }) => state => {
-    if (!/^\w+$/.test(player)) {
-      return state;
-    }
-    difficulty = difficulty >= 0 && difficulty <= GameDifficulty.Custom ? difficulty : state.difficulty;
-    const difficultySettings =
-      difficulty === GameDifficulty.Custom
-        ? settings || {
-            tilesX: state.tilesX,
-            tilesY: state.tilesY,
-            minesCount: state.minesCount
-          }
-        : gameDifficultySettings[difficulty];
-    const { tilesX, tilesY, minesCount } = difficultySettings;
-    storage.set({ player, difficulty, difficultySettings });
-    return { ...state, player, difficulty, tilesX, tilesY, minesCount };
-  },
+  [GameAction.SetSettings]:
+    ({ player, difficulty, settings }) =>
+    state => {
+      if (!/^\w+$/.test(player)) {
+        return state;
+      }
+      difficulty = difficulty >= 0 && difficulty <= GameDifficulty.Custom ? difficulty : state.difficulty;
+      const difficultySettings =
+        difficulty === GameDifficulty.Custom
+          ? settings || {
+              tilesX: state.tilesX,
+              tilesY: state.tilesY,
+              minesCount: state.minesCount
+            }
+          : gameDifficultySettings[difficulty];
+      const { tilesX, tilesY, minesCount } = difficultySettings;
+      storage.set({ player, difficulty, difficultySettings });
+      return { ...state, player, difficulty, tilesX, tilesY, minesCount };
+    },
 
   [GameAction.Start]: () => {
     return {
@@ -99,17 +100,19 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
     };
   },
 
-  [GameAction.Finish]: ({ finalStatus }) => state => {
-    if (state.status !== GameStatus.Running) {
-      return state;
-    }
-    return {
-      ...state,
-      finishedAt: new Date(),
-      status: GameStatus.Finished,
-      finalStatus
-    };
-  },
+  [GameAction.Finish]:
+    ({ finalStatus }) =>
+    state => {
+      if (state.status !== GameStatus.Running) {
+        return state;
+      }
+      return {
+        ...state,
+        finishedAt: new Date(),
+        status: GameStatus.Finished,
+        finalStatus
+      };
+    },
 
   [GameAction.Close]: () => {
     return {
@@ -119,10 +122,12 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
     };
   },
 
-  [GameAction.SetFlagsCount]: ({ flagsCount }) => state => {
-    if (state.status !== GameStatus.Running || isNaN(flagsCount)) {
-      return state;
+  [GameAction.SetFlagsCount]:
+    ({ flagsCount }) =>
+    state => {
+      if (state.status !== GameStatus.Running || typeof flagsCount !== 'number') {
+        return state;
+      }
+      return { ...state, flagsCount };
     }
-    return { ...state, flagsCount };
-  }
 };

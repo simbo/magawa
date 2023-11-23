@@ -6,6 +6,7 @@
   "homepage": "https://simbo.codes/magawa",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "bugs": {
     "url": "https://github.com/simbo/magawa/issues"
   },
@@ -17,14 +18,17 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "parcel build src/*.pug --public-url /magawa --experimental-scope-hoisting",
-    "dev": "parcel src/*.pug --public-url /magawa",
+    "browserslist": "browserslist",
+    "build": "tsc && vite build",
+    "bundle-analyzer": "npx --yes vite-bundle-visualizer",
+    "dev": "vite --no-clear-screen --host",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "lint": "eslint \"**/*.ts\"",
     "lint:fix": "npm run lint -- --fix",
+    "postinstall": "npx --yes update-browserslist-db@latest",
     "preflight": "npm run format && npm run lint && npm run test && npm run build",
-    "serve": "live-server --host=0.0.0.0 --port=1234 --path=dist --mount=/magawa:dist --no-browser",
+    "preview": "vite preview",
     "start": "npm run dev",
     "test": "echo \"No tests specified. Skipping...\" && exit 0",
     "upgrade": "npx --yes npm-check-updates -u -t minor && npx --yes npm-check-updates --interactive --reject typescript,@types/node && npm i"
@@ -34,14 +38,6 @@
     "react-dom/test-utils": "preact/test-utils",
     "react-dom": "preact/compat"
   },
-  "parcelCleanPaths": [
-    ".cache",
-    "dist"
-  ],
-  "staticFiles": {
-    "staticPath": "src/static",
-    "watcherGlob": "**"
-  },
   "dependencies": {
     "css-reset-and-normalize": "^2.3.6",
     "date-fns": "^2.30.0",
@@ -50,6 +46,7 @@
     "nanoid": "^5.0.3",
     "pixi.js": "^7.3.2",
     "preact": "^10.19.2",
+    "preact-async-route": "^2.2.1",
     "preact-router": "^4.1.2",
     "rxjs": "^7.8.1",
     "shuffle-array": "^1.0.1",
@@ -66,22 +63,16 @@
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
     "autoprefixer": "^10.4.16",
-    "css-mqpacker-sort-mediaqueries": "^0.2.2",
     "cssnano": "^6.0.1",
     "eslint": "^8.54.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-unicorn": "^49.0.0",
-    "live-server": "^1.2.2",
-    "mqpacker": "^7.0.0",
-    "parcel-bundler": "^1.12.4",
-    "parcel-plugin-bundle-visualiser": "^1.2.0",
-    "parcel-plugin-clean-easy": "^1.0.2",
-    "parcel-plugin-package-version": "^1.0.2",
-    "parcel-plugin-static-files-copy": "^2.6.0",
-    "postcss": "^8.4.31",
+    "nunjucks": "^3.2.4",
     "prettier": "^3.1.0",
-    "pug": "^3.0.2",
+    "rollup-plugin-html-minifier": "^2.0.0",
     "sass": "^1.69.5",
-    "typescript": "^5.3.2"
+    "typescript": "^5.2.2",
+    "vite": "^5.0.0",
+    "vite-plugin-pug": "^0.3.2"
   }
 }

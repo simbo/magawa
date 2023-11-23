@@ -1,5 +1,14 @@
-import { GameDifficultySettings } from './game-difficulty-settings.interface';
-import { GameDifficulty } from './game-difficulty.enum';
+export enum GameDifficulty {
+  Easy,
+  Medium,
+  Hard,
+  Custom
+}
+export interface GameDifficultySettings {
+  tilesX: number;
+  tilesY: number;
+  minesCount: number;
+}
 
 export const DEFAULT_GAME_DIFFICULTY = GameDifficulty.Medium;
 

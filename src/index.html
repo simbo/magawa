@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" style="visibility: hidden">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Magawa</title>
+    <base href="/magawa/" />
+    <link rel="shortcut icon" href="{{ APP_URI }}favicon.ico" type="image/x-icon" />
+    <meta http-equiv="cache-control" content="max-age=0" />
+    <meta http-equiv="cache-control" content="no-cache" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="expires" content="Thu, 11 Feb 1982 0:00:00 GMT" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <script type="module" src="./scripts/main.tsx"></script>
+  </head>
+
+  <body
+    onload="document.documentElement.removeAttribute('style');document.body.removeAttribute('onload');"
+    class="loading"
+  >
+    <a class="version" title="Sources on GitHub" href="https://github.com/simbo/magawa">
+      <div class="version__label">v{{ APP_VERSION }}</div>
+      <div class="version__icon"><svg-icon icon-name="github"></svg-icon></div>
+    </a>
+  </body>
+</html>

@@ -69,7 +69,7 @@ class HighscoresManager {
           list: allHighscores[difficulty],
           updated: allHighscores.updated
         };
-        if (player && player.length) {
+        if (player && player.length > 0) {
           player = player.toLowerCase();
           highscores.list = highscores.list.filter(entry => entry.player.toLowerCase() === player);
         }
@@ -117,7 +117,7 @@ class HighscoresManager {
   private sortList(list: HighscoresList): HighscoresList {
     return list.sort((a, b) => {
       const timeCompare = compareAsc(a.time, b.time);
-      return timeCompare !== 0 ? timeCompare : compareAsc(a.date, b.date);
+      return timeCompare === 0 ? compareAsc(a.date, b.date) : timeCompare;
     });
   }
 

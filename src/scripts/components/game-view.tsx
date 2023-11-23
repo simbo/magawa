@@ -1,16 +1,18 @@
 import { differenceInMilliseconds } from 'date-fns';
 import { Component, Fragment, h, VNode } from 'preact';
+import { Link } from 'preact-router';
 import { useContext } from 'preact/hooks';
 import { fromEvent, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
-import { GameDifficulty } from '../lib/game-difficulty.enum';
+import { AppRoute } from '../lib/app-route.enum';
+import { GameDifficulty } from '../lib/game-difficulty';
 import { highscoresManager } from '../lib/highscores-manager';
 import { HighscoreGameDifficulty, HighscoresEntry, HighscoresForDifficulty } from '../lib/highscores.interface';
 import { GameAction } from '../store/game/game-actions';
 import { gameSelectors } from '../store/game/game-selectors';
 import { gameStore, gameStoreContext } from '../store/game/game-store';
-import { BackButton } from './back-button';
+
 import { Congratulations } from './congratulations';
 import { Flags } from './flags';
 import { GameGfx } from './game-gfx';
@@ -23,7 +25,14 @@ interface GameViewState {
   entry: HighscoresEntry;
 }
 
-export class GameView extends Component<{}, GameViewState> {
+if (process.env.NODE_ENV !== 'production') {
+  gameStore.actions$.subscribe(({ name, payload, state }) =>
+    // eslint-disable-next-line no-console
+    console.log('Action:', name, '\nPayload:', payload, '\nState:', state)
+  );
+}
+
+export class GameView extends Component<object, GameViewState> {
   private readonly unsubscribeSubject = new Subject<void>();
 
   private highscoreSaved = false;
@@ -49,7 +58,7 @@ export class GameView extends Component<{}, GameViewState> {
     gameStore.dispatch(GameAction.Close);
   }
 
-  public render(props: never, { highscores, entry }: GameViewState): VNode {
+  public render(_props: object, { highscores, entry }: GameViewState): VNode {
     const gameState = useContext(gameStoreContext);
     if (gameSelectors.isClosed(gameState)) {
       return <div></div>;
@@ -84,7 +93,11 @@ export class GameView extends Component<{}, GameViewState> {
         ) : (
           ''
         )}
-        <BackButton />
+        <div className="e-back-button">
+          <Link href={AppRoute.Home} class="e-back-button__button e-button">
+            ← Back
+          </Link>
+        </div>
       </div>
     );
   }

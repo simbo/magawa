@@ -40,4 +40,8 @@
       padding-right: none;
     }
   }
+
+  p a {
+    color: darken($colorBackground, 40%);
+  }
 }

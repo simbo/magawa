@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "composite": true,
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "target": "ES2022"
+  },
+  "include": ["vite.config.ts", "vite-nunjucks.plugin.ts", "package.json", "./src/content/*.json"]
+}

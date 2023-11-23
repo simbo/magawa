@@ -5,11 +5,11 @@ import { gameSelectors } from './game-selectors';
 import { GameState } from './game-state.interface';
 
 export const gameEffects: Effects<GameState, GameAction, GameActionPayloads> = {
-  [GameAction.Restart]: (action, state, dispatch) => {
+  [GameAction.Restart]: (_action, _state, dispatch) => {
     dispatch(GameAction.Start);
   },
 
-  [GameAction.TogglePause]: (action, state, dispatch) => {
+  [GameAction.TogglePause]: (_action, state, dispatch) => {
     if (gameSelectors.isPaused(state)) {
       dispatch(GameAction.Unpause);
     } else {

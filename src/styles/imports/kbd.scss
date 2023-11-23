@@ -1,6 +1,8 @@
+@use 'sass:math';
+
 kbd {
   @function em($v) {
-    @return $v * (1/0.75);
+    @return $v * math.div(1, 0.75);
   }
 
   display: inline-block;
@@ -16,6 +18,9 @@ kbd {
     linear-gradient(0deg, #c1c0c4 0%, transparent em(0.0625em)),
     linear-gradient(270deg, #c1c0c4 0%, transparent em(0.0625em));
   border-radius: 0.2em;
-  box-shadow: 0 0 em(0.0625em) #888, 0 em(0.0625em) em(0.0625em) #ccc, 0 0 em(0.125em) #ddd inset;
+  box-shadow:
+    0 0 em(0.0625em) #888,
+    0 em(0.0625em) em(0.0625em) #ccc,
+    0 0 em(0.125em) #ddd inset;
   text-align: center;
 }

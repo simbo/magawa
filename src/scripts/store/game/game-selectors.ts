@@ -1,6 +1,7 @@
 import { Selectors } from 'small-store';
 
-import { GameFinalStatus, GameStatus } from '../../lib/game-status.enum';
+import { GameFinalStatus, GameStatus } from '../../lib/game-status';
+
 import { GameState } from './game-state.interface';
 
 export const gameSelectors: Selectors<GameState> = {

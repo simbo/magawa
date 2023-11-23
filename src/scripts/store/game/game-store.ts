@@ -1,9 +1,10 @@
 import { createContext } from 'preact';
 import { Store } from 'small-store';
 
-import { DEFAULT_GAME_DIFFICULTY, gameDifficultySettings } from '../../lib/game-difficulty-settings';
-import { GameStatus } from '../../lib/game-status.enum';
+import { DEFAULT_GAME_DIFFICULTY, gameDifficultySettings } from '../../lib/game-difficulty';
+import { GameStatus } from '../../lib/game-status';
 import { storage } from '../../lib/storage';
+
 import { GameAction, GameActionPayloads, gameActions } from './game-actions';
 import { gameEffects } from './game-effects';
 import { GameState } from './game-state.interface';

@@ -5,7 +5,7 @@ import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { AppRoute } from '../lib/app-route.enum';
-import { GameBoard } from '../lib/game-board.model';
+import { GameBoard } from '../lib/game-board';
 import { GameAction } from '../store/game/game-actions';
 import { gameSelectors } from '../store/game/game-selectors';
 import { gameStore, gameStoreContext } from '../store/game/game-store';
