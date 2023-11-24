@@ -1,10 +1,37 @@
 <!doctype html>
-<html lang="en" style="visibility: hidden">
+<html lang="en" class="page-loading">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Magawa</title>
     <base href="/magawa/" />
+    <style>
+      html {
+        font-size: 16px;
+        font-family: '-apple-system', 'system-ui', 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
+          'Segoe UI Emoji', 'Segoe UI Symbol';
+      }
+
+      @media screen and (min-width: 768px) {
+        html {
+          font-size: 18px;
+        }
+      }
+
+      @media screen and (min-width: 1280px) {
+        html {
+          font-size: 20px;
+        }
+      }
+
+      .page-loading::before {
+        content: 'Loading...';
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+    </style>
     <link rel="shortcut icon" href="{{ APP_URI }}favicon.ico" type="image/x-icon" />
     <meta http-equiv="cache-control" content="max-age=0" />
     <meta http-equiv="cache-control" content="no-cache" />
@@ -13,7 +40,10 @@
     <meta http-equiv="pragma" content="no-cache" />
     <script type="module" src="./scripts/main.tsx"></script>
   </head>
-  <body onload="document.documentElement.removeAttribute('style');document.body.removeAttribute('onload');">
+  <body
+    style="visibility: hidden"
+    onload="document.body.removeAttribute('style');document.body.removeAttribute('onload');"
+  >
     <a class="version" title="Sources on GitHub" href="https://github.com/simbo/magawa">
       <div class="version__label">Magawa v{{ APP_VERSION }}</div>
       <div class="version__icon"><svg-icon icon-name="github"></svg-icon></div>

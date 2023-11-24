@@ -3,6 +3,7 @@
 @import 'css-reset-and-normalize/scss/link-reset';
 
 html {
+  font-family: $fontSans;
   font-size: 16px;
 
   @media screen and (min-width: 768px) {
@@ -19,7 +20,6 @@ body {
   flex-direction: column;
   justify-content: space-between;
   min-height: 100vh;
-  font-family: $fontSans;
   background: $colorBackground;
   color: $colorText;
   text-rendering: optimizeLegibility;

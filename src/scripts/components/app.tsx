@@ -34,7 +34,7 @@ export class App extends Component<object, AppState> {
     return (
       <div class="c-app">
         <gameStoreContext.Provider value={gameState}>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<div class="page-loading"></div>}>
             <Router history={createHashHistory() as unknown as CustomHistory}>
               <GameView path={AppRoute.Game} />
               <HighscoresView path={AppRoute.Highscores} />
