@@ -1,4 +1,4 @@
-import shuffle from 'shuffle-array';
+import shuffle from 'array-shuffle';
 
 import { GameFinalStatus } from './game-status';
 import { GameTile } from './game-tile';
@@ -84,14 +84,14 @@ export class GameBoard {
   }
 
   private initMines(initClickX: number, initClickY: number): void {
-    const minesIndex: boolean[] = [];
+    let minesIndex: boolean[] = [];
     for (let m = 0; m < this.tilesX * this.tilesY; m++) {
       minesIndex.push(m < this.minesCount);
     }
     // shuffle until the initial click hits a field with no mines nearby
     let i = 0;
     do {
-      shuffle(minesIndex);
+      minesIndex = shuffle(minesIndex);
       i++;
     } while (
       i < 10_000 && // set a max value for crazy custom game settings
