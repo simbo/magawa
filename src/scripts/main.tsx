@@ -7,6 +7,4 @@ import { SvgIcon } from './custom-elements/svg-icon/svg-icon';
 
 customElements.define('svg-icon', SvgIcon);
 
-document.body.classList.remove('loading');
-
 render(<App />, document.body);

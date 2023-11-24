@@ -1,7 +1,7 @@
 import { createHashHistory } from 'history';
 import { Component, h, VNode } from 'preact';
-import AsyncRoute from 'preact-async-route';
 import Router, { CustomHistory } from 'preact-router';
+import { lazy, Suspense } from 'preact/compat';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
@@ -13,7 +13,11 @@ interface AppState {
   gameState: GameState;
 }
 
-// eslint-disable-next-line @typescript-eslint/ban-types
+const GameView = lazy(() => import('./game-view').then(module => module.GameView));
+const HighscoresView = lazy(() => import('./highscores-view').then(module => module.HighscoresView));
+const AboutView = lazy(() => import('./about-view').then(module => module.AboutView));
+const MenuView = lazy(() => import('./menu-view').then(module => module.MenuView));
+
 export class App extends Component<object, AppState> {
   private readonly unsubscribeSubject = new Subject<void>();
 
@@ -30,26 +34,25 @@ export class App extends Component<object, AppState> {
     return (
       <div class="c-app">
         <gameStoreContext.Provider value={gameState}>
-          <Router history={createHashHistory() as unknown as CustomHistory}>
-            <AsyncRoute
-              path={AppRoute.Game}
-              getComponent={() => import('./game-view').then(module => module.GameView)}
-            />
-            <AsyncRoute
-              path={AppRoute.Highscores}
-              getComponent={() => import('./highscores-view').then(module => module.HighscoresView)}
-            />
-            <AsyncRoute
-              path={AppRoute.About}
-              getComponent={() => import('./about-view').then(module => module.AboutView)}
-            />
-            <AsyncRoute
-              path={AppRoute.Home}
-              getComponent={() => import('./menu-view').then(module => module.MenuView)}
-            />
-          </Router>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Router history={createHashHistory() as unknown as CustomHistory}>
+              <GameView path={AppRoute.Game} />
+              <HighscoresView path={AppRoute.Highscores} />
+              <AboutView path={AppRoute.About} />
+              <MenuView path={AppRoute.Home} />
+            </Router>
+          </Suspense>
         </gameStoreContext.Provider>
       </div>
     );
+  }
+
+  public componentDidMount(): void {
+    Promise.all([
+      import('./game-view'),
+      import('./highscores-view'),
+      import('./about-view'),
+      import('./menu-view')
+    ]).catch(error => console.error(error));
   }
 }
