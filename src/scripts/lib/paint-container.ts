@@ -56,23 +56,10 @@ export class PaintContainer {
       ...options
     };
 
-    if (typeof width !== 'number' || width < 1) {
-      throw new TypeError('PaintContainer width is not a number or lower than 1');
-    }
-    if (typeof height !== 'number' || height < 1) {
-      throw new TypeError('PaintContainer height is not a number or lower than 1');
-    }
-    if (typeof x !== 'number') {
-      throw new TypeError('PaintContainer x is not a number');
-    }
-    if (typeof y !== 'number') {
-      throw new TypeError('PaintContainer y is not a number');
-    }
-
-    this.width = width;
-    this.height = height;
-    this.x = x;
-    this.y = y;
+    this.width = width as number;
+    this.height = height as number;
+    this.x = x as number;
+    this.y = y as number;
     this.fillStyle = fillStyle;
     this.strokeStyle = strokeStyle;
     this.strokeWidth = strokeWidth;

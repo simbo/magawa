@@ -27,19 +27,6 @@ export class PaintTexture {
     this.y = options.y || 0;
     this.width = options.width || this.asset.image.width || 0;
     this.height = options.height || this.asset.image.height || 0;
-
-    if (this.width < 1) {
-      throw new TypeError('PaintTexture width is lower than 1');
-    }
-    if (this.height < 1) {
-      throw new TypeError('PaintTexture height is lower than 1');
-    }
-    if (typeof this.x !== 'number') {
-      throw new TypeError('PaintContainer x is not a number');
-    }
-    if (typeof this.y !== 'number') {
-      throw new TypeError('PaintContainer y is not a number');
-    }
   }
 
   public render(engine: PaintEngine, container: PaintContainer): void {

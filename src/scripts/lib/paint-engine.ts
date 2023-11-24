@@ -28,28 +28,11 @@ export class PaintEngine {
     }
     const { canvas, pixelDensity, width, height } = { ...DEFAULT_CANVAS_ENGINE_OPTIONS, ...options };
 
-    if (!canvas || (canvas as HTMLCanvasElement).tagName !== 'CANVAS') {
-      throw new TypeError('PaintEngine canvas is not a HTMLCanvasElement');
-    }
-    if (typeof pixelDensity !== 'number' || pixelDensity < 1) {
-      throw new TypeError('PaintEngine pixelDensity is not a number or lower than 1');
-    }
-    if (typeof width !== 'number' || width < 1) {
-      throw new TypeError('PaintEngine width is not a number or lower than 1');
-    }
-    if (typeof height !== 'number' || height < 1) {
-      throw new TypeError('PaintEngine height is not a number or lower than 1');
-    }
-
     this.canvas = canvas as HTMLCanvasElement;
-    this.pixelDensity = pixelDensity;
-    this.width = width;
-    this.height = height;
+    this.pixelDensity = pixelDensity as number;
+    this.width = width as number;
+    this.height = height as number;
     this.context = this.canvas.getContext('2d') as CanvasRenderingContext2D;
-
-    if (!this.context) {
-      throw new Error('PaintEngine could not acquire canvas rendering context');
-    }
 
     this.canvas.width = this.width * this.pixelDensity;
     this.canvas.height = this.height * this.pixelDensity;
