@@ -1,8 +1,8 @@
 # 🐀 Magawa
 
-[![GitHub package.json dynamic](https://img.shields.io/github/package-json/version/simbo/magawa)](https://github.com/simbo/magawa/blob/master/package.json)
-[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/simbo/magawa/CI/master)](https://github.com/simbo/magawa/actions?query=workflow%3ACI)
-[![GitHub last commit](https://img.shields.io/github/last-commit/simbo/magawa/master)](https://github.com/simbo/magawa/commits/master)
+[![GitHub package.json dynamic](https://img.shields.io/github/package-json/version/simbo/magawa)](https://github.com/simbo/magawa/blob/main/package.json)
+[![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/simbo/magawa/CI/main)](https://github.com/simbo/magawa/actions?query=workflow%3ACI)
+[![GitHub last commit](https://img.shields.io/github/last-commit/simbo/magawa/main)](https://github.com/simbo/magawa/commits/main)
 
 > A minesweeper clone.
 
@@ -12,7 +12,7 @@
 
 Magawa is a minesweeper clone that I wrote as a just-for-fun project.
 
-See the live version at [simbo.codes/magawa](https://simbo.codes/magawa)
+See the live version at **[simbo.codes/magawa](https://simbo.codes/magawa)**
 
 ## Features
 
@@ -26,7 +26,7 @@ See the live version at [simbo.codes/magawa](https://simbo.codes/magawa)
 - save game settings in storage
 - quick restart function
 - responsive interface
-- legacy support for non-webgl plattforms
+- ~~legacy support for non-webgl plattforms~~
 
 See [ToDo](./TODO.md) for planned features.
 
@@ -53,13 +53,13 @@ yarn build
 ## Deployment
 
 ...to GitHub Pages is done automatically using GitHub Actions when pushing
-changes to master.
+changes to main.
 
 ## Trivia
 
 This game is named after the giant pouched rat _Magawa_, who received a gold
 medal in september 2020 for its success and bravery in clearing mine fields in
-Cambodia.
+Cambodia. ([Wikipedia: Magawa](https://en.wikipedia.org/wiki/Magawa))
 
 ![Magawa](./src/static/images/magawa.jpg)
 
