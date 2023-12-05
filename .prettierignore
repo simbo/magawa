@@ -1,5 +1,3 @@
-/dist/**/*
-/.cache/**/*
+/magawa/**/*
 /node_modules/**/*
-/import-sorter.json
 *.svg

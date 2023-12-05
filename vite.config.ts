@@ -36,7 +36,7 @@ export default defineConfig(async ({ command }) => {
 
     build: {
       assetsDir: 'assets',
-      outDir: '../dist',
+      outDir: '../magawa',
       emptyOutDir: true,
       target: 'es2022',
       sourcemap: true,
