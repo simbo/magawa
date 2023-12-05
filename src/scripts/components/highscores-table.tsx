@@ -44,7 +44,8 @@ export class HighscoresTable extends Component<HighscoresTableProps> {
                 <td colSpan={4} class="c-highscores-table__foot-cell c-highscores-table__foot-cell--error">
                   Error loading highscores.
                 </td>
-              ) : list === undefined ? (
+              ) : // eslint-disable-next-line unicorn/no-nested-ternary
+              list === undefined ? (
                 <td colSpan={4} class="c-highscores-table__foot-cell c-highscores-table__foot-cell--loading">
                   Loading...
                 </td>
