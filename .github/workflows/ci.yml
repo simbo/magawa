@@ -12,12 +12,13 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
     runs-on: ubuntu-22.04
-
+    permissions:
+      contents: write
     steps:
       - name: 🛎 Checkout
         uses: actions/checkout@v4
@@ -32,6 +33,9 @@ jobs:
       - name: 📦 Install
         run: npm ci --no-audit
 
+      - name: 🧑‍🏫 Check Format
+        run: npm run format
+
       - name: 🕵️ Lint
         run: npm run lint
 
@@ -41,57 +45,28 @@ jobs:
       - name: 👷‍♂️ Build
         run: npm run build
 
-      - name: 🗑 Remove artifacts
-        run: rm dist/report.html
-
-      - name: 👀 Check if this should be released and determine current and deployed version
-        id: versioning
-        run: |
-          if [[ "$GITHUB_EVENT_NAME" = "push" && "$GITHUB_REF" = "refs/tags/v*" ]]; then
-            currentVersion=$(cat package.json | grep \"version\" | cut -d '"' -f 4)
-            tagVersion="${GITHUB_REF_NAME:1}"
-            deployedVersion="$(curl -so- https://simbo.codes/magawa/index.html | sed -r -e 's/^.*"version__label">v([0-9]+\.[0-9]+\.[0-9]+).*$/\1/')"
-            versionPattern="^[0-9]+\.[0-9]+\.[0-9]+$"
-            if [[ $currentVersion =~ $versionPattern && $tagVersion =~ $versionPattern && $deployedVersion =~ $versionPattern && $currentVersion = $tagVersion ]]; then
-              echo "currentVersion=$currentVersion" >> "$GITHUB_OUTPUT"
-              echo "tagVersion=$tagVersion" >> "$GITHUB_OUTPUT"
-              echo "deployedVersion=$deployedVersion" >> "$GITHUB_OUTPUT"
-              echo "release=true" >> "$GITHUB_OUTPUT"
-              exit 0
-            fi
-          fi
-          echo "currentVersion=0" >> "$GITHUB_OUTPUT"
-          echo "tagVersion=0" >> "$GITHUB_OUTPUT"
-          echo "deployedVersion=0" >> "$GITHUB_OUTPUT"
-          echo "release=false" >> "$GITHUB_OUTPUT"
-
       - name: 📋 Get Commits since last Release
+        if: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags/v') }}
         id: changes
-        # if: ${{ steps.versioning.outputs.release == 'true' }}
-        uses: simbo/changes-since-last-release-action@v1
+        uses: simbo/changes-between-tags-action@v1
 
-      - run: |
-          echo "${{ steps.versioning.outputs.currentVersion }}"
-          echo "${{ steps.versioning.outputs.tagVersion }}"
-          echo "${{ steps.versioning.outputs.deployedVersion }}"
-          echo "${{ steps.versioning.outputs.release }}"
-          echo "${{ steps.changes.outputs.log }}"
+      - name: 📦 Create Release Archive
+        if: ${{ steps.changes.outcome == 'success' }}
+        id: archive
+        run: zip -r magawa.zip magawa
 
-      # - name: 🎁 Create Tag and GitHub Release
-      #   if: ${{ steps.versioning.outputs.release == 'true' }}
-      #   uses: actions/create-release@v1
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     tag_name: ${{ steps.current-version.outputs.version }}
-      #     release_name: Release ${{ steps.current-version.outputs.version }}
-      #     body: |
-      #       Changes since ${{ steps.changes.outputs.last-tag }}:
-      #       ${{ steps.changes.outputs.log }}
+      - name: 🎁 Create GitHub Release
+        if: ${{ steps.changes.outcome == 'success' }}
+        id: release
+        uses: ncipollo/release-action@v1
+        with:
+          name: Release ${{ github.ref_name }}
+          body: ${{ steps.changes.outputs.changes }}
+          artifacts: magawa.zip
 
       # - name: 🚚 Deploy
-      #   if: ${{ steps.versioning.outputs.release == 'true' }}
+      #   if: ${{ steps.changes.outcome == 'success' }}
       #   uses: JamesIves/github-pages-deploy-action@v4
       #   with:
-      #     folder: dist
-      #     commit-message: Release ${{ github.ref_name }} from main @ ${{ github.sha }}
+      #     folder: magawa
+      #     commit-message: Release ${{ github.ref_name }} from ${{ github.sha }}
