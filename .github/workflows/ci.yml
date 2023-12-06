@@ -61,7 +61,10 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           name: Release ${{ github.ref_name }}
-          body: ${{ steps.changes.outputs.changes }}
+          body: |
+            Changes since ${{ steps.changes.outputs.ref }}:
+
+            ${{ steps.changes.outputs.changes }}
           artifacts: magawa.zip
 
       # - name: 🚚 Deploy
