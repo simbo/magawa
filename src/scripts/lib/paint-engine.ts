@@ -13,6 +13,8 @@ const DEFAULT_CANVAS_ENGINE_OPTIONS: Partial<PaintEngineOptions> = {
   height: 320
 };
 
+const RENDER_TIMEOUT_DURATION = 15;
+
 export class PaintEngine {
   public readonly canvas: HTMLCanvasElement;
   public readonly context: CanvasRenderingContext2D;
@@ -21,6 +23,8 @@ export class PaintEngine {
   public readonly height: number;
 
   private children: PaintContainer[] = [];
+
+  private renderTimeout = 0;
 
   public constructor(options: Partial<PaintEngineOptions>) {
     if (typeof options.canvas === 'string') {
@@ -70,8 +74,13 @@ export class PaintEngine {
   }
 
   public render(): void {
-    for (let i = 0; i < this.children.length; i++) {
-      this.children[i].render(this);
+    if (this.renderTimeout) {
+      window.clearTimeout(this.renderTimeout);
     }
+    this.renderTimeout = window.setTimeout(() => {
+      for (let i = 0; i < this.children.length; i++) {
+        this.children[i].render(this);
+      }
+    }, RENDER_TIMEOUT_DURATION);
   }
 }
