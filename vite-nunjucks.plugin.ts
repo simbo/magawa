@@ -19,17 +19,13 @@ const nunjucksOptions: ConfigureOptions = {
 
 export default (options: Partial<NunjucksPluginOptions> = {}): Plugin => {
   const locals: object = options.locals ?? {};
-
   const sourcePaths: string[] = [];
-
   return {
     name: 'nunjucks',
     enforce: 'pre',
     handleHotUpdate: (context: HmrContext): void | [] => {
-      console.log('HMR', context.file);
-      if (sourcePaths.indexOf(context.file)) return;
+      if (!sourcePaths.includes(context.file)) return;
       context.server.ws.send({ type: 'full-reload' });
-      console.log('FULL RELOAD');
       return [];
     },
     transformIndexHtml: {
@@ -41,9 +37,9 @@ export default (options: Partial<NunjucksPluginOptions> = {}): Plugin => {
               async: true,
               getSource: (name, callback) => {
                 const path = resolvePath(dirname(context.filename), name);
+                sourcePaths.push(path);
                 readFile(path)
                   .then(src => {
-                    console.log(path);
                     callback(undefined, { src: src.toString(), path, noCache: !!nunjucksOptions.noCache });
                   })
                   .catch(error => (callback as (error: Error) => void)(error));
