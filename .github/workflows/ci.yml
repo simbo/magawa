@@ -67,9 +67,9 @@ jobs:
             ${{ steps.changes.outputs.changes }}
           artifacts: magawa.zip
 
-      # - name: 🚚 Deploy
-      #   if: ${{ steps.changes.outcome == 'success' }}
-      #   uses: JamesIves/github-pages-deploy-action@v4
-      #   with:
-      #     folder: magawa
-      #     commit-message: Release ${{ github.ref_name }} from ${{ github.sha }}
+      - name: 🚚 Deploy
+        if: ${{ steps.changes.outcome == 'success' }}
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: magawa
+          commit-message: Release ${{ github.ref_name }} from ${{ github.sha }}
