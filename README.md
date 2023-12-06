@@ -32,11 +32,13 @@ See [ToDo](./TODO.md) for planned features.
 
 ```sh
 # watch, serve and rebuild
-yarn start
+npm run dev
+
 # serve in production mode for testing
-yarn serve
+npm run preview
+
 # build for production
-yarn build
+npm run build
 ```
 
 ## Deployment
