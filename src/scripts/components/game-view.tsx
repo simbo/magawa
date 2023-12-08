@@ -7,8 +7,13 @@ import { filter, takeUntil } from 'rxjs/operators';
 
 import { AppRoute } from '../lib/app-route.enum';
 import { GameDifficulty } from '../lib/game-difficulty';
-import { highscoresManager } from '../lib/highscores-manager';
-import { HighscoreGameDifficulty, HighscoresEntry, HighscoresForDifficulty } from '../lib/highscores.interface';
+import {
+  addHighscore,
+  getHighscores,
+  Highscore,
+  HighscoreGameDifficulty,
+  HighscoresCollection
+} from '../lib/highscores';
 import { GameAction } from '../store/game/game-actions';
 import { gameSelectors } from '../store/game/game-selectors';
 import { gameStore, gameStoreContext } from '../store/game/game-store';
@@ -21,8 +26,8 @@ import { Restart } from './restart';
 import { Timer } from './timer';
 
 interface GameViewState {
-  highscores: HighscoresForDifficulty;
-  entry: HighscoresEntry;
+  highscores?: HighscoresCollection;
+  highscore?: Highscore;
 }
 
 if (process.env.NODE_ENV !== 'production') {
@@ -51,6 +56,16 @@ export class GameView extends Component<object, GameViewState> {
         filter(event => event.code === 'KeyP' || event.code === 'Escape')
       )
       .subscribe(() => gameStore.dispatch(GameAction.TogglePause));
+
+    gameStore.actions$
+      .pipe(
+        takeUntil(this.unsubscribeSubject),
+        filter(({ name }) => name === GameAction.Start)
+      )
+      .subscribe(() => {
+        this.highscoreSaved = false;
+        this.setState({});
+      });
   }
 
   public componentWillUnmount(): void {
@@ -58,7 +73,7 @@ export class GameView extends Component<object, GameViewState> {
     gameStore.dispatch(GameAction.Close);
   }
 
-  public render(_props: object, { highscores, entry }: GameViewState): VNode {
+  public render(_props: object, { highscores, highscore }: GameViewState): VNode {
     const gameState = useContext(gameStoreContext);
     if (gameSelectors.isClosed(gameState)) {
       return <div></div>;
@@ -85,10 +100,10 @@ export class GameView extends Component<object, GameViewState> {
           </div>
           <GameGfx />
         </div>
-        {isWon ? (
+        {isWon && highscore && highscores ? (
           <Fragment>
-            <Congratulations entry={entry} />
-            <HighscoresTable list={highscores?.list} highlight={entry?.id} />
+            <Congratulations highscore={highscore} difficulty={difficulty as HighscoreGameDifficulty} />
+            <HighscoresTable rows={highscores.items} highlight={highscore?.id} />
           </Fragment>
         ) : (
           ''
@@ -102,12 +117,19 @@ export class GameView extends Component<object, GameViewState> {
     );
   }
 
-  private saveHighscore(startedAt: Date, finishedAt: Date, player: string, difficulty: HighscoreGameDifficulty): void {
+  private async saveHighscore(
+    startedAt: Date,
+    finishedAt: Date,
+    player: string,
+    difficulty: HighscoreGameDifficulty
+  ): Promise<void> {
     this.highscoreSaved = true;
-    highscoresManager
-      .add(differenceInMilliseconds(finishedAt, startedAt), player, difficulty)
-      .subscribe(({ entry, highscores }) => {
-        this.setState({ highscores, entry });
-      });
+    try {
+      const highscore = await addHighscore(difficulty, player, differenceInMilliseconds(finishedAt, startedAt));
+      const highscores = await getHighscores({ difficulty, rank: highscore.rank });
+      this.setState({ highscore, highscores });
+    } catch {
+      /* empty */
+    }
   }
 }

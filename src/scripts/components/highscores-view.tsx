@@ -2,19 +2,16 @@ import { Component, createRef, h, VNode } from 'preact';
 import { Link } from 'preact-router';
 
 import { AppRoute } from '../lib/app-route.enum';
-import { formatDate } from '../lib/format-date.function';
 import { DEFAULT_GAME_DIFFICULTY, GameDifficulty } from '../lib/game-difficulty';
-import { highscoresManager } from '../lib/highscores-manager';
-import { HighscoreGameDifficulty, HighscoresList } from '../lib/highscores.interface';
+import { getHighscores, HighscoreGameDifficulty, HighscoresCollection } from '../lib/highscores';
 import { IconName } from '../lib/icon-name.enum';
 
 import { HighscoresTable } from './highscores-table';
 
 interface HighscoresViewState {
   difficulty: HighscoreGameDifficulty;
-  player: string;
-  list?: HighscoresList | null;
-  updated?: Date | null;
+  collection?: HighscoresCollection;
+  page: number;
 }
 
 export class HighscoresView extends Component<object, HighscoresViewState> {
@@ -29,11 +26,13 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
     super(props, state);
     const difficulty = DEFAULT_GAME_DIFFICULTY;
     const player = '';
-    this.setState({ difficulty, player });
-    this.request(difficulty, player);
+    const page = 1;
+    this.setState({ difficulty, page });
+    this.request(difficulty, page, player);
   }
 
-  public render(_props: object, { difficulty, player, list, updated }: HighscoresViewState): VNode {
+  public render(_props: object, { difficulty, collection }: HighscoresViewState): VNode {
+    const { items, total, page, pages, nextPage, previousPage } = (collection as HighscoresCollection) || {};
     return (
       <div class="c-highscores-view">
         <h1 class="c-highscores-view__title e-title">
@@ -46,7 +45,7 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
             </label>
             <select
               ref={this.refSelect}
-              onChange={this.onChange}
+              onInput={this.onChangeOptions}
               class="c-highscores-view__select e-select"
               id="difficulty"
               name="difficulty"
@@ -59,24 +58,50 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
             </select>
           </div>
           <div class="c-highscores-view__option">
-            <label class="c-highscores-view__label e-label" htmlFor="player">
-              Player
-            </label>
-            <input
-              ref={this.refInput}
-              onChange={this.onChange}
-              id="player"
-              name="player"
-              pattern="^\w*$"
-              class="c-highscores-view__input e-input"
-              value={player}
-            />
+            <form onSubmit={this.onChangeOptions}>
+              <label class="c-highscores-view__label e-label" htmlFor="player">
+                Player
+              </label>
+              <input
+                ref={this.refInput}
+                id="player"
+                name="player"
+                pattern="^[\w*?]*$"
+                class="c-highscores-view__input e-input"
+              />
+            </form>
           </div>
         </div>
         <div class="c-highscores-view__table">
-          <HighscoresTable list={list} highlight="CrjD8A1cqGjxtpVT70aMM" />
+          <HighscoresTable rows={items} highlight="CrjD8A1cqGjxtpVT70aMM" />
+          {page && pages ? (
+            <div class="c-highscores-view__pagination">
+              <div>
+                <button
+                  disabled={!previousPage}
+                  onClick={() => this.changePage(previousPage as number)}
+                  title={`Page ${previousPage}`}
+                >
+                  ◀
+                </button>
+              </div>
+              <div>
+                {total} Entries – Page {page} of {pages}
+              </div>
+              <div>
+                <button
+                  disabled={!nextPage}
+                  onClick={() => this.changePage(nextPage as number)}
+                  title={`Page ${nextPage}`}
+                >
+                  ▶
+                </button>
+              </div>
+            </div>
+          ) : (
+            ''
+          )}
         </div>
-        {updated ? <div class="c-highscores-view__updated">Updated at {formatDate(updated)}</div> : ''}
         <div className="e-back-button">
           <Link href={AppRoute.Home} class="e-back-button__button e-button">
             ← Back
@@ -86,22 +111,28 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
     );
   }
 
-  private readonly onChange = (event: Event): void => {
+  private readonly onChangeOptions = (event: Event): void => {
     event.preventDefault();
     const difficulty = Number.parseInt(`${this.refSelect.current?.value}`, 10);
     const player = this.refInput.current?.value;
-    this.request(difficulty, player);
+    const page = this.state.page;
+    this.request(difficulty, page, player);
   };
 
-  private request(difficulty: HighscoreGameDifficulty, player?: string): void {
-    highscoresManager.get(difficulty, player).subscribe(
-      ({ list, updated }) => {
-        this.setState({ difficulty, player, list, updated });
-      },
-      err => {
-        console.error(err);
-        this.setState({ difficulty, player, list: null, updated: null });
-      }
-    );
+  private readonly changePage = (page: number) => {
+    const difficulty = Number.parseInt(`${this.refSelect.current?.value}`, 10);
+    const player = this.refInput.current?.value;
+    this.request(difficulty, page, player);
+  };
+
+  private request(difficulty: HighscoreGameDifficulty, page: number, player?: string): void {
+    this.setState({ difficulty, collection: undefined });
+    getHighscores({ difficulty, player, page })
+      .then(collection => {
+        this.setState({ difficulty, collection });
+      })
+      .catch(() => {
+        this.setState({ difficulty, collection: { items: [] } as unknown as HighscoresCollection });
+      });
   }
 }

@@ -22,7 +22,8 @@ export default defineConfig(async ({ command }) => {
     APP_IS_PROD: mode === 'production',
     APP_IS_DEV: mode === 'development',
     APP_VERSION: packageJson.version,
-    APP_URI: mode === 'production' ? '//simbo.codes/magawa/' : `//localhost:${port}/magawa/`
+    APP_URI: mode === 'production' ? '//simbo.codes/magawa/' : `//localhost:${port}/magawa/`,
+    APP_API_URL: mode === 'production' ? 'https://simbo.app/magawa' : 'http://localhost:3000/magawa'
   };
 
   const config: UserConfig = {

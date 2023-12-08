@@ -1,4 +1,25 @@
 .c-menu-view {
   margin: 0 auto;
   width: 12em;
+
+  &__button {
+    &.is-fixed {
+      position: relative;
+
+      &::before {
+        content: 'FIXED!';
+        position: absolute;
+        font-size: 0.75em;
+        font-weight: bolder;
+        color: hotpink;
+        border: 0.175em solid hotpink;
+        border-radius: 0.3em;
+        padding: 0.15em 0.3em;
+        top: 0;
+        left: -0.5em;
+        line-height: 1;
+        transform: rotate(-42deg);
+      }
+    }
+  }
 }

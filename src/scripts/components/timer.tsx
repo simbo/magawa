@@ -22,7 +22,6 @@ export class Timer extends Component {
     if (isFinished || isPaused) {
       this.stopTimeout();
     } else {
-      // this.startTimeout(gameState.startedAt as Date);
       this.startTimeout();
     }
     const duration = this.getDuration(gameState.startedAt as Date, gameState.pausedAt);
@@ -49,7 +48,6 @@ export class Timer extends Component {
     return formatDuration(duration, false);
   }
 
-  // private startTimeout(startedAt: Date): void {
   private startTimeout(): void {
     this.stopTimeout();
     this.timeout = window.setTimeout(() => {

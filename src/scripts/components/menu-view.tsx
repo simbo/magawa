@@ -1,3 +1,4 @@
+import { compareAsc } from 'date-fns';
 import { Component, h, VNode } from 'preact';
 import { Link } from 'preact-router';
 
@@ -5,6 +6,8 @@ import { AppRoute } from '../lib/app-route.enum';
 import { IconName } from '../lib/icon-name.enum';
 
 import { MenuForm } from './menu-form';
+
+const SHOW_FIXED_BADGE = compareAsc(new Date(), new Date('11 Feb 2023 GMT')) === -1;
 
 export class MenuView extends Component {
   public render(): VNode {
@@ -15,7 +18,10 @@ export class MenuView extends Component {
         </h1>
         <p className="e-subtitle">A Minesweeper Clone.</p>
         <MenuForm />
-        <Link href={AppRoute.Highscores} class="c-menu-view__button e-button e-button--block">
+        <Link
+          href={AppRoute.Highscores}
+          class={`c-menu-view__button e-button e-button--block${SHOW_FIXED_BADGE ? ' is-fixed' : ''}`}
+        >
           Highscores <img class="e-icon" src={`icons/${IconName.Trophy}.png`} />
         </Link>
         <Link href={AppRoute.About} class="c-menu-view__button e-button e-button--block">

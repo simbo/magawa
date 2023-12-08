@@ -15,4 +15,24 @@
     text-align: right;
     color: $colorSecondary;
   }
+
+  &__pagination {
+    margin-top: 0.5em;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 0.75em;
+    color: $colorSecondary;
+
+    button {
+      width: 2em;
+      height: 2em;
+      text-align: center;
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.35;
+      }
+    }
+  }
 }

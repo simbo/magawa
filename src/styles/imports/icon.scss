@@ -2,4 +2,5 @@ img.e-icon {
   display: block;
   width: $lineHeight * 1em;
   height: auto;
+  -webkit-user-drag: none;
 }
