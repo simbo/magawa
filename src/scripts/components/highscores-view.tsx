@@ -85,8 +85,9 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
                   ◀
                 </button>
               </div>
+              <div>{total} Entries</div>
               <div>
-                {total} Entries – Page {page} of {pages}
+                Page {page} of {pages}
               </div>
               <div>
                 <button
