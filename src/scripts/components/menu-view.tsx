@@ -7,7 +7,7 @@ import { IconName } from '../lib/icon-name.enum';
 
 import { MenuForm } from './menu-form';
 
-const SHOW_FIXED_BADGE = compareAsc(new Date(), new Date('11 Feb 2023 GMT')) === -1;
+const SHOW_FIXED_BADGE = compareAsc(new Date(), new Date('11 Feb 2024 GMT')) === -1;
 
 export class MenuView extends Component {
   public render(): VNode {
