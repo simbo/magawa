@@ -1,8 +1,4 @@
-function addZeros(num: number, count = 2): string {
-  const str = `${num}`;
-  const i = Math.max(0, count - str.length);
-  return `${'0'.repeat(i)}${str}`;
-}
+import { addZeros } from './add-zeros';
 
 export function formatDuration(duration: number, withMilliseconds = true): string {
   // const hours = Math.floor(duration / 3600000);
