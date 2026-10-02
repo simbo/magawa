@@ -44,7 +44,7 @@ export class GameGfx extends Component {
         gameStore.dispatch(GameAction.Finish, { finalStatus });
       },
       () => {
-        route(AppRoute.Home);
+        gameStore.dispatch(GameAction.Restart);
       },
     );
     this.unsubscribeActions = gameStore.subscribeActions(({ name, state }) => {

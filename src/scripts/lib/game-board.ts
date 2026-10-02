@@ -32,7 +32,7 @@ export class GameBoard {
    * @param setFlagsCount - Publishes the number of placed flags.
    * @param unpause - Resumes play after a pause-overlay click.
    * @param finish - Publishes the final game outcome.
-   * @param close - Returns to the menu after the completion overlay is clicked.
+   * @param restart - Starts another round with the same settings after the completion overlay is clicked.
    */
   public constructor(
     private readonly view: HTMLCanvasElement,
@@ -44,7 +44,7 @@ export class GameBoard {
     private readonly setFlagsCount: (flagsCount: number) => void,
     private readonly unpause: () => void,
     private readonly finish: (finalStatus: GameFinalStatus) => void,
-    private readonly close: () => void,
+    private readonly restart: () => void,
   ) {
     this.initBoard();
   }
@@ -306,7 +306,7 @@ export class GameBoard {
         width: this.width,
         height: this.height,
         onClick: () => {
-          this.close();
+          this.restart();
         },
       });
       this.paintEngine.add(overlay);

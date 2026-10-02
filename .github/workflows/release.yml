@@ -6,7 +6,14 @@ on:
       - workflow:release
   workflow_dispatch:
 
-run-name: ${{ github.workflow }}
+run-name: >
+  ${{
+    format(
+      '{0} Branch main {1}',
+      github.workflow,
+      github.event_name == 'repository_dispatch' && format('"{0}"', github.event.client_payload.sha) || ''
+    )
+  }}
 
 concurrency:
   cancel-in-progress: false
