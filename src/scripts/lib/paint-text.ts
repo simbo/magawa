@@ -1,6 +1,9 @@
 import { PaintContainer } from './paint-container';
 import { PaintEngine } from './paint-engine';
 
+/**
+ * Text content, relative position, typography, and optional fill and stroke settings.
+ */
 export interface PaintTextOptions {
   text: string;
   x: number;
@@ -25,6 +28,9 @@ const DEFAULT_PAINT_TEXT_OPTIONS: Partial<PaintTextOptions> = {
   direction: 'ltr'
 };
 
+/**
+ * Draws text relative to its parent container using the engine's pixel density.
+ */
 export class PaintText {
   private readonly text: string;
   private readonly x: number;
@@ -38,6 +44,9 @@ export class PaintText {
   private readonly strokeStyle?: string | CanvasGradient | CanvasPattern;
   private readonly strokeWidth?: number;
 
+  /**
+   * Combines text options with default typography and alignment.
+   */
   public constructor(options: Partial<PaintTextOptions>) {
     const {
       text,
@@ -69,6 +78,9 @@ export class PaintText {
     this.strokeWidth = strokeWidth;
   }
 
+  /**
+   * Scales typography and container-relative coordinates, then fills or strokes the text.
+   */
   public render(engine: PaintEngine, container: PaintContainer): void {
     engine.context.font = `${this.fontSize * engine.pixelDensity}px ${this.fontFamily}`;
     engine.context.textAlign = this.textAlign;

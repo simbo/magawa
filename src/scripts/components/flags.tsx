@@ -4,7 +4,13 @@ import { useContext } from 'preact/hooks';
 import { IconName } from '../lib/icon-name.enum';
 import { gameStoreContext } from '../store/game/game-store';
 
+/**
+ * Displays the number of placed flags alongside the total mine count.
+ */
 export class Flags extends Component {
+  /**
+   * Reads the current flag and mine counts from game context and displays their ratio.
+   */
   public render(): VNode {
     const { flagsCount, minesCount } = useContext(gameStoreContext);
     return (

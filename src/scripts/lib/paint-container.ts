@@ -2,14 +2,23 @@ import { PaintEngine } from './paint-engine';
 import { PaintText } from './paint-text';
 import { PaintTexture } from './paint-texture';
 
+/**
+ * Pointer event, clicked container, and canvas engine passed to a click handler.
+ */
 export interface PaintContainerOnClickParameters {
   event: PointerEvent;
   container: PaintContainer;
   engine: PaintEngine;
 }
 
+/**
+ * Callback invoked when an interactive container receives a pointer press.
+ */
 export type PaintContainerOnClick = (parameters: PaintContainerOnClickParameters) => void;
 
+/**
+ * Geometry, appearance, and interaction settings in logical canvas pixels.
+ */
 export interface PaintContainerOptions {
   width: number;
   height: number;
@@ -33,6 +42,9 @@ const DEFAULT_PAINT_CONTAINER_OPTIONS: Partial<PaintContainerOptions> = {
   interactive: true
 };
 
+/**
+ * Groups drawable children and provides rectangular hit testing and background painting.
+ */
 export class PaintContainer {
   public readonly width: number;
   public readonly height: number;
@@ -50,6 +62,9 @@ export class PaintContainer {
 
   private children: (PaintContainer | PaintTexture | PaintText)[] = [];
 
+  /**
+   * Applies default geometry and interaction settings, then stores the optional click handler.
+   */
   public constructor(options: Partial<PaintContainerOptions>) {
     const { width, height, x, y, fillStyle, strokeStyle, strokeWidth, active, interactive } = {
       ...DEFAULT_PAINT_CONTAINER_OPTIONS,
@@ -71,6 +86,9 @@ export class PaintContainer {
     }
   }
 
+  /**
+   * Paints the active container background and border, then draws its children in insertion order.
+   */
   public render(engine: PaintEngine): void {
     if (!this.active) {
       return;
@@ -101,14 +119,23 @@ export class PaintContainer {
     }
   }
 
+  /**
+   * Appends drawable children in the order in which they should appear.
+   */
   public add(...container: (PaintContainer | PaintTexture | PaintText)[]): void {
     this.children.push(...container);
   }
 
+  /**
+   * Removes drawable children while keeping the container's geometry and interaction settings.
+   */
   public clear(): void {
     this.children = [];
   }
 
+  /**
+   * Checks whether logical canvas coordinates lie inside the container, including its edges.
+   */
   public isHitBy(x: number, y: number): boolean {
     return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height;
   }

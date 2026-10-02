@@ -5,12 +5,21 @@ import { formatDuration } from '../lib/format-duration.function';
 import { Highscore, HighscoreGameDifficulty } from '../lib/highscores';
 import { IconName } from '../lib/icon-name.enum';
 
+/**
+ * Winning difficulty and optional saved highscore shown after a victory.
+ */
 interface CongratulationsProps {
   highscore?: Highscore;
   difficulty: HighscoreGameDifficulty;
 }
 
+/**
+ * Displays the winning time and rank once a highscore has been saved.
+ */
 export class Congratulations extends Component<CongratulationsProps> {
+  /**
+   * Displays congratulations and, when available, the saved time and leaderboard rank.
+   */
   public render({ highscore, difficulty }: CongratulationsProps): VNode {
     return (
       <div class="c-congratulations">

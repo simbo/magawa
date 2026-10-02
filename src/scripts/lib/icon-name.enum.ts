@@ -1,3 +1,6 @@
+/**
+ * Names of the bitmap icons bundled with the application.
+ */
 export enum IconName {
   Book = 'book',
   Boom = 'boom',

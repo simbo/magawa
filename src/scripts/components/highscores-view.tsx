@@ -8,13 +8,23 @@ import { IconName } from '../lib/icon-name.enum';
 
 import { HighscoresTable } from './highscores-table';
 
+/**
+ * Selected leaderboard difficulty, requested page, and optional API response.
+ */
 interface HighscoresViewState {
   difficulty: HighscoreGameDifficulty;
   collection?: HighscoresCollection;
   page: number;
 }
 
+/**
+ * Loads leaderboard pages and exposes difficulty and player filters.
+ */
 export class HighscoresView extends Component<object, HighscoresViewState> {
+  /**
+   * Filters out the reverse lookup entries emitted for numeric TypeScript enums.
+   * Only named difficulty entries become selectable options.
+   */
   private readonly difficulties = Object.entries(GameDifficulty).filter(
     ([, value]) => typeof value === 'number' && value !== GameDifficulty.Custom
   ) as [string, HighscoreGameDifficulty][];
@@ -22,6 +32,9 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
   private readonly refSelect = createRef<HTMLSelectElement>();
   private readonly refInput = createRef<HTMLInputElement>();
 
+  /**
+   * Selects the default difficulty and requests the first leaderboard page.
+   */
   constructor(props: object, state: HighscoresViewState) {
     super(props, state);
     const difficulty = DEFAULT_GAME_DIFFICULTY;
@@ -31,6 +44,9 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
     this.request(difficulty, page, player);
   }
 
+  /**
+   * Displays leaderboard filters, loading or loaded entries, and available pagination controls.
+   */
   public render(_props: object, { difficulty, collection }: HighscoresViewState): VNode {
     const { items, total, page, pages, nextPage, previousPage } = (collection as HighscoresCollection) || {};
     return (
@@ -112,6 +128,9 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
     );
   }
 
+  /**
+   * Reads the difficulty and player filters and requests the current selected page.
+   */
   private readonly onChangeOptions = (event: Event): void => {
     event.preventDefault();
     const difficulty = Number.parseInt(`${this.refSelect.current?.value}`, 10);
@@ -120,12 +139,18 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
     this.request(difficulty, page, player);
   };
 
+  /**
+   * Requests another page while preserving the currently entered filters.
+   */
   private readonly changePage = (page: number) => {
     const difficulty = Number.parseInt(`${this.refSelect.current?.value}`, 10);
     const player = this.refInput.current?.value;
     this.request(difficulty, page, player);
   };
 
+  /**
+   * Clears the previous collection while loading, then displays results or an empty collection on error.
+   */
   private request(difficulty: HighscoreGameDifficulty, page: number, player?: string): void {
     this.setState({ difficulty, collection: undefined });
     getHighscores({ difficulty, player, page })

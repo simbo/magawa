@@ -7,6 +7,9 @@ import { storage } from '../../lib/storage';
 
 import { GameState } from './game-state.interface';
 
+/**
+ * Action names dispatched to the game store.
+ */
 export enum GameAction {
   SetSettings = 'setSettings',
   Start = 'start',
@@ -20,6 +23,9 @@ export enum GameAction {
   SetFlagsCount = 'setFlagsCount'
 }
 
+/**
+ * Payloads required by actions that change settings, outcomes, or flag counts.
+ */
 export interface GameActionPayloads {
   [GameAction.SetSettings]: {
     player: string;
@@ -34,7 +40,13 @@ export interface GameActionPayloads {
   };
 }
 
+/**
+ * State transitions for game actions; reducers return either partial updates or the current state.
+ */
 export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
+  /**
+   * Validates the player and difficulty, selects board dimensions, and persists the preferences.
+   */
   [GameAction.SetSettings]:
     ({ player, difficulty, settings }) =>
     state => {
@@ -55,6 +67,9 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
       return { ...state, player, difficulty, tilesX, tilesY, minesCount };
     },
 
+  /**
+   * Resets lifecycle timestamps, outcome, and flags before the first click.
+   */
   [GameAction.Start]: () => {
     return {
       status: GameStatus.Running,
@@ -66,6 +81,9 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
     };
   },
 
+  /**
+   * Starts the playing-time clock when the board is first interacted with.
+   */
   [GameAction.FirstClick]: () => {
     return {
       startedAt: new Date(),
@@ -75,6 +93,9 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
     };
   },
 
+  /**
+   * Records the pause timestamp only for a running game.
+   */
   [GameAction.Pause]: () => state => {
     if (state.status !== GameStatus.Running) {
       return state;
@@ -86,10 +107,17 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
     };
   },
 
+  /**
+   * Resumes a paused game and shifts its start timestamp to exclude the pause duration.
+   */
   [GameAction.Unpause]: () => state => {
     if (state.status !== GameStatus.Paused) {
       return state;
     }
+    /**
+     * The difference is negative because the pause timestamp precedes now.
+     * Subtracting it moves startedAt forward, excluding paused time from the elapsed duration.
+     */
     const pauseDuration = differenceInMilliseconds(state.pausedAt as Date, new Date());
     const startedAt = state.startedAt ? subMilliseconds(state.startedAt as Date, pauseDuration) : null;
     return {
@@ -100,6 +128,9 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
     };
   },
 
+  /**
+   * Records the outcome and finish timestamp only for a running game.
+   */
   [GameAction.Finish]:
     ({ finalStatus }) =>
     state => {
@@ -114,6 +145,9 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
       };
     },
 
+  /**
+   * Closes the game and clears the active timing timestamps.
+   */
   [GameAction.Close]: () => {
     return {
       status: GameStatus.Closed,
@@ -122,6 +156,9 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
     };
   },
 
+  /**
+   * Updates the flag count only while running and when the payload is numeric.
+   */
   [GameAction.SetFlagsCount]:
     ({ flagsCount }) =>
     state => {

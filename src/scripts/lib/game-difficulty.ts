@@ -1,21 +1,36 @@
+/**
+ * Numeric identifiers for preset and custom board difficulties.
+ */
 export enum GameDifficulty {
   Easy,
   Medium,
   Hard,
   Custom
 }
+/**
+ * Board width and height in tiles and the total number of mines.
+ */
 export interface GameDifficultySettings {
   tilesX: number;
   tilesY: number;
   minesCount: number;
 }
 
+/**
+ * Difficulty selected when no preference has been saved.
+ */
 export const DEFAULT_GAME_DIFFICULTY = GameDifficulty.Medium;
 
+/**
+ * Board settings indexed by every supported difficulty.
+ */
 export type GameDifficultySettingsMap = {
   [key in GameDifficulty]: GameDifficultySettings;
 };
 
+/**
+ * Preset board sizes; the custom entry also supplies the form's upper limits.
+ */
 export const gameDifficultySettings: GameDifficultySettingsMap = {
   [GameDifficulty.Easy]: {
     tilesX: 8,

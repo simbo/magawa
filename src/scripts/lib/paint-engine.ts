@@ -1,5 +1,8 @@
 import { PaintContainer } from './paint-container';
 
+/**
+ * Canvas target, logical dimensions, and device-pixel scaling for a painting engine.
+ */
 export interface PaintEngineOptions {
   canvas: HTMLCanvasElement | string;
   pixelDensity: number;
@@ -15,6 +18,9 @@ const DEFAULT_CANVAS_ENGINE_OPTIONS: Partial<PaintEngineOptions> = {
 
 const RENDER_TIMEOUT_DURATION = 15;
 
+/**
+ * Draws containers onto a scaled canvas and dispatches pointer presses to the topmost hit.
+ */
 export class PaintEngine {
   public readonly canvas: HTMLCanvasElement;
   public readonly context: CanvasRenderingContext2D;
@@ -26,6 +32,9 @@ export class PaintEngine {
 
   private renderTimeout = 0;
 
+  /**
+   * Configures scaled canvas dimensions and installs context-menu and pointer handlers.
+   */
   public constructor(options: Partial<PaintEngineOptions>) {
     if (typeof options.canvas === 'string') {
       options.canvas = document.querySelector(options.canvas) as HTMLCanvasElement;
@@ -47,6 +56,11 @@ export class PaintEngine {
       event.preventDefault();
     });
 
+    /**
+     * Converts browser pointer coordinates into logical canvas pixels.
+     * Checks containers in reverse draw order so overlays intercept clicks.
+     * A hit blocks containers beneath it even if the hit container is not interactive.
+     */
     this.canvas.addEventListener('pointerdown', event => {
       event.preventDefault();
       const { x: canvasX, y: canvasY } = this.canvas.getBoundingClientRect();
@@ -65,14 +79,23 @@ export class PaintEngine {
     });
   }
 
+  /**
+   * Appends containers in draw order; later containers take priority during hit testing.
+   */
   public add(...container: PaintContainer[]): void {
     this.children.push(...container);
   }
 
+  /**
+   * Removes all registered containers; canvas pixels are overwritten by the next redraw.
+   */
   public clear(): void {
     this.children = [];
   }
 
+  /**
+   * Coalesces redraw requests using a short timeout and paints active containers in insertion order.
+   */
   public render(): void {
     if (this.renderTimeout) {
       window.clearTimeout(this.renderTimeout);

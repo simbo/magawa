@@ -7,9 +7,18 @@ import { IconName } from '../lib/icon-name.enum';
 
 import { MenuForm } from './menu-form';
 
+/**
+ * Shows the historical leaderboard-repair badge only before 11 February 2024 UTC.
+ */
 const SHOW_FIXED_BADGE = compareAsc(new Date(), new Date('11 Feb 2024 GMT')) === -1;
 
+/**
+ * Displays the start form and links to the leaderboard and project information.
+ */
 export class MenuView extends Component {
+  /**
+   * Displays the start form, navigation links, and the time-limited leaderboard repair badge.
+   */
   public render(): VNode {
     return (
       <div class="c-menu-view">

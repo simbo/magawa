@@ -1,5 +1,12 @@
 import { addZeros } from './add-zeros';
 
+/**
+ * Formats a date in local time as DD.MM.YYYY with optional HH:mm:ss.
+ *
+ * @param date - Date object or date text accepted by the browser.
+ * @param withTime - Whether to append the time of day.
+ * @returns The formatted local date.
+ */
 export function formatDate(date: Date | string, withTime = true): string {
   if (typeof date === 'string') {
     date = new Date(date);

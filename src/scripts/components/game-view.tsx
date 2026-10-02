@@ -25,11 +25,17 @@ import { HighscoresTable } from './highscores-table';
 import { Restart } from './restart';
 import { Timer } from './timer';
 
+/**
+ * Saved highscore and surrounding leaderboard entries for the current victory.
+ */
 interface GameViewState {
   highscores?: HighscoresCollection;
   highscore?: Highscore;
 }
 
+/**
+ * Logs game actions during development to make state transitions inspectable.
+ */
 if (process.env.NODE_ENV !== 'production') {
   gameStore.actions$.subscribe(({ name, payload, state }) =>
     // eslint-disable-next-line no-console
@@ -37,11 +43,17 @@ if (process.env.NODE_ENV !== 'production') {
   );
 }
 
+/**
+ * Coordinates the active game, pause controls, and highscore submission.
+ */
 export class GameView extends Component<object, GameViewState> {
   private readonly unsubscribeSubject = new Subject<void>();
 
   private highscoreSaved = false;
 
+  /**
+   * Starts a game and subscribes to automatic pause, keyboard controls, and restart events.
+   */
   constructor() {
     super();
     gameStore.dispatch(GameAction.Start);
@@ -68,11 +80,17 @@ export class GameView extends Component<object, GameViewState> {
       });
   }
 
+  /**
+   * Ends event subscriptions and closes the active game in the store.
+   */
   public componentWillUnmount(): void {
     this.unsubscribeSubject.next();
     gameStore.dispatch(GameAction.Close);
   }
 
+  /**
+   * Displays game controls and the board, submitting a won preset game's result once.
+   */
   public render(_props: object, { highscores, highscore }: GameViewState): VNode {
     const gameState = useContext(gameStoreContext);
     if (gameSelectors.isClosed(gameState)) {
@@ -117,12 +135,20 @@ export class GameView extends Component<object, GameViewState> {
     );
   }
 
+  /**
+   * Marks submission as started, saves the winning time, and loads entries around its rank.
+   * Submission errors are swallowed so the finished game remains usable.
+   */
   private async saveHighscore(
     startedAt: Date,
     finishedAt: Date,
     player: string,
     difficulty: HighscoreGameDifficulty
   ): Promise<void> {
+    /**
+     * Sets the submission guard before awaiting the API so repeated renders
+     * do not submit the same victory while the request is pending.
+     */
     this.highscoreSaved = true;
     try {
       const highscore = await addHighscore(difficulty, player, differenceInMilliseconds(finishedAt, startedAt));

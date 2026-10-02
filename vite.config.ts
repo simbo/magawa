@@ -8,11 +8,17 @@ import { defineConfig, Plugin, splitVendorChunkPlugin, UserConfig } from 'vite';
 import packageJson from './package.json';
 import nunjucksPlugin from './vite-nunjucks.plugin';
 
+/**
+ * Primitive template variables also exposed as compile-time application constants.
+ */
 interface Locals {
   [key: string]: string | boolean | number;
 }
 
 // https://vitejs.dev/config/
+/**
+ * Builds the development or production Vite configuration, template variables, and CSS processing pipeline.
+ */
 export default defineConfig(async ({ command }) => {
   const mode = command === 'build' ? 'production' : 'development';
 
@@ -60,6 +66,10 @@ export default defineConfig(async ({ command }) => {
 
     plugins: [nunjucksPlugin({ locals }), splitVendorChunkPlugin()],
 
+    /**
+     * Serializes primitive locals as JavaScript literals for compile-time replacement.
+     * The same values are supplied to the HTML template plugin.
+     */
     define: Object.entries(locals).reduce((obj, [key, value]) => {
       if (['string', 'number', 'boolean'].includes(typeof value)) {
         obj[key] = JSON.stringify(value);

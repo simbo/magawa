@@ -7,6 +7,9 @@ import { GameDifficulty, gameDifficultySettings } from '../lib/game-difficulty';
 import { GameAction } from '../store/game/game-actions';
 import { gameStore } from '../store/game/game-store';
 
+/**
+ * Player name, selected difficulty, and editable board dimensions.
+ */
 interface MenuFormState {
   difficulty: GameDifficulty;
   tilesX: number;
@@ -15,7 +18,14 @@ interface MenuFormState {
   player: string | null;
 }
 
+/**
+ * Collects and validates the player name and board settings before starting a game.
+ */
 export class MenuForm extends Component<object, MenuFormState> {
+  /**
+   * Filters out the reverse lookup entries emitted for numeric TypeScript enums.
+   * Only named difficulty entries become selectable options.
+   */
   private readonly difficulties = Object.entries(GameDifficulty).filter(([, value]) => typeof value === 'number') as [
     string,
     GameDifficulty
@@ -30,6 +40,9 @@ export class MenuForm extends Component<object, MenuFormState> {
   private readonly maxTilesY: number;
   private readonly maxMinesCount: number;
 
+  /**
+   * Derives input limits from presets and reads the current settings once from the store.
+   */
   constructor(props: object, state: MenuFormState) {
     super(props, state);
     const settingsEasy = gameDifficultySettings[GameDifficulty.Easy];
@@ -47,10 +60,16 @@ export class MenuForm extends Component<object, MenuFormState> {
       );
   }
 
+  /**
+   * Focuses the player-name input when the form becomes visible.
+   */
   public componentDidMount(): void {
     this.refPlayerInput.current?.focus();
   }
 
+  /**
+   * Displays required player and board inputs; only custom dimensions are editable.
+   */
   public render(_props: object, { difficulty, tilesX, tilesY, minesCount, player }: MenuFormState): VNode {
     const readonly = difficulty !== GameDifficulty.Custom;
     return (
@@ -142,6 +161,9 @@ export class MenuForm extends Component<object, MenuFormState> {
     );
   }
 
+  /**
+   * Validates the form, dispatches parsed settings, and navigates to the game route.
+   */
   private readonly onSubmit = (event: Event): void => {
     event.preventDefault();
     const form = event.currentTarget as HTMLFormElement;
@@ -160,6 +182,9 @@ export class MenuForm extends Component<object, MenuFormState> {
     }
   };
 
+  /**
+   * Keeps custom dimensions or applies the selected preset while preserving the entered player name.
+   */
   private readonly onChangeDifficulty = (event: JSX.TargetedEvent<HTMLSelectElement, Event>): void => {
     const difficulty: GameDifficulty = Number.parseInt(`${event.currentTarget.value}`, 10);
     const player = this.refPlayerInput.current?.value;

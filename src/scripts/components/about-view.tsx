@@ -4,7 +4,13 @@ import { Link } from 'preact-router';
 import { AppRoute } from '../lib/app-route.enum';
 import { IconName } from '../lib/icon-name.enum';
 
+/**
+ * Displays the game rules, controls, and project background.
+ */
 export class AboutView extends Component {
+  /**
+   * Displays game instructions, input controls, and project links.
+   */
   public render(): VNode {
     return (
       <div class="c-about-view">

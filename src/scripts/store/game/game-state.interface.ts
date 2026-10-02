@@ -1,6 +1,9 @@
 import { GameDifficulty } from '../../lib/game-difficulty';
 import { GameFinalStatus, GameStatus } from '../../lib/game-status';
 
+/**
+ * Shared game settings, lifecycle timestamps, and flag count. Timestamps are nullable before use.
+ */
 export interface GameState {
   player: string | null;
   status: GameStatus;

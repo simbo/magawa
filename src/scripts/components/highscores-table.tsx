@@ -4,12 +4,21 @@ import { formatDate } from '../lib/format-date.function';
 import { formatDuration } from '../lib/format-duration.function';
 import { Highscore } from '../lib/highscores';
 
+/**
+ * Leaderboard rows and the optional entry ID to highlight. Undefined rows indicate loading.
+ */
 interface HighscoresTableProps {
   rows?: Highscore[];
   highlight?: string;
 }
 
+/**
+ * Displays leaderboard rows with loading, empty, and highlighted-entry states.
+ */
 export class HighscoresTable extends Component<HighscoresTableProps> {
+  /**
+   * Formats leaderboard rows and distinguishes missing data from an empty result set.
+   */
   public render({ rows, highlight }: HighscoresTableProps): VNode {
     return (
       <table class="c-highscores-table">

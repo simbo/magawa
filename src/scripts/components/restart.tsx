@@ -6,7 +6,13 @@ import { IconName } from '../lib/icon-name.enum';
 import { GameAction } from '../store/game/game-actions';
 import { gameStore, gameStoreContext } from '../store/game/game-store';
 
+/**
+ * Restarts the current game and shows an icon reflecting its outcome.
+ */
 export class Restart extends Component {
+  /**
+   * Chooses the outcome icon and displays the restart button.
+   */
   public render(): VNode {
     const { finalStatus } = useContext(gameStoreContext);
     const iconName =
@@ -19,6 +25,9 @@ export class Restart extends Component {
     );
   }
 
+  /**
+   * Prevents the default button action and dispatches a game restart.
+   */
   private readonly onClick = (event: Event): void => {
     event.preventDefault();
     gameStore.dispatch(GameAction.Restart);

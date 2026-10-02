@@ -2,6 +2,9 @@ import { getPaintAsset, PaintAsset, PaintResourceName } from './paint-assets';
 import { PaintContainer } from './paint-container';
 import { PaintEngine } from './paint-engine';
 
+/**
+ * Image resource and optional position and dimensions relative to a container.
+ */
 export interface PaintTextureOptions {
   asset: PaintAsset | PaintResourceName;
   x?: number;
@@ -10,6 +13,9 @@ export interface PaintTextureOptions {
   height?: number;
 }
 
+/**
+ * Draws a loaded image relative to its parent container.
+ */
 export class PaintTexture {
   private readonly asset: PaintAsset;
 
@@ -18,6 +24,9 @@ export class PaintTexture {
   public readonly width: number;
   public readonly height: number;
 
+  /**
+   * Resolves a named resource and defaults missing dimensions to the image's natural size.
+   */
   public constructor(options: PaintTextureOptions) {
     if (typeof options.asset === 'string') {
       options.asset = getPaintAsset(options.asset as PaintResourceName);
@@ -29,6 +38,9 @@ export class PaintTexture {
     this.height = options.height || this.asset.image.height || 0;
   }
 
+  /**
+   * Draws the image at container-relative coordinates scaled to the canvas pixel density.
+   */
   public render(engine: PaintEngine, container: PaintContainer): void {
     const x = (container.x + this.x) * engine.pixelDensity;
     const y = (container.y + this.y) * engine.pixelDensity;

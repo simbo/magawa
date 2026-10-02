@@ -10,6 +10,9 @@ import { GameAction } from '../store/game/game-actions';
 import { gameSelectors } from '../store/game/game-selectors';
 import { gameStore, gameStoreContext } from '../store/game/game-store';
 
+/**
+ * Bridges game-store actions and the canvas-based game board.
+ */
 export class GameGfx extends Component {
   private readonly viewRef = createRef<HTMLCanvasElement>();
   private readonly unsubscribeSubject = new Subject<void>();
@@ -20,6 +23,9 @@ export class GameGfx extends Component {
   private tilesY!: number;
   private minesCount!: number;
 
+  /**
+   * Subscribes to restart and pause actions and redirects games without a player to the menu.
+   */
   constructor() {
     super();
     gameStore.actions$.pipe(takeUntil(this.unsubscribeSubject)).subscribe(({ name, state }) => {
@@ -36,6 +42,9 @@ export class GameGfx extends Component {
     });
   }
 
+  /**
+   * Creates the board after its canvas element is mounted and connects callbacks to store actions.
+   */
   public componentDidMount(): void {
     this.board = new GameBoard(
       this.viewRef.current as HTMLCanvasElement,
@@ -51,10 +60,17 @@ export class GameGfx extends Component {
     );
   }
 
+  /**
+   * Ends action subscriptions and removes the board's developer-mode listener.
+   */
   public componentWillUnmount(): void {
     this.unsubscribeSubject.next();
+    this.board.destroyBoard();
   }
 
+  /**
+   * Captures initial board dimensions from context and renders the canvas element.
+   */
   public render(): VNode {
     const gameState = useContext(gameStoreContext);
     if (!this.board) {
@@ -72,6 +88,9 @@ export class GameGfx extends Component {
     );
   }
 
+  /**
+   * Suppresses the browser context menu so secondary clicks can flag tiles.
+   */
   public onRightClick = (event: Event): void => {
     event.preventDefault();
   };
