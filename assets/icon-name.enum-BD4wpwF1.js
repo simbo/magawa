@@ -1,0 +1,2 @@
+var e=function(e){return e.Book=`book`,e.Boom=`boom`,e.Dead=`dead`,e.FlagOnGreen=`flag-on-green`,e.Flag=`flag`,e.LeftClick=`left-click`,e.Magawa=`magawa`,e.Money=`money`,e.Party=`party`,e.RightClick=`right-click`,e.Stopwatch=`stopwatch`,e.Trophy=`trophy`,e.Zzz=`zzz`,e}({});export{e as t};
+//# sourceMappingURL=icon-name.enum-BD4wpwF1.js.map

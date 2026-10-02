@@ -1,0 +1,2 @@
+import{o as e,t}from"./jsxRuntime-BnncLXC7.js";var n=class extends e{render(){return t(`div`,{class:`dev-layer`,children:t(`span`,{title:`Dev Mode enabled`,children:`🥷`})})}};export{n as DevLayer};
+//# sourceMappingURL=dev-layer-Dd7iD0ms.js.map
