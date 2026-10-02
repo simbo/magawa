@@ -1,5 +1,34 @@
 # Magawa
 
+## 0.13.0
+
+### Minor Changes
+
+- 32c8d2d: Introduce Changesets-based release commits and separate checks,
+  release, and publish workflows using the GitHub App identity. Require
+  changesets for non-draft pull requests, run regression tests in CI, verify the
+  checked commit before releasing, and publish tagged builds as GitHub releases
+  and GitHub Pages deployments. Add the historical changelog, support manual
+  release and publish runs, and replace the previous release script with the
+  automated process.
+- 32c8d2d: Add a persistent developer mode that reveals mines, shows a developer
+  indicator, and refreshes the field immediately when toggled. Document the game
+  code with JSDoc comments. This includes the changes committed in c32c89d.
+
+### Patch Changes
+
+- 32c8d2d: Upgrade to Node.js 24 LTS, pnpm 12, TypeScript 6, Preact 11, and
+  updated dependencies. Adopt the shared Simbo configurations for linting,
+  formatting, TypeScript, spelling, and commit messages. Add regression tests
+  using Node.js and jiti, modernize Vite template and HTML minification plugins,
+  migrate Sass to modules, remove unused dependencies, update Umami integration
+  and the API URL to the new server, and update the domain to simbo.de.
+- 32c8d2d: Replace Small Store, Immer, and RxJS with a Signals-based game store
+  while preserving action subscriptions and development logging. Replace Preact
+  Router and History with native hash routing, including browser navigation and
+  normalization of query strings and trailing slashes. Freeze the timer when a
+  game ends and prevent stale highscore responses after restarting.
+
 ## 0.12.1
 
 ### Patch Changes
