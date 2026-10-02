@@ -1,10 +1,10 @@
 @use 'sass:color';
-@use 'global-imports' as *;
+@use 'vars';
 
 .e-label,
 .e-input,
 .e-select {
-  line-height: $lineHeight;
+  line-height: vars.$lineHeight;
 }
 
 .e-label {
@@ -47,14 +47,14 @@
 .e-button {
   display: flex;
   justify-content: center;
-  background: color.adjust($colorBackground, $lightness: -3%, $space: hsl);
-  line-height: $lineHeight;
+  background: color.adjust(vars.$colorBackground, $lightness: -3%, $space: hsl);
+  line-height: vars.$lineHeight;
   padding: 0.2em 0.6em;
   border-radius: 0.2em;
 
   &--primary {
-    background: color.adjust($colorBackground, $lightness: -40%, $space: hsl);
-    color: $colorBackground;
+    background: color.adjust(vars.$colorBackground, $lightness: -40%, $space: hsl);
+    color: vars.$colorBackground;
     font-weight: bold;
     text-transform: uppercase;
   }

@@ -1,4 +1,4 @@
-@use './imports/global-imports';
+@use './imports/vars';
 
 @use './imports/base';
 
@@ -16,7 +16,6 @@
 @use './imports/components/menu-form';
 @use './imports/components/game-view';
 @use './imports/components/game-gfx';
-@use './imports/components/game-overlay';
 @use './imports/components/congratulations';
 @use './imports/components/highscores-view';
 @use './imports/components/highscores-table';

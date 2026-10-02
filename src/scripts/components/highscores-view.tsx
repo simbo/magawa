@@ -98,7 +98,7 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
           </div>
         </div>
         <div class="c-highscores-view__table">
-          <HighscoresTable rows={items} highlight="CrjD8A1cqGjxtpVT70aMM" />
+          <HighscoresTable rows={items} />
           {page && pages ? (
             <div class="c-highscores-view__pagination">
               <div>

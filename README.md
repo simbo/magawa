@@ -28,6 +28,14 @@ Play the live version at **[`simbo.de/magawa`](https://simbo.de/magawa)**
 
 See [ToDo](./TODO.md) for planned features.
 
+## Trivia
+
+This game is named after the giant pouched rat _Magawa_, who received a gold
+medal in september 2020 for its success and bravery in clearing mine fields in
+Cambodia. ([Wikipedia: Magawa](https://en.wikipedia.org/wiki/Magawa))
+
+![Magawa](./src/static/images/magawa.jpg)
+
 ## Development
 
 Use the Node.js version in `.nvmrc` and PNPM pinned in `package.json`. Install
@@ -65,14 +73,6 @@ The GitHub App needs repository access with Contents write permission and must
 be allowed to bypass the rules for `main`, `gh-pages`, and release tags.
 Configure `SIMBO_GITHUB_APP_ID` and `SIMBO_GITHUB_APP_PRIVATE_KEY` as repository
 secrets.
-
-## Trivia
-
-This game is named after the giant pouched rat _Magawa_, who received a gold
-medal in september 2020 for its success and bravery in clearing mine fields in
-Cambodia. ([Wikipedia: Magawa](https://en.wikipedia.org/wiki/Magawa))
-
-![Magawa](./src/static/images/magawa.jpg)
 
 ## License and Author
 

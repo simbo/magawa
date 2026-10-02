@@ -1,9 +1,9 @@
-@use '../global-imports' as *;
+@use '../vars';
 
 .c-congratulations {
   width: 20em;
   text-align: center;
-  line-height: $lineHeight;
+  line-height: vars.$lineHeight;
 
   &__title {
     display: flex;

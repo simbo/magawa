@@ -86,18 +86,8 @@ export class GameGfx extends Component {
     }
     return (
       <div class="c-game-gfx">
-        <canvas class="c-game-gfx__canvas" ref={this.viewRef} onContextMenu={this.onRightClick}></canvas>
-        {/* {isFinished || isPaused ? <GameOverlay /> : ''} */}
+        <canvas class="c-game-gfx__canvas" ref={this.viewRef}></canvas>
       </div>
     );
   }
-
-  /**
-   * Suppresses the browser context menu so secondary clicks can flag tiles.
-   *
-   * @param event - Browser event initiating this operation.
-   */
-  public onRightClick = (event: Event): void => {
-    event.preventDefault();
-  };
 }

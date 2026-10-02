@@ -1,11 +1,11 @@
-@use '../global-imports' as *;
+@use '../vars';
 
 .c-flags {
   display: flex;
   justify-content: flex-end;
 
   &__label {
-    line-height: $lineHeight;
+    line-height: vars.$lineHeight;
     margin-right: 0.4em;
   }
 }

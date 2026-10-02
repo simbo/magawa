@@ -1,5 +1,5 @@
 @use 'sass:math';
-@use 'global-imports' as *;
+@use 'vars';
 
 kbd {
   @function em($v) {
@@ -7,12 +7,12 @@ kbd {
   }
 
   display: inline-block;
-  min-width: em($lineHeight) * 1em;
+  min-width: em(vars.$lineHeight) * 1em;
   margin: 0 em(0.2em);
   font-size: 0.75em;
   padding: 0 em(0.25em);
-  font-family: $fontSans;
-  line-height: em($lineHeight);
+  font-family: vars.$fontSans;
+  line-height: em(vars.$lineHeight);
   background-color: #e6e8f0;
   background-image:
     linear-gradient(180deg, #ffffff 0%, transparent em(0.0625em)),

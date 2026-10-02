@@ -1,20 +1,20 @@
-@use 'global-imports' as *;
+@use 'vars';
 
 .version {
   align-self: flex-end;
   display: flex;
   margin: 0 1rem 1rem 0;
   font-size: 0.65em;
-  color: $colorSecondary;
+  color: vars.$colorSecondary;
 
   &:hover {
     opacity: 1;
-    color: $colorText;
+    color: vars.$colorText;
   }
 
   &__label {
     margin-right: 0.4em;
-    line-height: $lineHeight;
+    line-height: vars.$lineHeight;
   }
 
   &__icon {

@@ -1,17 +1,17 @@
 @use 'sass:color';
-@use 'global-imports' as *;
+@use 'vars';
 
 h1,
 .e-title {
   display: flex;
   justify-content: center;
-  line-height: $lineHeight;
+  line-height: vars.$lineHeight;
   font-weight: bold;
   font-size: 1.6em;
-  color: $colorTitle;
+  color: vars.$colorTitle;
   text-align: center;
   margin-bottom: 2rem;
-  text-shadow: 0 0.2em 0.4em rgba(color.adjust($colorTitle, $lightness: -20%, $space: hsl), 0.1);
+  text-shadow: 0 0.2em 0.4em rgba(color.adjust(vars.$colorTitle, $lightness: -20%, $space: hsl), 0.1);
 
   &--with-subtitle {
     margin-bottom: 0.5rem;
@@ -24,15 +24,15 @@ h1,
 
 .e-subtitle {
   text-align: center;
-  color: $colorSecondary;
+  color: vars.$colorSecondary;
   font-style: italic;
   margin: 0 0 2rem 0;
-  line-height: $lineHeight;
+  line-height: vars.$lineHeight;
 }
 
 hr {
   border: none;
-  border-top: 1px solid color.adjust($colorBackground, $lightness: -5%, $space: hsl);
+  border-top: 1px solid color.adjust(vars.$colorBackground, $lightness: -5%, $space: hsl);
   margin: 2rem auto;
   width: 40%;
 }
@@ -41,15 +41,15 @@ h2,
 p,
 dl {
   margin: 1rem 0;
-  line-height: $lineHeight;
+  line-height: vars.$lineHeight;
 }
 
 h2 {
-  color: $colorTitle;
+  color: vars.$colorTitle;
   font-weight: bold;
   font-size: 1.2em;
 }
 
 p {
-  line-height: $lineHeight;
+  line-height: vars.$lineHeight;
 }

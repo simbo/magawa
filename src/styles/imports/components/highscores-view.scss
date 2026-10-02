@@ -1,4 +1,4 @@
-@use '../global-imports' as *;
+@use '../vars';
 
 .c-highscores-view {
   &__options {
@@ -9,13 +9,13 @@
 
   &__options,
   &__updated {
-    font-size: $small;
+    font-size: vars.$small;
   }
 
   &__updated {
     margin-top: 1rem;
     text-align: right;
-    color: $colorSecondary;
+    color: vars.$colorSecondary;
   }
 
   &__pagination {
@@ -24,7 +24,7 @@
     justify-content: space-between;
     align-items: center;
     font-size: 0.75em;
-    color: $colorSecondary;
+    color: vars.$colorSecondary;
 
     button {
       width: 2em;

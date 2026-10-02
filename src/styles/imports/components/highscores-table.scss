@@ -1,25 +1,25 @@
 @use 'sass:color';
-@use '../global-imports' as *;
+@use '../vars';
 
 .c-highscores-table {
   width: 20em;
-  line-height: $lineHeight;
+  line-height: vars.$lineHeight;
   table-layout: fixed;
 
   &__head-row {
-    background: color.adjust($colorBackground, $lightness: -2%, $space: hsl);
+    background: color.adjust(vars.$colorBackground, $lightness: -2%, $space: hsl);
   }
 
   &__foot-row {
-    background: $colorBackground;
+    background: vars.$colorBackground;
   }
 
   &__row {
     &:nth-child(even) {
-      background: color.adjust($colorBackground, $lightness: -2%, $space: hsl);
+      background: color.adjust(vars.$colorBackground, $lightness: -2%, $space: hsl);
     }
     &:nth-child(odd) {
-      background: $colorBackground;
+      background: vars.$colorBackground;
     }
     &--highlight {
       &:nth-child(even),
@@ -68,13 +68,13 @@
   }
 
   &__head-cell {
-    font-size: $small;
-    color: $colorSecondary;
+    font-size: vars.$small;
+    color: vars.$colorSecondary;
   }
 
   &__cell {
     &--rank {
-      color: $colorSecondary;
+      color: vars.$colorSecondary;
       font-weight: bold;
     }
 
@@ -91,11 +91,11 @@
     padding: 1em 0.2em;
 
     &--loading {
-      color: $colorSecondary;
+      color: vars.$colorSecondary;
     }
 
     &--error {
-      color: $colorError;
+      color: vars.$colorError;
     }
   }
 }

@@ -1,8 +1,8 @@
-@use 'global-imports' as *;
+@use 'vars';
 
 img.e-icon {
   display: block;
-  width: $lineHeight * 1em;
+  width: vars.$lineHeight * 1em;
   height: auto;
   -webkit-user-drag: none;
 }

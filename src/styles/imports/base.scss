@@ -1,11 +1,11 @@
-@use 'global-imports' as *;
+@use 'vars';
 
 @use 'css-reset-and-normalize/scss/reset-and-normalize';
 @use 'css-reset-and-normalize/scss/button-reset';
 @use 'css-reset-and-normalize/scss/link-reset';
 
 html {
-  font-family: $fontSans;
+  font-family: vars.$fontSans;
   font-size: 16px;
 
   @media screen and (min-width: 768px) {
@@ -22,14 +22,14 @@ body {
   flex-direction: column;
   justify-content: space-between;
   min-height: 100vh;
-  background: $colorBackground;
-  color: $colorText;
+  background: vars.$colorBackground;
+  color: vars.$colorText;
   text-rendering: optimizeLegibility;
 }
 
 pre,
 code {
-  font-family: $fontMono;
+  font-family: vars.$fontMono;
 }
 
 button {

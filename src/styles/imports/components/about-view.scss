@@ -1,5 +1,5 @@
 @use 'sass:color';
-@use '../global-imports' as *;
+@use '../vars';
 
 .c-about-view {
   width: 30em;
@@ -34,7 +34,7 @@
 
   dd {
     display: flex;
-    border-right: 0.0625em solid color.adjust($colorBackground, $lightness: -5%, $space: hsl);
+    border-right: 0.0625em solid color.adjust(vars.$colorBackground, $lightness: -5%, $space: hsl);
     margin-left: 0.75em;
     padding-right: 0.75em;
 
@@ -45,6 +45,6 @@
   }
 
   p a {
-    color: color.adjust($colorBackground, $lightness: -40%, $space: hsl);
+    color: color.adjust(vars.$colorBackground, $lightness: -40%, $space: hsl);
   }
 }
