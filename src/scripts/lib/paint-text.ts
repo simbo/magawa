@@ -1,5 +1,5 @@
-import { PaintContainer } from './paint-container';
-import { PaintEngine } from './paint-engine';
+import type { PaintContainer } from './paint-container';
+import type { PaintEngine } from './paint-engine';
 
 /**
  * Text content, relative position, typography, and optional fill and stroke settings.
@@ -25,7 +25,7 @@ const DEFAULT_PAINT_TEXT_OPTIONS: Partial<PaintTextOptions> = {
   fontFamily: 'sans-serif',
   textAlign: 'center',
   textBaseline: 'middle',
-  direction: 'ltr'
+  direction: 'ltr',
 };
 
 /**
@@ -46,6 +46,8 @@ export class PaintText {
 
   /**
    * Combines text options with default typography and alignment.
+   *
+   * @param options - Configuration used to initialize or request this resource.
    */
   public constructor(options: Partial<PaintTextOptions>) {
     const {
@@ -59,10 +61,10 @@ export class PaintText {
       direction,
       fillStyle,
       strokeStyle,
-      strokeWidth
+      strokeWidth,
     } = {
       ...DEFAULT_PAINT_TEXT_OPTIONS,
-      ...options
+      ...options,
     };
 
     this.text = text as string;
@@ -80,6 +82,9 @@ export class PaintText {
 
   /**
    * Scales typography and container-relative coordinates, then fills or strokes the text.
+   *
+   * @param engine - Canvas engine providing the context and pixel density.
+   * @param container - Parent container defining the drawing origin.
    */
   public render(engine: PaintEngine, container: PaintContainer): void {
     engine.context.font = `${this.fontSize * engine.pixelDensity}px ${this.fontFamily}`;
@@ -87,7 +92,7 @@ export class PaintText {
     engine.context.textBaseline = this.textBaseline;
     engine.context.direction = this.direction;
     if (this.fillStyle || this.strokeStyle) {
-      const strokeWidth = (this.strokeWidth || 1) * engine.pixelDensity;
+      const strokeWidth = (this.strokeWidth ?? 1) * engine.pixelDensity;
       const x = (container.x + this.x) * engine.pixelDensity;
       const y = (container.y + this.y) * engine.pixelDensity;
       const textProps: [string, number, number] = [this.text, x, y];

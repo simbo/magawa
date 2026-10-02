@@ -1,27 +1,27 @@
-@import './imports/global-imports';
+@use './imports/global-imports';
 
-@import './imports/base';
+@use './imports/base';
 
-@import './imports/version';
-@import './imports/form-elements';
-@import './imports/typo';
-@import './imports/kbd';
-@import './imports/icon';
-@import './imports/back-button';
+@use './imports/version';
+@use './imports/form-elements';
+@use './imports/typo';
+@use './imports/kbd';
+@use './imports/icon';
+@use './imports/back-button';
 
-@import './imports/custom-elements/svg-icon';
+@use './imports/custom-elements/svg-icon';
 
-@import './imports/components/app';
-@import './imports/components/menu-view';
-@import './imports/components/menu-form';
-@import './imports/components/game-view';
-@import './imports/components/game-gfx';
-@import './imports/components/game-overlay';
-@import './imports/components/congratulations';
-@import './imports/components/highscores-view';
-@import './imports/components/highscores-table';
-@import './imports/components/about-view';
-@import './imports/components/flags';
-@import './imports/components/timer';
-@import './imports/components/restart';
-@import './imports/components/dev-layer.scss';
+@use './imports/components/app';
+@use './imports/components/menu-view';
+@use './imports/components/menu-form';
+@use './imports/components/game-view';
+@use './imports/components/game-gfx';
+@use './imports/components/game-overlay';
+@use './imports/components/congratulations';
+@use './imports/components/highscores-view';
+@use './imports/components/highscores-table';
+@use './imports/components/about-view';
+@use './imports/components/flags';
+@use './imports/components/timer';
+@use './imports/components/restart';
+@use './imports/components/dev-layer.scss';

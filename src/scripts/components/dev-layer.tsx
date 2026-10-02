@@ -1,4 +1,4 @@
-import { Component, h, VNode } from 'preact';
+import { Component, type VNode } from 'preact';
 
 /**
  * Displays a persistent visual indicator while developer mode is enabled.
@@ -6,6 +6,8 @@ import { Component, h, VNode } from 'preact';
 export class DevLayer extends Component {
   /**
    * Displays the ninja indicator at the position defined by the developer-layer stylesheet.
+   *
+   * @returns The rendered view.
    */
   public render(): VNode {
     return (

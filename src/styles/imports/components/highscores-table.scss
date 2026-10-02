@@ -1,10 +1,13 @@
+@use 'sass:color';
+@use '../global-imports' as *;
+
 .c-highscores-table {
   width: 20em;
   line-height: $lineHeight;
   table-layout: fixed;
 
   &__head-row {
-    background: darken($colorBackground, 2%);
+    background: color.adjust($colorBackground, $lightness: -2%, $space: hsl);
   }
 
   &__foot-row {
@@ -13,7 +16,7 @@
 
   &__row {
     &:nth-child(even) {
-      background: darken($colorBackground, 2%);
+      background: color.adjust($colorBackground, $lightness: -2%, $space: hsl);
     }
     &:nth-child(odd) {
       background: $colorBackground;
@@ -21,7 +24,8 @@
     &--highlight {
       &:nth-child(even),
       &:nth-child(odd) {
-        background: radial-gradient(
+        background:
+          radial-gradient(
             ellipse farthest-corner at right bottom,
             #fedb37 0%,
             #fdb931 20%,

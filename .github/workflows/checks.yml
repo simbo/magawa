@@ -1,0 +1,110 @@
+name: Checks 🧐
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - ready_for_review
+
+run-name: >
+  ${{
+    format(
+      '{0} {1}',
+      github.workflow,
+      github.event_name == 'pull_request'
+        && format('PR#{0} "{1}"', github.event.pull_request.number, github.event.pull_request.title)
+        || format('Branch {0} "{1}"', github.ref_name, github.event.head_commit.message)
+    )
+  }}
+
+concurrency:
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  group: >
+    ${{
+      format(
+        '{0}--{1}',
+        github.workflow,
+        github.event_name == 'pull_request'
+          && github.event.pull_request.number
+          || github.ref_name
+      )
+    }}
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: 🚚 Install pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: 🛠️ Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          cache: pnpm
+          node-version-file: .nvmrc
+
+      - name: 📦 Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: 👨‍🏫 Checks
+        run: pnpm run check
+
+      - name: 🧪 Tests
+        run: pnpm run test
+
+      - name: 👷 Build
+        run: pnpm run build
+
+      - name: 📄 Check for Changesets
+        id: has-changesets
+        run: |
+          set -euo pipefail
+          result=$([[ -d .changeset ]] && find .changeset -type f -name '*.md' ! -name 'README.md' -print -quit | grep -q . && echo true || echo false)
+          echo "result=${result}" >> $GITHUB_OUTPUT
+
+      - name: 👮‍♂️ Pull Requests Must Have Changesets
+        if: >
+          github.event_name == 'pull_request' &&
+          github.event.pull_request.draft == false
+        env:
+          RESULT: ${{ steps.has-changesets.outputs.result }}
+        run: |
+          set -euo pipefail
+          if [[ "$RESULT" != "true" ]]; then
+            echo "::error title=Missing Changeset::Pull requests must have changesets."
+            exit 1
+          fi
+
+      - name: 🪪 Retrieve Credentials
+        uses: simbo-actions/actions/actions/github-app-credentials@main
+        id: credentials
+        if: >
+          github.event_name == 'push' &&
+          steps.has-changesets.outputs.result == 'true'
+        with:
+          app-id: ${{ secrets.SIMBO_GITHUB_APP_ID }}
+          app-private-key: ${{ secrets.SIMBO_GITHUB_APP_PRIVATE_KEY }}
+
+      - name: '🎉 Workflow: Release (Event)'
+        uses: peter-evans/repository-dispatch@v4
+        if: >
+          github.event_name == 'push' &&
+          steps.has-changesets.outputs.result == 'true'
+        with:
+          token: ${{ steps.credentials.outputs.token }}
+          event-type: workflow:release
+          client-payload: >-
+            ${{ format('{{ "sha": "{0}" }}', github.sha) }}

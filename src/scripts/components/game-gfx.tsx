@@ -1,11 +1,9 @@
-import { Component, createRef, h, VNode } from 'preact';
-import { route } from 'preact-router';
+import { Component, createRef, type VNode } from 'preact';
 import { useContext } from 'preact/hooks';
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 
 import { AppRoute } from '../lib/app-route.enum';
 import { GameBoard } from '../lib/game-board';
+import { route } from '../lib/hash-router';
 import { GameAction } from '../store/game/game-actions';
 import { gameSelectors } from '../store/game/game-selectors';
 import { gameStore, gameStoreContext } from '../store/game/game-store';
@@ -15,7 +13,7 @@ import { gameStore, gameStoreContext } from '../store/game/game-store';
  */
 export class GameGfx extends Component {
   private readonly viewRef = createRef<HTMLCanvasElement>();
-  private readonly unsubscribeSubject = new Subject<void>();
+  private unsubscribeActions: (() => void) | undefined;
 
   private board!: GameBoard;
   private tileSize!: number;
@@ -24,16 +22,37 @@ export class GameGfx extends Component {
   private minesCount!: number;
 
   /**
-   * Subscribes to restart and pause actions and redirects games without a player to the menu.
+   * Creates the board after its canvas element is mounted and connects callbacks to store actions.
    */
-  constructor() {
-    super();
-    gameStore.actions$.pipe(takeUntil(this.unsubscribeSubject)).subscribe(({ name, state }) => {
-      if (name === GameAction.Restart) {
+  public override componentDidMount(): void {
+    this.board = new GameBoard(
+      this.viewRef.current,
+      this.tileSize,
+      this.tilesX,
+      this.tilesY,
+      this.minesCount,
+      () => {
+        gameStore.dispatch(GameAction.FirstClick);
+      },
+      flagsCount => {
+        gameStore.dispatch(GameAction.SetFlagsCount, { flagsCount });
+      },
+      () => {
+        gameStore.dispatch(GameAction.Unpause);
+      },
+      finalStatus => {
+        gameStore.dispatch(GameAction.Finish, { finalStatus });
+      },
+      () => {
+        route(AppRoute.Home);
+      },
+    );
+    this.unsubscribeActions = gameStore.subscribeActions(({ name, state }) => {
+      if (name === GameAction.Restart || name === GameAction.Start) {
         this.board.initBoard();
-      } else if (name === GameAction.Pause && gameSelectors.isPaused(state)) {
+      } else if ((name === GameAction.Pause || name === GameAction.TogglePause) && gameSelectors.isPaused(state)) {
         this.board.showPauseOverlay();
-      } else if (name === GameAction.Unpause && gameSelectors.isRunning(state)) {
+      } else if ((name === GameAction.Unpause || name === GameAction.TogglePause) && gameSelectors.isRunning(state)) {
         this.board.hidePauseOverlay();
       }
       if (!gameSelectors.player(state)) {
@@ -43,36 +62,21 @@ export class GameGfx extends Component {
   }
 
   /**
-   * Creates the board after its canvas element is mounted and connects callbacks to store actions.
-   */
-  public componentDidMount(): void {
-    this.board = new GameBoard(
-      this.viewRef.current as HTMLCanvasElement,
-      this.tileSize,
-      this.tilesX,
-      this.tilesY,
-      this.minesCount,
-      () => gameStore.dispatch(GameAction.FirstClick),
-      flagsCount => gameStore.dispatch(GameAction.SetFlagsCount, { flagsCount }),
-      () => gameStore.dispatch(GameAction.Unpause),
-      finalStatus => gameStore.dispatch(GameAction.Finish, { finalStatus }),
-      () => route(AppRoute.Home)
-    );
-  }
-
-  /**
    * Ends action subscriptions and removes the board's developer-mode listener.
    */
-  public componentWillUnmount(): void {
-    this.unsubscribeSubject.next();
+  public override componentWillUnmount(): void {
+    this.unsubscribeActions?.();
     this.board.destroyBoard();
   }
 
   /**
    * Captures initial board dimensions from context and renders the canvas element.
+   *
+   * @returns The rendered view.
    */
   public render(): VNode {
     const gameState = useContext(gameStoreContext);
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- Initialized only after the first render or board setup.
     if (!this.board) {
       const { tileSize, tilesX, tilesY, minesCount } = gameState;
       this.tileSize = tileSize;
@@ -90,6 +94,8 @@ export class GameGfx extends Component {
 
   /**
    * Suppresses the browser context menu so secondary clicks can flag tiles.
+   *
+   * @param event - Browser event initiating this operation.
    */
   public onRightClick = (event: Event): void => {
     event.preventDefault();

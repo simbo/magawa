@@ -1,0 +1,12 @@
+engineStrict: true
+
+verifyDepsBeforeRun: warn
+
+minimumReleaseAge: 2880
+
+minimumReleaseAgeExclude:
+  - '@simbo/*'
+
+# Sass uses the prebuilt watcher; this optional source-build hook is unnecessary.
+allowBuilds:
+  '@parcel/watcher': false

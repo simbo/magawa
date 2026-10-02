@@ -1,4 +1,5 @@
 @use 'sass:math';
+@use 'global-imports' as *;
 
 kbd {
   @function em($v) {
@@ -13,7 +14,8 @@ kbd {
   font-family: $fontSans;
   line-height: em($lineHeight);
   background-color: #e6e8f0;
-  background-image: linear-gradient(180deg, #ffffff 0%, transparent em(0.0625em)),
+  background-image:
+    linear-gradient(180deg, #ffffff 0%, transparent em(0.0625em)),
     linear-gradient(90deg, #ffffff 0%, transparent em(0.0625em)),
     linear-gradient(0deg, #c1c0c4 0%, transparent em(0.0625em)),
     linear-gradient(270deg, #c1c0c4 0%, transparent em(0.0625em));

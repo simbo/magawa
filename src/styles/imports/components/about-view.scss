@@ -1,3 +1,6 @@
+@use 'sass:color';
+@use '../global-imports' as *;
+
 .c-about-view {
   width: 30em;
   max-width: 100%;
@@ -31,7 +34,7 @@
 
   dd {
     display: flex;
-    border-right: 0.0625em solid darken($colorBackground, 5%);
+    border-right: 0.0625em solid color.adjust($colorBackground, $lightness: -5%, $space: hsl);
     margin-left: 0.75em;
     padding-right: 0.75em;
 
@@ -42,6 +45,6 @@
   }
 
   p a {
-    color: darken($colorBackground, 40%);
+    color: color.adjust($colorBackground, $lightness: -40%, $space: hsl);
   }
 }

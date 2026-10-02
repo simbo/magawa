@@ -1,6 +1,6 @@
-import { getPaintAsset, PaintAsset, PaintResourceName } from './paint-assets';
-import { PaintContainer } from './paint-container';
-import { PaintEngine } from './paint-engine';
+import { getPaintAsset, type PaintAsset, type PaintResourceName } from './paint-assets';
+import type { PaintContainer } from './paint-container';
+import type { PaintEngine } from './paint-engine';
 
 /**
  * Image resource and optional position and dimensions relative to a container.
@@ -17,29 +17,34 @@ export interface PaintTextureOptions {
  * Draws a loaded image relative to its parent container.
  */
 export class PaintTexture {
-  private readonly asset: PaintAsset;
-
   public readonly x: number;
   public readonly y: number;
   public readonly width: number;
   public readonly height: number;
 
+  private readonly asset: PaintAsset;
+
   /**
    * Resolves a named resource and defaults missing dimensions to the image's natural size.
+   *
+   * @param options - Configuration used to initialize or request this resource.
    */
   public constructor(options: PaintTextureOptions) {
     if (typeof options.asset === 'string') {
-      options.asset = getPaintAsset(options.asset as PaintResourceName);
+      options.asset = getPaintAsset(options.asset);
     }
     this.asset = options.asset;
-    this.x = options.x || 0;
-    this.y = options.y || 0;
-    this.width = options.width || this.asset.image.width || 0;
-    this.height = options.height || this.asset.image.height || 0;
+    this.x = options.x ?? 0;
+    this.y = options.y ?? 0;
+    this.width = options.width ?? this.asset.image.width;
+    this.height = options.height ?? this.asset.image.height;
   }
 
   /**
    * Draws the image at container-relative coordinates scaled to the canvas pixel density.
+   *
+   * @param engine - Canvas engine providing the context and pixel density.
+   * @param container - Parent container defining the drawing origin.
    */
   public render(engine: PaintEngine, container: PaintContainer): void {
     const x = (container.x + this.x) * engine.pixelDensity;

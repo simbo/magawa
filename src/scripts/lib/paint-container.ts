@@ -1,6 +1,6 @@
-import { PaintEngine } from './paint-engine';
-import { PaintText } from './paint-text';
-import { PaintTexture } from './paint-texture';
+import type { PaintEngine } from './paint-engine';
+import type { PaintText } from './paint-text';
+import type { PaintTexture } from './paint-texture';
 
 /**
  * Pointer event, clicked container, and canvas engine passed to a click handler.
@@ -39,7 +39,7 @@ const DEFAULT_PAINT_CONTAINER_OPTIONS: Partial<PaintContainerOptions> = {
   y: 0,
   strokeWidth: 1,
   active: true,
-  interactive: true
+  interactive: true,
 };
 
 /**
@@ -64,11 +64,13 @@ export class PaintContainer {
 
   /**
    * Applies default geometry and interaction settings, then stores the optional click handler.
+   *
+   * @param options - Configuration used to initialize or request this resource.
    */
   public constructor(options: Partial<PaintContainerOptions>) {
     const { width, height, x, y, fillStyle, strokeStyle, strokeWidth, active, interactive } = {
       ...DEFAULT_PAINT_CONTAINER_OPTIONS,
-      ...options
+      ...options,
     };
 
     this.width = width as number;
@@ -88,6 +90,8 @@ export class PaintContainer {
 
   /**
    * Paints the active container background and border, then draws its children in insertion order.
+   *
+   * @param engine - Canvas engine providing the context and pixel density.
    */
   public render(engine: PaintEngine): void {
     if (!this.active) {
@@ -95,7 +99,7 @@ export class PaintContainer {
     }
 
     if (this.fillStyle || this.strokeStyle) {
-      const strokeWidth = (this.strokeWidth || 1) * engine.pixelDensity;
+      const strokeWidth = (this.strokeWidth ?? 1) * engine.pixelDensity;
       const x = this.x * engine.pixelDensity;
       const y = this.y * engine.pixelDensity;
       const width = this.width * engine.pixelDensity;
@@ -121,6 +125,8 @@ export class PaintContainer {
 
   /**
    * Appends drawable children in the order in which they should appear.
+   *
+   * @param container - Parent container defining the drawing origin.
    */
   public add(...container: (PaintContainer | PaintTexture | PaintText)[]): void {
     this.children.push(...container);
@@ -135,6 +141,10 @@ export class PaintContainer {
 
   /**
    * Checks whether logical canvas coordinates lie inside the container, including its edges.
+   *
+   * @param x - Horizontal tile or canvas coordinate.
+   * @param y - Vertical tile or canvas coordinate.
+   * @returns Whether the point lies within this container.
    */
   public isHitBy(x: number, y: number): boolean {
     return x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height;

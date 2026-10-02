@@ -1,7 +1,7 @@
 import { compressToUTF16 } from 'lz-string';
 
 import { apiFetch, apiPost, apiUrl } from './api';
-import { GameDifficulty } from './game-difficulty';
+import type { GameDifficulty } from './game-difficulty';
 
 /**
  * Preset difficulties accepted by the leaderboard; custom boards are excluded.
@@ -52,12 +52,14 @@ interface HighscoreOptions {
  */
 export async function getHighscores(options: HighscoreOptions): Promise<HighscoresCollection> {
   const { difficulty, player, page, perPage, rank } = { perPage: 10, ...options };
-  const pathParams = ['highscores', `${difficulty}`];
-  const queryParams: { [key: string]: string } = { page: `${page}`, perPage: `${perPage}` };
+  const pathParams = ['highscores', String(difficulty)];
+  const queryParams: Record<string, string> = { page: String(page ?? 1), perPage: String(perPage) };
   if (player) {
-    queryParams.player = `${player}`;
+    queryParams.player = player;
   }
-  const collection = await apiFetch<HighscoresCollection>(apiUrl(pathParams, rank ? { rank: `${rank}` } : queryParams));
+  const collection = await apiFetch<HighscoresCollection>(
+    apiUrl(pathParams, rank ? { rank: String(rank) } : queryParams),
+  );
   return collection;
 }
 
@@ -72,9 +74,9 @@ export async function getHighscores(options: HighscoreOptions): Promise<Highscor
 export async function addHighscore(
   difficulty: HighscoreGameDifficulty,
   player: string,
-  time: number
+  time: number,
 ): Promise<Highscore> {
   const data = compressToUTF16(JSON.stringify({ player, time }));
-  const highscore = await apiPost<{ data: string }, Highscore>(apiUrl(['highscores', `${difficulty}`]), { data });
+  const highscore = await apiPost<Highscore>(apiUrl(['highscores', String(difficulty)]), { data });
   return highscore;
 }

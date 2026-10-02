@@ -1,5 +1,5 @@
 import { differenceInMilliseconds } from 'date-fns';
-import { Component, h, VNode } from 'preact';
+import { Component, type VNode } from 'preact';
 import { useContext } from 'preact/hooks';
 
 import { formatDuration } from '../lib/format-duration.function';
@@ -17,12 +17,14 @@ export class Timer extends Component {
   /**
    * Cancels the pending timer update when the component is removed.
    */
-  public componentWillUnmount(): void {
+  public override componentWillUnmount(): void {
     this.stopTimeout();
   }
 
   /**
    * Displays elapsed time and schedules updates only while the game is neither paused nor finished.
+   *
+   * @returns The rendered view.
    */
   public render(): VNode {
     const gameState = useContext(gameStoreContext);
@@ -33,7 +35,7 @@ export class Timer extends Component {
     } else {
       this.startTimeout();
     }
-    const duration = this.getDuration(gameState.startedAt as Date, gameState.pausedAt);
+    const duration = this.getDuration(gameState.startedAt, gameState.finishedAt ?? gameState.pausedAt);
     const label = isPaused ? 'Continue' : 'Pause';
     const icon = isPaused ? IconName.Zzz : IconName.Stopwatch;
     return (
@@ -48,6 +50,8 @@ export class Timer extends Component {
 
   /**
    * Dispatches a pause toggle without triggering the button's default action.
+   *
+   * @param event - Browser event initiating this operation.
    */
   private readonly onClick = (event: Event): void => {
     event.preventDefault();
@@ -56,9 +60,13 @@ export class Timer extends Component {
 
   /**
    * Formats elapsed milliseconds up to the pause timestamp or current time; returns zero before play starts.
+   *
+   * @param startedAt - Playing-time start adjusted to exclude pauses.
+   * @param pausedAt - Pause timestamp, or null while running.
+   * @returns Elapsed playing time formatted for display.
    */
-  private getDuration(startedAt: Date, pausedAt: Date | null): string {
-    const date = pausedAt === null ? new Date() : pausedAt;
+  private getDuration(startedAt: Date | null, pausedAt: Date | null): string {
+    const date = pausedAt ?? new Date();
     const duration = startedAt ? differenceInMilliseconds(date, startedAt) : 0;
     return formatDuration(duration, false);
   }
@@ -68,7 +76,7 @@ export class Timer extends Component {
    */
   private startTimeout(): void {
     this.stopTimeout();
-    this.timeout = window.setTimeout(() => {
+    this.timeout = globalThis.setTimeout(() => {
       this.forceUpdate();
     }, 1000);
   }
@@ -78,7 +86,7 @@ export class Timer extends Component {
    */
   private stopTimeout(): void {
     if (this.timeout) {
-      window.clearTimeout(this.timeout);
+      globalThis.clearTimeout(this.timeout);
     }
   }
 }

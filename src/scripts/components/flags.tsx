@@ -1,4 +1,4 @@
-import { Component, h, VNode } from 'preact';
+import { Component, type VNode } from 'preact';
 import { useContext } from 'preact/hooks';
 
 import { IconName } from '../lib/icon-name.enum';
@@ -10,6 +10,8 @@ import { gameStoreContext } from '../store/game/game-store';
 export class Flags extends Component {
   /**
    * Reads the current flag and mine counts from game context and displays their ratio.
+   *
+   * @returns The rendered view.
    */
   public render(): VNode {
     const { flagsCount, minesCount } = useContext(gameStoreContext);

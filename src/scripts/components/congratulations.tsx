@@ -1,8 +1,8 @@
-import { Component, h, VNode } from 'preact';
+import { Component, type VNode } from 'preact';
 
 import { formatDifficulty } from '../lib/format-difficulty.function';
 import { formatDuration } from '../lib/format-duration.function';
-import { Highscore, HighscoreGameDifficulty } from '../lib/highscores';
+import type { Highscore, HighscoreGameDifficulty } from '../lib/highscores';
 import { IconName } from '../lib/icon-name.enum';
 
 /**
@@ -19,6 +19,11 @@ interface CongratulationsProps {
 export class Congratulations extends Component<CongratulationsProps> {
   /**
    * Displays congratulations and, when available, the saved time and leaderboard rank.
+   *
+   * @param root0 - Component props or action input.
+   * @param root0.highscore - Optional saved result shown after winning.
+   * @param root0.difficulty - Selected game difficulty.
+   * @returns The rendered view.
    */
   public render({ highscore, difficulty }: CongratulationsProps): VNode {
     return (

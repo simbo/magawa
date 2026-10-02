@@ -1,11 +1,10 @@
 import { differenceInMilliseconds, subMilliseconds } from 'date-fns';
-import { Actions } from 'small-store';
 
-import { GameDifficulty, gameDifficultySettings, GameDifficultySettings } from '../../lib/game-difficulty';
-import { GameFinalStatus, GameStatus } from '../../lib/game-status';
+import { GameDifficulty, gameDifficultySettings, type GameDifficultySettings } from '../../lib/game-difficulty';
+import { GameStatus, type GameFinalStatus } from '../../lib/game-status';
 import { storage } from '../../lib/storage';
 
-import { GameState } from './game-state.interface';
+import type { GameState } from './game-state.interface';
 
 /**
  * Action names dispatched to the game store.
@@ -20,7 +19,7 @@ export enum GameAction {
   TogglePause = 'togglePause',
   Finish = 'finish',
   Close = 'close',
-  SetFlagsCount = 'setFlagsCount'
+  SetFlagsCount = 'setFlagsCount',
 }
 
 /**
@@ -43,9 +42,24 @@ export interface GameActionPayloads {
 /**
  * State transitions for game actions; reducers return either partial updates or the current state.
  */
-export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
+export type GameReducers = {
+  [Action in GameAction]: (
+    ...payload: Action extends keyof GameActionPayloads ? [GameActionPayloads[Action]] : []
+  ) => Partial<GameState> | ((state: GameState) => GameState);
+};
+
+/**
+ * Pure state transitions; restart and pause-toggle reuse existing transitions.
+ */
+export const gameActions: GameReducers = {
   /**
    * Validates the player and difficulty, selects board dimensions, and persists the preferences.
+   *
+   * @param root0 - Component props or action input.
+   * @param root0.player - Player name associated with the game or query.
+   * @param root0.difficulty - Selected game difficulty.
+   * @param root0.settings - Board dimensions and mine count for custom difficulty.
+   * @returns The resulting game state or partial state update.
    */
   [GameAction.SetSettings]:
     ({ player, difficulty, settings }) =>
@@ -53,15 +67,9 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
       if (!/^\w+$/.test(player)) {
         return state;
       }
-      difficulty = difficulty >= 0 && difficulty <= GameDifficulty.Custom ? difficulty : state.difficulty;
-      const difficultySettings =
-        difficulty === GameDifficulty.Custom
-          ? settings || {
-              tilesX: state.tilesX,
-              tilesY: state.tilesY,
-              minesCount: state.minesCount
-            }
-          : gameDifficultySettings[difficulty];
+      difficulty =
+        difficulty >= GameDifficulty.Easy && difficulty <= GameDifficulty.Custom ? difficulty : state.difficulty;
+      const difficultySettings = difficulty === GameDifficulty.Custom ? settings : gameDifficultySettings[difficulty];
       const { tilesX, tilesY, minesCount } = difficultySettings;
       storage.set({ player, difficulty, difficultySettings });
       return { ...state, player, difficulty, tilesX, tilesY, minesCount };
@@ -69,32 +77,52 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
 
   /**
    * Resets lifecycle timestamps, outcome, and flags before the first click.
+   *
+   * @returns The resulting game state or partial state update.
    */
-  [GameAction.Start]: () => {
-    return {
-      status: GameStatus.Running,
-      finalStatus: null,
-      startedAt: null,
-      pausedAt: null,
-      finishedAt: null,
-      flagsCount: 0
-    };
+  [GameAction.Restart]: () => gameActions[GameAction.Start](),
+
+  /**
+   * Chooses the pause transition from the current lifecycle state.
+   *
+   * @returns A reducer that pauses or resumes the game.
+   */
+  [GameAction.TogglePause]: () => state => {
+    const action = state.status === GameStatus.Paused ? GameAction.Unpause : GameAction.Pause;
+    const update = gameActions[action]();
+    return typeof update === 'function' ? update(state) : { ...state, ...update };
   },
+
+  /**
+   * Resets the game before the first click.
+   *
+   * @returns The initial lifecycle fields.
+   */
+  [GameAction.Start]: () => ({
+    status: GameStatus.Running,
+    finalStatus: null,
+    startedAt: null,
+    pausedAt: null,
+    finishedAt: null,
+    flagsCount: 0,
+  }),
 
   /**
    * Starts the playing-time clock when the board is first interacted with.
+   *
+   * @returns The resulting game state or partial state update.
    */
-  [GameAction.FirstClick]: () => {
-    return {
-      startedAt: new Date(),
-      pausedAt: null,
-      finishedAt: null,
-      flagsCount: 0
-    };
-  },
+  [GameAction.FirstClick]: () => ({
+    startedAt: new Date(),
+    pausedAt: null,
+    finishedAt: null,
+    flagsCount: 0,
+  }),
 
   /**
    * Records the pause timestamp only for a running game.
+   *
+   * @returns The resulting game state or partial state update.
    */
   [GameAction.Pause]: () => state => {
     if (state.status !== GameStatus.Running) {
@@ -103,33 +131,40 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
     return {
       ...state,
       status: GameStatus.Paused,
-      pausedAt: new Date()
+      pausedAt: new Date(),
     };
   },
 
   /**
    * Resumes a paused game and shifts its start timestamp to exclude the pause duration.
+   *
+   * @returns The resulting game state or partial state update.
    */
   [GameAction.Unpause]: () => state => {
     if (state.status !== GameStatus.Paused) {
       return state;
     }
+
     /**
      * The difference is negative because the pause timestamp precedes now.
      * Subtracting it moves startedAt forward, excluding paused time from the elapsed duration.
      */
     const pauseDuration = differenceInMilliseconds(state.pausedAt as Date, new Date());
-    const startedAt = state.startedAt ? subMilliseconds(state.startedAt as Date, pauseDuration) : null;
+    const startedAt = state.startedAt ? subMilliseconds(state.startedAt, pauseDuration) : null;
     return {
       ...state,
       status: GameStatus.Running,
       startedAt,
-      pausedAt: null
+      pausedAt: null,
     };
   },
 
   /**
    * Records the outcome and finish timestamp only for a running game.
+   *
+   * @param root0 - Component props or action input.
+   * @param root0.finalStatus - Winning or losing game outcome.
+   * @returns The resulting game state or partial state update.
    */
   [GameAction.Finish]:
     ({ finalStatus }) =>
@@ -141,30 +176,30 @@ export const gameActions: Actions<GameState, GameAction, GameActionPayloads> = {
         ...state,
         finishedAt: new Date(),
         status: GameStatus.Finished,
-        finalStatus
+        finalStatus,
       };
     },
 
   /**
    * Closes the game and clears the active timing timestamps.
+   *
+   * @returns The resulting game state or partial state update.
    */
-  [GameAction.Close]: () => {
-    return {
-      status: GameStatus.Closed,
-      startedAt: null,
-      pausedAt: null
-    };
-  },
+  [GameAction.Close]: () => ({
+    status: GameStatus.Closed,
+    startedAt: null,
+    pausedAt: null,
+  }),
 
   /**
    * Updates the flag count only while running and when the payload is numeric.
+   *
+   * @param root0 - Component props or action input.
+   * @param root0.flagsCount - Current number of placed flags.
+   * @returns The resulting game state or partial state update.
    */
   [GameAction.SetFlagsCount]:
     ({ flagsCount }) =>
-    state => {
-      if (state.status !== GameStatus.Running || typeof flagsCount !== 'number') {
-        return state;
-      }
-      return { ...state, flagsCount };
-    }
+    state =>
+      state.status !== GameStatus.Running || typeof flagsCount !== 'number' ? state : { ...state, flagsCount },
 };

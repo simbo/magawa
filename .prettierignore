@@ -1,3 +1,4 @@
-/magawa/**/*
-/node_modules/**/*
 *.svg
+pnpm-lock.yaml
+/magawa/
+/coverage/

@@ -1,4 +1,4 @@
-import { Component, h, VNode } from 'preact';
+import { Component, type VNode } from 'preact';
 import { useContext } from 'preact/hooks';
 
 import { GameFinalStatus } from '../lib/game-status';
@@ -12,11 +12,12 @@ import { gameStore, gameStoreContext } from '../store/game/game-store';
 export class Restart extends Component {
   /**
    * Chooses the outcome icon and displays the restart button.
+   *
+   * @returns The rendered view.
    */
   public render(): VNode {
     const { finalStatus } = useContext(gameStoreContext);
     const iconName =
-      // eslint-disable-next-line unicorn/no-nested-ternary
       finalStatus === null ? IconName.Magawa : finalStatus === GameFinalStatus.Won ? IconName.Party : IconName.Dead;
     return (
       <button class="c-restart" title="Restart Game" onClick={this.onClick}>
@@ -27,6 +28,8 @@ export class Restart extends Component {
 
   /**
    * Prevents the default button action and dispatches a game restart.
+   *
+   * @param event - Browser event initiating this operation.
    */
   private readonly onClick = (event: Event): void => {
     event.preventDefault();

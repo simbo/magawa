@@ -1,5 +1,4 @@
-@use 'sass:math';
-
-@import 'vars';
-@import 'mixins/media';
-@import 'mixins/momentum-scrolling';
+// Shared tokens and mixins; this module emits no CSS.
+@forward 'vars';
+@forward 'mixins/media';
+@forward 'mixins/momentum-scrolling';

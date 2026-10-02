@@ -1,9 +1,9 @@
-import { Component, createRef, h, VNode } from 'preact';
-import { Link } from 'preact-router';
+import { Component, createRef, type VNode } from 'preact';
 
 import { AppRoute } from '../lib/app-route.enum';
 import { DEFAULT_GAME_DIFFICULTY, GameDifficulty } from '../lib/game-difficulty';
-import { getHighscores, HighscoreGameDifficulty, HighscoresCollection } from '../lib/highscores';
+import { Link } from '../lib/hash-router';
+import { getHighscores, type HighscoreGameDifficulty, type HighscoresCollection } from '../lib/highscores';
 import { IconName } from '../lib/icon-name.enum';
 
 import { HighscoresTable } from './highscores-table';
@@ -26,7 +26,7 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
    * Only named difficulty entries become selectable options.
    */
   private readonly difficulties = Object.entries(GameDifficulty).filter(
-    ([, value]) => typeof value === 'number' && value !== GameDifficulty.Custom
+    ([, value]) => typeof value === 'number' && value !== GameDifficulty.Custom,
   ) as [string, HighscoreGameDifficulty][];
 
   private readonly refSelect = createRef<HTMLSelectElement>();
@@ -34,8 +34,11 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
 
   /**
    * Selects the default difficulty and requests the first leaderboard page.
+   *
+   * @param props - Initial component props.
+   * @param state - Current game or component state.
    */
-  constructor(props: object, state: HighscoresViewState) {
+  public constructor(props: object, state: HighscoresViewState) {
     super(props, state);
     const difficulty = DEFAULT_GAME_DIFFICULTY;
     const player = '';
@@ -46,9 +49,15 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
 
   /**
    * Displays leaderboard filters, loading or loaded entries, and available pagination controls.
+   *
+   * @param _props - Component props, unused by this view.
+   * @param root0 - Component props or action input.
+   * @param root0.difficulty - Selected game difficulty.
+   * @param root0.collection - Optional loaded leaderboard page.
+   * @returns The rendered view.
    */
   public render(_props: object, { difficulty, collection }: HighscoresViewState): VNode {
-    const { items, total, page, pages, nextPage, previousPage } = (collection as HighscoresCollection) || {};
+    const { items, total, page, pages, nextPage, previousPage } = collection ?? {};
     return (
       <div class="c-highscores-view">
         <h1 class="c-highscores-view__title e-title">
@@ -95,8 +104,10 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
               <div>
                 <button
                   disabled={!previousPage}
-                  onClick={() => this.changePage(previousPage as number)}
-                  title={`Page ${previousPage}`}
+                  onClick={() => {
+                    this.changePage(previousPage as number);
+                  }}
+                  title={`Page ${previousPage ?? 0}`}
                 >
                   ◀
                 </button>
@@ -108,8 +119,10 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
               <div>
                 <button
                   disabled={!nextPage}
-                  onClick={() => this.changePage(nextPage as number)}
-                  title={`Page ${nextPage}`}
+                  onClick={() => {
+                    this.changePage(nextPage as number);
+                  }}
+                  title={`Page ${nextPage ?? 0}`}
                 >
                   ▶
                 </button>
@@ -130,26 +143,38 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
 
   /**
    * Reads the difficulty and player filters and requests the current selected page.
+   *
+   * @param event - Browser event initiating this operation.
    */
   private readonly onChangeOptions = (event: Event): void => {
     event.preventDefault();
-    const difficulty = Number.parseInt(`${this.refSelect.current?.value}`, 10);
-    const player = this.refInput.current?.value;
+    const difficulty =
+      this.difficulties.find(([, value]) => String(value) === this.refSelect.current.value)?.[1] ??
+      DEFAULT_GAME_DIFFICULTY;
+    const player = this.refInput.current.value;
     const page = this.state.page;
     this.request(difficulty, page, player);
   };
 
   /**
    * Requests another page while preserving the currently entered filters.
+   *
+   * @param page - One-based leaderboard page to load.
    */
-  private readonly changePage = (page: number) => {
-    const difficulty = Number.parseInt(`${this.refSelect.current?.value}`, 10);
-    const player = this.refInput.current?.value;
+  private readonly changePage = (page: number): void => {
+    const difficulty =
+      this.difficulties.find(([, value]) => String(value) === this.refSelect.current.value)?.[1] ??
+      DEFAULT_GAME_DIFFICULTY;
+    const player = this.refInput.current.value;
     this.request(difficulty, page, player);
   };
 
   /**
    * Clears the previous collection while loading, then displays results or an empty collection on error.
+   *
+   * @param difficulty - Selected game difficulty.
+   * @param page - One-based leaderboard page to load.
+   * @param player - Player name associated with the game or query.
    */
   private request(difficulty: HighscoreGameDifficulty, page: number, player?: string): void {
     this.setState({ difficulty, collection: undefined });

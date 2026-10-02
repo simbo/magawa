@@ -1,9 +1,8 @@
-import { Component, createRef, h, JSX, VNode } from 'preact';
-import { route } from 'preact-router';
-import { take } from 'rxjs/operators';
+import { Component, createRef, type VNode } from 'preact';
 
 import { AppRoute } from '../lib/app-route.enum';
 import { GameDifficulty, gameDifficultySettings } from '../lib/game-difficulty';
+import { route } from '../lib/hash-router';
 import { GameAction } from '../store/game/game-actions';
 import { gameStore } from '../store/game/game-store';
 
@@ -28,7 +27,7 @@ export class MenuForm extends Component<object, MenuFormState> {
    */
   private readonly difficulties = Object.entries(GameDifficulty).filter(([, value]) => typeof value === 'number') as [
     string,
-    GameDifficulty
+    GameDifficulty,
   ][];
 
   private readonly refPlayerInput = createRef<HTMLInputElement>();
@@ -42,8 +41,11 @@ export class MenuForm extends Component<object, MenuFormState> {
 
   /**
    * Derives input limits from presets and reads the current settings once from the store.
+   *
+   * @param props - Initial component props.
+   * @param state - Current game or component state.
    */
-  constructor(props: object, state: MenuFormState) {
+  public constructor(props: object, state: MenuFormState) {
     super(props, state);
     const settingsEasy = gameDifficultySettings[GameDifficulty.Easy];
     this.minTilesX = settingsEasy.tilesX;
@@ -53,22 +55,28 @@ export class MenuForm extends Component<object, MenuFormState> {
     this.maxTilesX = settingsCustom.tilesX;
     this.maxTilesY = settingsCustom.tilesY;
     this.maxMinesCount = settingsCustom.minesCount;
-    gameStore.state$
-      .pipe(take(1))
-      .subscribe(({ difficulty, tilesX, tilesY, minesCount, player }) =>
-        this.setState({ difficulty, tilesX, tilesY, minesCount, player })
-      );
+    const { difficulty, tilesX, tilesY, minesCount, player } = gameStore.state.peek();
+    this.state = { difficulty, tilesX, tilesY, minesCount, player };
   }
 
   /**
    * Focuses the player-name input when the form becomes visible.
    */
-  public componentDidMount(): void {
-    this.refPlayerInput.current?.focus();
+  public override componentDidMount(): void {
+    this.refPlayerInput.current.focus();
   }
 
   /**
    * Displays required player and board inputs; only custom dimensions are editable.
+   *
+   * @param _props - Component props, unused by this view.
+   * @param root0 - Component props or action input.
+   * @param root0.difficulty - Selected game difficulty.
+   * @param root0.tilesX - Number of board columns.
+   * @param root0.tilesY - Number of board rows.
+   * @param root0.minesCount - Total number of mines to place.
+   * @param root0.player - Player name associated with the game or query.
+   * @returns The rendered view.
    */
   public render(_props: object, { difficulty, tilesX, tilesY, minesCount, player }: MenuFormState): VNode {
     const readonly = difficulty !== GameDifficulty.Custom;
@@ -85,7 +93,7 @@ export class MenuForm extends Component<object, MenuFormState> {
             type="text"
             pattern="^\w+$"
             required
-            value={player || ''}
+            value={player ?? ''}
             ref={this.refPlayerInput}
           />
         </div>{' '}
@@ -110,49 +118,19 @@ export class MenuForm extends Component<object, MenuFormState> {
           <label htmlFor="tilesX" class="c-menu-form__label e-label">
             Width
           </label>
-          <input
-            class="c-menu-form__input e-input"
-            id="tilesX"
-            name="tilesX"
-            type={readonly ? 'text' : 'number'}
-            min={this.minTilesX}
-            max={this.maxTilesX}
-            required
-            value={tilesX}
-            readOnly={readonly}
-          />
+          {this.renderDimensionInput('tilesX', tilesX, this.minTilesX, this.maxTilesX, readonly)}
         </div>
         <div class="c-menu-form__row">
           <label htmlFor="tilesY" class="c-menu-form__label e-label">
             Height
           </label>
-          <input
-            class="c-menu-form__input e-input"
-            id="tilesY"
-            name="tilesY"
-            type={readonly ? 'text' : 'number'}
-            min={this.minTilesY}
-            max={this.maxTilesY}
-            required
-            value={tilesY}
-            readOnly={readonly}
-          />
+          {this.renderDimensionInput('tilesY', tilesY, this.minTilesY, this.maxTilesY, readonly)}
         </div>
         <div class="c-menu-form__row">
           <label htmlFor="minesCount" class="c-menu-form__label e-label">
             Mines
           </label>
-          <input
-            class="c-menu-form__input e-input"
-            id="minesCount"
-            name="minesCount"
-            type={readonly ? 'text' : 'number'}
-            min={this.minMinesCount}
-            max={this.maxMinesCount}
-            required
-            value={minesCount}
-            readOnly={readonly}
-          />
+          {this.renderDimensionInput('minesCount', minesCount, this.minMinesCount, this.maxMinesCount, readonly)}
         </div>
         <button class="c-menu-form__button e-button e-button--block e-button--primary" type="submit">
           Start Game
@@ -162,7 +140,34 @@ export class MenuForm extends Component<object, MenuFormState> {
   }
 
   /**
+   * Renders a preset as read-only text or custom settings as a numeric input.
+   * Separate JSX branches retain Preact 11's discriminated input attribute types.
+   *
+   * @param name - Form field identifier.
+   * @param value - Current setting value.
+   * @param min - Smallest accepted custom value.
+   * @param max - Largest accepted custom value.
+   * @param readonly - Whether a preset prevents editing.
+   * @returns The appropriate form input.
+   */
+  private renderDimensionInput(name: string, value: number, min: number, max: number, readonly: boolean): VNode {
+    const props = {
+      class: 'c-menu-form__input e-input',
+      id: name,
+      name,
+      min,
+      max,
+      required: true,
+      value,
+      readOnly: readonly,
+    };
+    return readonly ? <input {...props} type="text" /> : <input {...props} type="number" />;
+  }
+
+  /**
    * Validates the form, dispatches parsed settings, and navigates to the game route.
+   *
+   * @param event - Browser event initiating this operation.
    */
   private readonly onSubmit = (event: Event): void => {
     event.preventDefault();
@@ -170,13 +175,14 @@ export class MenuForm extends Component<object, MenuFormState> {
     if (form.checkValidity()) {
       const data = new FormData(form);
       gameStore.dispatch(GameAction.SetSettings, {
-        player: `${data.get('player')}`,
-        difficulty: Number.parseInt(`${data.get('difficulty')}`, 10),
+        player: data.get('player') as string,
+        difficulty:
+          this.difficulties.find(([, value]) => String(value) === data.get('difficulty'))?.[1] ?? GameDifficulty.Medium,
         settings: {
-          tilesX: Number.parseInt(`${data.get('tilesX')}`, 10),
-          tilesY: Number.parseInt(`${data.get('tilesY')}`, 10),
-          minesCount: Number.parseInt(`${data.get('minesCount')}`, 10)
-        }
+          tilesX: Number(data.get('tilesX')),
+          tilesY: Number(data.get('tilesY')),
+          minesCount: Number(data.get('minesCount')),
+        },
       });
       route(AppRoute.Game);
     }
@@ -184,10 +190,14 @@ export class MenuForm extends Component<object, MenuFormState> {
 
   /**
    * Keeps custom dimensions or applies the selected preset while preserving the entered player name.
+   *
+   * @param event - Browser event initiating this operation.
    */
-  private readonly onChangeDifficulty = (event: JSX.TargetedEvent<HTMLSelectElement, Event>): void => {
-    const difficulty: GameDifficulty = Number.parseInt(`${event.currentTarget.value}`, 10);
-    const player = this.refPlayerInput.current?.value;
+  private readonly onChangeDifficulty = (event: Event): void => {
+    const selectedValue = (event.currentTarget as HTMLSelectElement).value;
+    const difficulty: GameDifficulty =
+      this.difficulties.find(([, value]) => String(value) === selectedValue)?.[1] ?? GameDifficulty.Medium;
+    const player = this.refPlayerInput.current.value;
     if (difficulty === GameDifficulty.Custom) {
       this.setState(state => ({ ...state, difficulty, player }));
     } else {

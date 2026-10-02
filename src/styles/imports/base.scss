@@ -1,6 +1,8 @@
-@import 'css-reset-and-normalize/scss/reset-and-normalize';
-@import 'css-reset-and-normalize/scss/button-reset';
-@import 'css-reset-and-normalize/scss/link-reset';
+@use 'global-imports' as *;
+
+@use 'css-reset-and-normalize/scss/reset-and-normalize';
+@use 'css-reset-and-normalize/scss/button-reset';
+@use 'css-reset-and-normalize/scss/link-reset';
 
 html {
   font-family: $fontSans;

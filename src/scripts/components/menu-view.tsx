@@ -1,8 +1,8 @@
 import { compareAsc } from 'date-fns';
-import { Component, h, VNode } from 'preact';
-import { Link } from 'preact-router';
+import { Component, type VNode } from 'preact';
 
 import { AppRoute } from '../lib/app-route.enum';
+import { Link } from '../lib/hash-router';
 import { IconName } from '../lib/icon-name.enum';
 
 import { MenuForm } from './menu-form';
@@ -18,6 +18,8 @@ const SHOW_FIXED_BADGE = compareAsc(new Date(), new Date('11 Feb 2024 GMT')) ===
 export class MenuView extends Component {
   /**
    * Displays the start form, navigation links, and the time-limited leaderboard repair badge.
+   *
+   * @returns The rendered view.
    */
   public render(): VNode {
     return (

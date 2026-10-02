@@ -1,6 +1,6 @@
 import { DevMode } from './dev-mode';
 import { PaintResourceName } from './paint-assets';
-import { PaintContainer, PaintContainerOnClick } from './paint-container';
+import { PaintContainer, type PaintContainerOnClick } from './paint-container';
 import { PaintText } from './paint-text';
 import { PaintTexture } from './paint-texture';
 
@@ -10,7 +10,7 @@ import { PaintTexture } from './paint-texture';
 enum GameTileColor {
   Line = '#ebdfbe',
   FillCovered = '#6b8e23',
-  FillUncovered = '#f9edcc'
+  FillUncovered = '#f9edcc',
 }
 
 /**
@@ -28,12 +28,17 @@ export class GameTile {
 
   /**
    * Creates a covered tile and its clickable container at the corresponding pixel position.
+   *
+   * @param x - Horizontal tile or canvas coordinate.
+   * @param y - Vertical tile or canvas coordinate.
+   * @param size - Tile edge length in logical pixels.
+   * @param onClick - Handler called when the tile is pressed.
    */
-  constructor(
+  public constructor(
     public readonly x: number,
     public readonly y: number,
     private readonly size: number,
-    onClick: PaintContainerOnClick
+    onClick: PaintContainerOnClick,
   ) {
     this.posX = this.size * this.x;
     this.posY = this.size * this.y;
@@ -43,6 +48,8 @@ export class GameTile {
 
   /**
    * Reports whether a mine has been assigned to this tile.
+   *
+   * @returns Whether the tile contains a mine.
    */
   public get isMined(): boolean {
     return this.mined;
@@ -50,6 +57,8 @@ export class GameTile {
 
   /**
    * Reports whether this tile has not yet been uncovered.
+   *
+   * @returns Whether the tile is still covered.
    */
   public get isCovered(): boolean {
     return this.covered;
@@ -57,6 +66,8 @@ export class GameTile {
 
   /**
    * Reports whether the player has marked this tile with a flag.
+   *
+   * @returns Whether the tile is flagged.
    */
   public get isFlagged(): boolean {
     return this.flagged;
@@ -64,6 +75,8 @@ export class GameTile {
 
   /**
    * Returns the number of mines in adjacent tiles, despite the boolean-like getter name.
+   *
+   * @returns The count of adjacent mines.
    */
   public get hasNearbyMines(): number {
     return this.nearbyMines;
@@ -114,10 +127,11 @@ export class GameTile {
           width: this.size * 0.65,
           height: this.size * 0.65,
           x: (this.size - this.size * 0.65) / 2,
-          y: (this.size - this.size * 0.65) / 2
-        })
+          y: (this.size - this.size * 0.65) / 2,
+        }),
       );
     }
+
     /**
      * Developer mode reveals mine textures while preserving the covered state.
      * The mine is drawn after the flag, so it appears above a flag on the same tile.
@@ -127,18 +141,18 @@ export class GameTile {
         new PaintTexture({
           asset: PaintResourceName.Boom,
           width: this.size,
-          height: this.size
-        })
+          height: this.size,
+        }),
       );
     }
     if (!this.mined && !this.covered && this.nearbyMines > 0) {
       this.container.add(
         new PaintText({
-          text: `${this.nearbyMines}`,
+          text: String(this.nearbyMines),
           fillStyle: 'black',
           x: this.size / 2,
-          y: this.size / 2
-        })
+          y: this.size / 2,
+        }),
       );
     }
   }

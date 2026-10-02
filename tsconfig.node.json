@@ -1,12 +1,13 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@simbo/tsconfig/node",
+  "include": ["*.ts", "package.json"],
   "compilerOptions": {
-    "allowSyntheticDefaultImports": true,
-    "composite": true,
+    "noEmit": true,
+    "types": ["node"],
     "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "target": "ES2022"
-  },
-  "include": ["vite.config.ts", "vite-nunjucks.plugin.ts", "package.json", "./src/content/*.json"]
+    "allowImportingTsExtensions": true
+  }
 }

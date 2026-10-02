@@ -1,5 +1,5 @@
-import { GameDifficulty } from '../../lib/game-difficulty';
-import { GameFinalStatus, GameStatus } from '../../lib/game-status';
+import type { GameDifficulty } from '../../lib/game-difficulty';
+import type { GameFinalStatus, GameStatus } from '../../lib/game-status';
 
 /**
  * Shared game settings, lifecycle timestamps, and flag count. Timestamps are nullable before use.

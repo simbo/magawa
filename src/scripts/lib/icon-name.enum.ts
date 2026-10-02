@@ -1,5 +1,5 @@
 /**
- * Names of the bitmap icons bundled with the application.
+ * Names of the bitmap icons bundled with the app.
  */
 export enum IconName {
   Book = 'book',
@@ -14,5 +14,5 @@ export enum IconName {
   RightClick = 'right-click',
   Stopwatch = 'stopwatch',
   Trophy = 'trophy',
-  Zzz = 'zzz'
+  Zzz = 'zzz',
 }

@@ -8,8 +8,9 @@
     <style>
       html {
         font-size: 16px;
-        font-family: '-apple-system', 'system-ui', 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji',
-          'Segoe UI Emoji', 'Segoe UI Symbol';
+        font-family:
+          '-apple-system', 'system-ui', 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+          'Segoe UI Symbol';
       }
 
       @media screen and (min-width: 768px) {
@@ -39,13 +40,21 @@
     <meta http-equiv="expires" content="Thu, 11 Feb 1982 0:00:00 GMT" />
     <meta http-equiv="pragma" content="no-cache" />
     {% if APP_IS_PROD %}
-    <script async data-website-id="3ab8d1b8-d861-4f7c-b540-dfae6854b06c" src="https://trk.simbo.de/script.js"></script>
+    <script defer src="https://trk.srvkist.net/trk.js" data-website-id="c9ce8bab-5c6d-45ae-8127-19de67d3dbb1"></script>
+    <script
+      defer
+      src="https://trk.srvkist.net/recorder.js"
+      data-website-id="c9ce8bab-5c6d-45ae-8127-19de67d3dbb1"
+    ></script>
     {% endif %}
     <script type="module" src="./scripts/main.tsx"></script>
   </head>
   <body
     style="visibility: hidden"
-    onload="document.body.removeAttribute('style');document.body.removeAttribute('onload');"
+    onload="
+      document.body.removeAttribute('style');
+      document.body.removeAttribute('onload');
+    "
   >
     <a class="version" title="Sources on GitHub" href="https://github.com/simbo/magawa">
       <div class="version__label">Magawa v{{ APP_VERSION }}</div>

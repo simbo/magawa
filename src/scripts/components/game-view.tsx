@@ -1,22 +1,20 @@
 import { differenceInMilliseconds } from 'date-fns';
-import { Component, Fragment, h, VNode } from 'preact';
-import { Link } from 'preact-router';
+import { Component, Fragment, type VNode } from 'preact';
 import { useContext } from 'preact/hooks';
-import { fromEvent, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
 
 import { AppRoute } from '../lib/app-route.enum';
 import { GameDifficulty } from '../lib/game-difficulty';
+import { Link, route } from '../lib/hash-router';
 import {
   addHighscore,
   getHighscores,
-  Highscore,
-  HighscoreGameDifficulty,
-  HighscoresCollection
+  type Highscore,
+  type HighscoreGameDifficulty,
+  type HighscoresCollection,
 } from '../lib/highscores';
 import { GameAction } from '../store/game/game-actions';
 import { gameSelectors } from '../store/game/game-selectors';
-import { gameStore, gameStoreContext } from '../store/game/game-store';
+import { gameStore, gameStoreContext, gameWidth } from '../store/game/game-store';
 
 import { Congratulations } from './congratulations';
 import { Flags } from './flags';
@@ -34,62 +32,58 @@ interface GameViewState {
 }
 
 /**
- * Logs game actions during development to make state transitions inspectable.
- */
-if (process.env.NODE_ENV !== 'production') {
-  gameStore.actions$.subscribe(({ name, payload, state }) =>
-    // eslint-disable-next-line no-console
-    console.log('Action:', name, '\nPayload:', payload, '\nState:', state)
-  );
-}
-
-/**
  * Coordinates the active game, pause controls, and highscore submission.
  */
 export class GameView extends Component<object, GameViewState> {
-  private readonly unsubscribeSubject = new Subject<void>();
+  private readonly unsubscribeActions: () => void;
 
   private highscoreSaved = false;
+  private submissionGeneration = 0;
 
   /**
    * Starts a game and subscribes to automatic pause, keyboard controls, and restart events.
    */
-  constructor() {
+  public constructor() {
     super();
     gameStore.dispatch(GameAction.Start);
 
-    fromEvent<Event>(window, 'blur')
-      .pipe(takeUntil(this.unsubscribeSubject))
-      .subscribe(() => gameStore.dispatch(GameAction.Pause));
-
-    fromEvent<KeyboardEvent>(document, 'keydown')
-      .pipe(
-        takeUntil(this.unsubscribeSubject),
-        filter(event => event.code === 'KeyP' || event.code === 'Escape')
-      )
-      .subscribe(() => gameStore.dispatch(GameAction.TogglePause));
-
-    gameStore.actions$
-      .pipe(
-        takeUntil(this.unsubscribeSubject),
-        filter(({ name }) => name === GameAction.Start)
-      )
-      .subscribe(() => {
+    globalThis.addEventListener('blur', this.onBlur);
+    globalThis.document.addEventListener('keydown', this.onKeyDown);
+    this.unsubscribeActions = gameStore.subscribeActions(({ name }) => {
+      if (name === GameAction.Start || name === GameAction.Restart) {
+        this.submissionGeneration++;
         this.highscoreSaved = false;
-        this.setState({});
-      });
+        this.setState({ highscore: undefined, highscores: undefined });
+      }
+    });
+  }
+
+  /**
+   * Returns direct game links without saved player settings to the start form.
+   */
+  public override componentDidMount(): void {
+    if (!gameStore.state.peek().player) route(AppRoute.Home, true);
   }
 
   /**
    * Ends event subscriptions and closes the active game in the store.
    */
-  public componentWillUnmount(): void {
-    this.unsubscribeSubject.next();
+  public override componentWillUnmount(): void {
+    this.submissionGeneration++;
+    this.unsubscribeActions();
+    globalThis.removeEventListener('blur', this.onBlur);
+    globalThis.document.removeEventListener('keydown', this.onKeyDown);
     gameStore.dispatch(GameAction.Close);
   }
 
   /**
    * Displays game controls and the board, submitting a won preset game's result once.
+   *
+   * @param _props - Component props, unused by this view.
+   * @param root0 - Component props or action input.
+   * @param root0.highscores - Optional leaderboard entries around the saved result.
+   * @param root0.highscore - Optional saved result shown after winning.
+   * @returns The rendered view.
    */
   public render(_props: object, { highscores, highscore }: GameViewState): VNode {
     const gameState = useContext(gameStoreContext);
@@ -99,9 +93,9 @@ export class GameView extends Component<object, GameViewState> {
     const isWon = gameSelectors.isWon(gameState);
     const { difficulty, startedAt, finishedAt, player } = gameState;
     if (isWon && !this.highscoreSaved && difficulty !== GameDifficulty.Custom) {
-      this.saveHighscore(startedAt as Date, finishedAt as Date, player as string, difficulty);
+      void this.saveHighscore(startedAt as Date, finishedAt as Date, player as string, difficulty);
     }
-    const width = gameSelectors.width(gameState);
+    const width = gameWidth.value;
     return (
       <div class="c-game-view">
         <div class="c-game-view__container" style={`width:${width}px; min-width:${width * 0.5}px`}>
@@ -121,7 +115,7 @@ export class GameView extends Component<object, GameViewState> {
         {isWon && highscore && highscores ? (
           <Fragment>
             <Congratulations highscore={highscore} difficulty={difficulty as HighscoreGameDifficulty} />
-            <HighscoresTable rows={highscores.items} highlight={highscore?.id} />
+            <HighscoresTable rows={highscores.items} highlight={highscore.id} />
           </Fragment>
         ) : (
           ''
@@ -136,26 +130,50 @@ export class GameView extends Component<object, GameViewState> {
   }
 
   /**
+   * Pauses play when the browser window loses focus.
+   */
+  private readonly onBlur = (): void => {
+    gameStore.dispatch(GameAction.Pause);
+  };
+
+  /**
+   * Toggles pause with the documented keyboard shortcuts.
+   *
+   * @param event - Keyboard event from the active document.
+   */
+  private readonly onKeyDown = (event: KeyboardEvent): void => {
+    if (event.code === 'KeyP' || event.code === 'Escape') gameStore.dispatch(GameAction.TogglePause);
+  };
+
+  /**
    * Marks submission as started, saves the winning time, and loads entries around its rank.
    * Submission errors are swallowed so the finished game remains usable.
+   *
+   * @param startedAt - Playing-time start adjusted to exclude pauses.
+   * @param finishedAt - Timestamp at which play finished.
+   * @param player - Player name associated with the game or query.
+   * @param difficulty - Selected game difficulty.
    */
   private async saveHighscore(
     startedAt: Date,
     finishedAt: Date,
     player: string,
-    difficulty: HighscoreGameDifficulty
+    difficulty: HighscoreGameDifficulty,
   ): Promise<void> {
     /**
      * Sets the submission guard before awaiting the API so repeated renders
      * do not submit the same victory while the request is pending.
      */
     this.highscoreSaved = true;
+    const generation = this.submissionGeneration;
     try {
       const highscore = await addHighscore(difficulty, player, differenceInMilliseconds(finishedAt, startedAt));
       const highscores = await getHighscores({ difficulty, rank: highscore.rank });
-      this.setState({ highscore, highscores });
+      if (generation === this.submissionGeneration) this.setState({ highscore, highscores });
     } catch {
-      /* empty */
+      /*
+      empty
+      */
     }
   }
 }

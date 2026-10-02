@@ -12,7 +12,7 @@ const CHANGE_EVENT_TYPE = 'dev-mode-changed';
  */
 function change(devMode: boolean): void {
   storage.set({ devMode });
-  document.dispatchEvent(new CustomEvent(CHANGE_EVENT_TYPE, { detail: { devMode } }));
+  globalThis.document.dispatchEvent(new CustomEvent(CHANGE_EVENT_TYPE, { detail: { devMode } }));
 }
 
 /**
@@ -31,6 +31,8 @@ function disable(): void {
 
 /**
  * Reads the persisted developer-mode preference, defaulting to disabled.
+ *
+ * @returns Whether developer mode is enabled.
  */
 function isEnabled(): boolean {
   return !!storage.get({ devMode: false }).devMode;
@@ -58,6 +60,7 @@ export const DevMode = {
   disable,
   isEnabled,
   toggle,
+
   /**
    * Recognizes D, E, V in order while Ctrl, Alt, and Shift are held.
    * Each accepted key resets a three-second timeout; completing the sequence toggles the mode.
@@ -65,26 +68,29 @@ export const DevMode = {
    * @param event - Keyboard event to check.
    */
   handleKeyEvent(event: KeyboardEvent): void {
-    if (event.ctrlKey && event.altKey && event.shiftKey && triggerKeys.includes(event.code)) {
-      pressedKeys.push(event.code);
-      window.clearTimeout(triggerTimeout);
-      triggerTimeout = window.setTimeout(() => {
-        pressedKeys = [];
-      }, triggerTimespan);
-      /**
-       * Validates each three-key group in order and clears it after the attempt.
-       * Other keys are ignored; only accepted trigger keys extend the timeout.
-       */
-      if (pressedKeys.length === triggerKeys.length) {
-        let keysAreEqual = 0;
-        for (let i = 0; i < triggerKeys.length; i++) {
-          if (pressedKeys[i] === triggerKeys[i]) keysAreEqual++;
-          else break;
-        }
-        if (keysAreEqual === triggerKeys.length) toggle();
-        pressedKeys = [];
+    if (!(event.ctrlKey && event.altKey && event.shiftKey && triggerKeys.includes(event.code))) {
+      return;
+    }
+
+    pressedKeys.push(event.code);
+    globalThis.clearTimeout(triggerTimeout);
+    triggerTimeout = globalThis.setTimeout(() => {
+      pressedKeys = [];
+    }, triggerTimespan);
+
+    /**
+     * Validates each three-key group in order and clears it after the attempt.
+     * Other keys are ignored; only accepted trigger keys extend the timeout.
+     */
+    if (pressedKeys.length === triggerKeys.length) {
+      let keysAreEqual = 0;
+      for (const [i, triggerKey] of triggerKeys.entries()) {
+        if (pressedKeys[i] === triggerKey) keysAreEqual++;
+        else break;
       }
+      if (keysAreEqual === triggerKeys.length) toggle();
+      pressedKeys = [];
     }
   },
-  CHANGE_EVENT_TYPE
+  CHANGE_EVENT_TYPE,
 };

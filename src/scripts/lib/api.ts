@@ -7,13 +7,13 @@ import { slashJoin } from 'path-slashes';
  * @param queryParams - Query parameters to encode into the URL.
  * @returns The complete API URL.
  */
-export function apiUrl(pathParams: string | string[], queryParams: { [key: string]: string } = {}): string {
+export function apiUrl(pathParams: string | string[], queryParams: Record<string, string> = {}): string {
   pathParams = Array.isArray(pathParams) ? pathParams : [pathParams];
   const url = new URL(APP_API_URL);
   url.pathname = slashJoin(url.pathname, ...pathParams);
-  const query = new URLSearchParams(Object.entries(queryParams));
+  const query = new URLSearchParams(queryParams);
   url.search = query.toString();
-  return url.toString();
+  return url.href;
 }
 
 /**
@@ -25,7 +25,7 @@ export function apiUrl(pathParams: string | string[], queryParams: { [key: strin
  * @returns The parsed response body.
  */
 export async function apiFetch<O = unknown>(url: string, options: RequestInit = {}): Promise<O> {
-  const response = await fetch(url, options);
+  const response = await globalThis.fetch(url, options);
   const json = (await response.json()) as O;
   return json;
 }
@@ -37,10 +37,10 @@ export async function apiFetch<O = unknown>(url: string, options: RequestInit = 
  * @param payload - Value serialized into the request body.
  * @returns The parsed response body.
  */
-export async function apiPost<I = unknown, O = unknown>(url: string, payload: I): Promise<O> {
+export async function apiPost<O = unknown>(url: string, payload: unknown): Promise<O> {
   return apiFetch<O>(url, {
     headers: { 'Content-Type': 'application/json;charset=utf-8' },
     method: 'post',
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
 }

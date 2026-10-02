@@ -1,8 +1,8 @@
-import { Component, h, VNode } from 'preact';
+import { Component, type VNode } from 'preact';
 
 import { formatDate } from '../lib/format-date.function';
 import { formatDuration } from '../lib/format-duration.function';
-import { Highscore } from '../lib/highscores';
+import type { Highscore } from '../lib/highscores';
 
 /**
  * Leaderboard rows and the optional entry ID to highlight. Undefined rows indicate loading.
@@ -18,6 +18,11 @@ interface HighscoresTableProps {
 export class HighscoresTable extends Component<HighscoresTableProps> {
   /**
    * Formats leaderboard rows and distinguishes missing data from an empty result set.
+   *
+   * @param root0 - Component props or action input.
+   * @param root0.rows - Leaderboard entries, or undefined while loading.
+   * @param root0.highlight - Optional highscore ID to highlight.
+   * @returns The rendered view.
    */
   public render({ rows, highlight }: HighscoresTableProps): VNode {
     return (
@@ -30,7 +35,7 @@ export class HighscoresTable extends Component<HighscoresTableProps> {
           </tr>
         </thead>
         <tbody>
-          {(rows || []).map(({ id, rank, player, time, date }) => (
+          {(rows ?? []).map(({ id, rank, player, time, date }) => (
             <tr
               title={`${player} 🏆 ${formatDate(date)}`}
               class={`c-highscores-table__row ${id === highlight ? 'c-highscores-table__row--highlight' : ''}`}

@@ -5,9 +5,9 @@ import { GameDifficulty } from './game-difficulty';
  * Numeric enums expose both name-to-number and number-to-name entries; numeric keys
  * in this map provide the labels used by formatDifficulty.
  */
-const difficultiesMap: { [key in GameDifficulty]: string } = Object.entries(GameDifficulty).reduce(
+const difficultiesMap: Record<GameDifficulty, string> = Object.entries(GameDifficulty).reduce(
   (map, [key, value]) => ({ ...map, [value]: key }),
-  {} as unknown as { [key in GameDifficulty]: string }
+  {} as unknown as Record<GameDifficulty, string>,
 );
 
 /**

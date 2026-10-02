@@ -1,0 +1,9 @@
+packageManager: pnpm
+reject:
+  # use npm from node's lts
+  - npm
+  # use `pnpm self-update`
+  - pnpm
+root: true
+install: never
+cooldown: 2

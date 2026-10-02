@@ -1,7 +1,7 @@
-import { Component, h, VNode } from 'preact';
-import { Link } from 'preact-router';
+import { Component, type VNode } from 'preact';
 
 import { AppRoute } from '../lib/app-route.enum';
+import { Link } from '../lib/hash-router';
 import { IconName } from '../lib/icon-name.enum';
 
 /**
@@ -10,6 +10,8 @@ import { IconName } from '../lib/icon-name.enum';
 export class AboutView extends Component {
   /**
    * Displays game instructions, input controls, and project links.
+   *
+   * @returns The rendered view.
    */
   public render(): VNode {
     return (

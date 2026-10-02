@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "@simbo/tsconfig/browser",
+  "include": ["src"],
+  "compilerOptions": {
+    "declaration": false,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact",
+    "target": "ES2022",
+    "types": ["vite/client"]
+  }
+}

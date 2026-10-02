@@ -7,7 +7,7 @@ import { IconName } from './icon-name.enum';
  */
 export enum PaintResourceName {
   Boom = IconName.Boom,
-  Flag = IconName.Flag
+  Flag = IconName.Flag,
 }
 
 /**
@@ -23,7 +23,7 @@ interface PaintResource {
  */
 const CANVAS_ASSETS: PaintResource[] = [
   { name: PaintResourceName.Boom, src: 'icons/boom.png' },
-  { name: PaintResourceName.Flag, src: 'icons/flag.png' }
+  { name: PaintResourceName.Flag, src: 'icons/flag.png' },
 ];
 
 /**
@@ -36,27 +36,30 @@ export type PaintAsset = PaintResource & { image: HTMLImageElement };
  *
  * @param asset - Named resource and source URL.
  * @returns The resource with its loaded image.
- * @throws If the browser cannot load the image.
+ * @throws {Error} If the browser cannot load the image.
  */
 async function loadPaintAsset(asset: PaintResource): Promise<PaintAsset> {
   return new Promise((resolve, reject) => {
     const image = new Image();
-    image.addEventListener('error', error => reject(error));
-    image.addEventListener('load', () => resolve({ ...asset, image: image }));
+    image.addEventListener('error', () => {
+      reject(new Error(`Failed to load image: ${asset.src}`));
+    });
+    image.addEventListener('load', () => {
+      resolve({ ...asset, image: image });
+    });
     image.src = asset.src;
   });
 }
 
-const BASE_URI = document.head.baseURI;
+const BASE_URI = globalThis.document.head.baseURI;
 
-const CANVAS_IMAGES: { [key in PaintResourceName]?: PaintAsset } = {};
+const CANVAS_IMAGES: Partial<Record<PaintResourceName, PaintAsset>> = {};
 
 /**
  * Preloads canvas images before module evaluation completes.
  * The top-level await ensures tile textures can synchronously retrieve loaded assets.
  */
-for (let i = 0; i < CANVAS_ASSETS.length; i++) {
-  const { name, src } = CANVAS_ASSETS[i];
+for (const { name, src } of CANVAS_ASSETS) {
   const image = await loadPaintAsset({ name, src: slashJoin(BASE_URI, src) });
   CANVAS_IMAGES[image.name] = image;
 }
@@ -66,7 +69,7 @@ for (let i = 0; i < CANVAS_ASSETS.length; i++) {
  *
  * @param name - Resource to retrieve.
  * @returns The loaded image resource.
- * @throws If the named resource has not been loaded.
+ * @throws {Error} If the named resource has not been loaded.
  */
 export function getPaintAsset(name: PaintResourceName): PaintAsset {
   const image = CANVAS_IMAGES[name];

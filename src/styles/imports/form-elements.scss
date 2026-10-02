@@ -1,3 +1,6 @@
+@use 'sass:color';
+@use 'global-imports' as *;
+
 .e-label,
 .e-input,
 .e-select {
@@ -44,13 +47,13 @@
 .e-button {
   display: flex;
   justify-content: center;
-  background: darken($colorBackground, 3%);
+  background: color.adjust($colorBackground, $lightness: -3%, $space: hsl);
   line-height: $lineHeight;
   padding: 0.2em 0.6em;
   border-radius: 0.2em;
 
   &--primary {
-    background: darken($colorBackground, 40%);
+    background: color.adjust($colorBackground, $lightness: -40%, $space: hsl);
     color: $colorBackground;
     font-weight: bold;
     text-transform: uppercase;
