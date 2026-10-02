@@ -1,5 +1,16 @@
 # Magawa
 
+## 0.13.1
+
+### Patch Changes
+
+- bac0dff: Disable Jekyll processing on GitHub Pages so generated assets are
+  served without filtering. Include the main branch and checked commit SHA in
+  release workflow run names to make automated releases easier to identify.
+- bac0dff: Start a new game with the same player, difficulty, and board settings
+  when the win or loss overlay is clicked, instead of returning to the main
+  menu.
+
 ## 0.13.0
 
 ### Minor Changes
