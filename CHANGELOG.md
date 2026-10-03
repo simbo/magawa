@@ -1,5 +1,16 @@
 # Magawa
 
+## 0.13.3
+
+### Patch Changes
+
+- ab09706: Verify highscore submission compatibility with HTTP 201 Created
+  responses while retaining coverage for HTTP 200 responses.
+- cebccff: Migrate testing to Vitest with coverage and add unit and component
+  tests across the application and build plugins. Prevent repeated
+  game-completion notifications and retain the selected highscore page when
+  applying filters.
+
 ## 0.13.2
 
 ### Patch Changes
