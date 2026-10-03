@@ -28,8 +28,9 @@
     "check:eslint": "eslint --config ./eslint.config.ts --max-warnings 0 .",
     "check:format": "prettier --check .",
     "check:spelling": "cspell",
-    "check:types": "tsc --project tsconfig.browser.json && tsc --project tsconfig.node.json",
-    "clean": "pnpm run clean:node_modules",
+    "check:types": "tsc --project tsconfig.browser.json && tsc --project tsconfig.node.json && tsc --project tsconfig.tests.json",
+    "clean": "pnpm run clean:coverage && pnpm run clean:node_modules",
+    "clean:coverage": "rm -rf coverage",
     "clean:node_modules": "rm -rf node_modules",
     "fix": "pnpm run fix:eslint && pnpm run fix:format",
     "fix:eslint": "pnpm run check:eslint --fix",
@@ -38,11 +39,13 @@
     "ncu:latest": "ncu --interactive --target latest --reject='/^(@types/node|typescript)$/'",
     "ncu:minor": "ncu --interactive --target minor",
     "ncu:patch": "ncu --interactive --target patch",
-    "preflight": "pnpm run check && pnpm run test && pnpm run build",
+    "preflight": "pnpm run check && pnpm run build && pnpm run test",
     "preview": "vite preview",
     "prepare": "husky",
     "start": "pnpm run dev",
-    "test": "node --test tests/*.test.js"
+    "test": "vitest run --coverage",
+    "test:watch": "vitest dev --coverage",
+    "test:ui": "pnpm run test:watch --ui"
   },
   "dependencies": {
     "@preact/signals": "^2.11.3",
@@ -62,9 +65,12 @@
     "@simbo/eslint-config": "^3.2.0",
     "@simbo/prettier-config": "^3.0.1",
     "@simbo/tsconfig": "^2.0.0",
+    "@testing-library/preact": "^3.2.4",
     "@types/html-minifier-terser": "^7.0.2",
     "@types/node": "^24.19.0",
     "@types/nunjucks": "^3.2.6",
+    "@vitest/coverage-v8": "^5.0.3",
+    "@vitest/ui": "^5.0.3",
     "autoprefixer": "^10.6.1",
     "browserslist": "^4.29.3",
     "cspell": "^10.3.6",
@@ -73,6 +79,7 @@
     "html-minifier-terser": "^7.2.0",
     "husky": "^9.1.7",
     "jiti": "^2.7.0",
+    "jsdom": "^30.1.1",
     "npm-check-updates": "^23.1.0",
     "nunjucks": "^3.2.4",
     "postcss": "^8.5.28",
@@ -81,6 +88,7 @@
     "typescript": "^6.0.3",
     "update-browserslist-db": "^1.3.3",
     "vite": "^8.3.1",
-    "vite-bundle-visualizer": "^1.2.1"
+    "vite-bundle-visualizer": "^1.2.1",
+    "vitest": "^5.0.3"
   }
 }

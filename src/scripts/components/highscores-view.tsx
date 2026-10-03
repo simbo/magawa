@@ -177,7 +177,7 @@ export class HighscoresView extends Component<object, HighscoresViewState> {
    * @param player - Player name associated with the game or query.
    */
   private request(difficulty: HighscoreGameDifficulty, page: number, player?: string): void {
-    this.setState({ difficulty, collection: undefined });
+    this.setState({ difficulty, page, collection: undefined });
     getHighscores({ difficulty, player, page })
       .then(collection => {
         this.setState({ difficulty, collection });

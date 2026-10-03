@@ -1,0 +1,10 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "extends": "./tsconfig.browser.json",
+  "include": ["tests/**/*.ts", "tests/**/*.tsx", "src/**/*.test.ts", "src/**/*.test.tsx", "src/vite-env.d.ts"],
+  "compilerOptions": {
+    "types": ["vite/client", "vitest/globals", "node"],
+    "lib": ["ES2024", "DOM", "DOM.Iterable"]
+  },
+  "exclude": []
+}

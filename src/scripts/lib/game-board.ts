@@ -18,6 +18,7 @@ export class GameBoard {
   private pauseOverlay!: PaintContainer | null;
   private flagsCount!: number;
   private triggeredMinedTile!: GameTile | null;
+  private completed = false;
 
   /**
    * Creates the canvas engine and initializes an empty covered board.
@@ -67,6 +68,7 @@ export class GameBoard {
       });
     }
     this.flagsCount = 0;
+    this.completed = false;
     this.tiles = [];
     this.minesIndex = [];
     this.triggeredMinedTile = null;
@@ -297,9 +299,11 @@ export class GameBoard {
    * Determines victory or loss, adds the completion overlay, notifies the store, and redraws.
    */
   private updateBoardState(): void {
+    if (this.completed) return;
     const lost = !!this.triggeredMinedTile;
     const won = !lost && this.isBoardSolved();
     if (lost || won) {
+      this.completed = true;
       const fillStyle = won ? 'rgba(0, 255, 0, 0.2)' : 'rgba(255, 0, 0, 0.2)';
       const overlay = new PaintContainer({
         fillStyle,

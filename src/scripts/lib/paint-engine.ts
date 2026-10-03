@@ -30,7 +30,7 @@ export class PaintEngine {
 
   private children: PaintContainer[] = [];
 
-  private renderTimeout = 0;
+  private renderTimeout: ReturnType<typeof globalThis.setTimeout> | undefined;
 
   /**
    * Configures scaled canvas dimensions and installs context-menu and pointer handlers.

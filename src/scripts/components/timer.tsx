@@ -12,7 +12,7 @@ import { gameStore, gameStoreContext } from '../store/game/game-store';
  * Displays elapsed playing time and provides the pause toggle.
  */
 export class Timer extends Component {
-  private timeout!: number;
+  private timeout: ReturnType<typeof globalThis.setTimeout> | undefined;
 
   /**
    * Cancels the pending timer update when the component is removed.

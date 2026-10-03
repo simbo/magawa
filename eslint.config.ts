@@ -53,4 +53,31 @@ export default defineConfig([
       'unicorn/no-top-level-assignment-in-function': 'off',
     },
   },
+  {
+    files: ['**/*.test.{ts,tsx}', 'tests/**/*.{ts,tsx}'],
+    languageOptions: {
+      globals: { ...globals.browser, ...globals.node, ...globals.vitest },
+      parserOptions: {
+        project: ['./tsconfig.tests.json', './tsconfig.node.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+    extends: [configs.browser.recommended],
+    rules: {
+      // Test fixtures intentionally use literal values, nullable lifecycle fields and assertions.
+      '@typescript-eslint/no-magic-numbers': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'off',
+      // Mock exports retain production names; spies are asserted without invoking methods.
+      '@typescript-eslint/naming-convention': 'off',
+      '@typescript-eslint/unbound-method': 'off',
+      // Helpers infer their types; tests also exercise deliberately invalid enum inputs.
+      '@typescript-eslint/explicit-function-return-type': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-unsafe-enum-assignment': 'off',
+      'unicorn/max-nested-calls': 'off',
+      'jsdoc/require-returns': 'off',
+      'jsdoc/require-param-description': 'off',
+      'unicorn/no-null': 'off',
+    },
+  },
 ]);

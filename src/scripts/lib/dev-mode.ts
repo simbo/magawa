@@ -48,7 +48,7 @@ function toggle(): void {
 
 const triggerKeys = ['KeyD', 'KeyE', 'KeyV'];
 const triggerTimespan = 3000;
-let triggerTimeout = 0;
+let triggerTimeout: ReturnType<typeof globalThis.setTimeout> | undefined;
 let pressedKeys: string[] = [];
 
 /**

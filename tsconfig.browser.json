@@ -9,5 +9,6 @@
     "jsxImportSource": "preact",
     "target": "ES2022",
     "types": ["vite/client"]
-  }
+  },
+  "exclude": ["src/**/*.test.ts", "src/**/*.test.tsx"]
 }

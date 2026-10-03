@@ -11,3 +11,5 @@
 *.log
 
 .DS_Store
+
+/coverage
