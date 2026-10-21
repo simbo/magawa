@@ -18,7 +18,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text-summary', 'html', 'lcov'],
       thresholds: { statements: 95, branches: 90, functions: 95, lines: 95 },
-      include: ['src/scripts/**/*.{ts,tsx}', 'vite-*.plugin.ts'],
+      include: ['src/scripts/**/*.{ts,tsx}'],
       exclude: [
         '**/*.test.{ts,tsx}',
         'src/scripts/**/*.{type,types,interface,interfaces,enum}.ts',

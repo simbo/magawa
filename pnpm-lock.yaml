@@ -212,15 +212,15 @@ importers:
       '@simbo/tsconfig':
         specifier: ^2.0.0
         version: 2.0.0(typescript@6.0.3)
+      '@simbo/vite-plugin-html-minifier':
+        specifier: ^1.0.1
+        version: 1.0.1(vite@8.3.4(@types/node@24.19.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1))
       '@simbo/vite-plugin-nunjucks':
         specifier: ^1.0.1
         version: 1.0.1(vite@8.3.4(@types/node@24.19.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1))
       '@testing-library/preact':
         specifier: ^3.2.4
         version: 3.2.4(preact@11.0.1)
-      '@types/html-minifier-terser':
-        specifier: ^7.0.2
-        version: 7.0.2
       '@types/node':
         specifier: ^24.19.2
         version: 24.19.2
@@ -245,9 +245,6 @@ importers:
       eslint:
         specifier: ^10.13.0
         version: 10.13.0(jiti@2.7.0)(supports-color@7.2.0)
-      html-minifier-terser:
-        specifier: ^7.2.0
-        version: 7.2.0
       husky:
         specifier: ^9.1.7
         version: 9.1.7
@@ -1145,6 +1142,12 @@ packages:
     engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
     peerDependencies:
       typescript: ^5 || ^6
+
+  '@simbo/vite-plugin-html-minifier@1.0.1':
+    resolution: {integrity: sha512-0rvDvtX4P3fVBW+6TLxfOxdZYPHRoFU+mFa63LSziLKfQgENDpk+vhiIOBTHqiu9uT6b03Ixl/rDYMpiFzG2Gg==}
+    engines: {node: ^22.22.2 || ^24.15.0 || >=26.0.0}
+    peerDependencies:
+      vite: ^8.3.1
 
   '@simbo/vite-plugin-nunjucks@1.0.1':
     resolution: {integrity: sha512-hKmyLF70/LqN2iWe9Zow17C1gXt+8EN2+c75V9qkfDjVRVjK5Zvf/wGmLT6edqu+FGgzJGAieb/rh74AjIDNWA==}
@@ -3838,6 +3841,12 @@ snapshots:
   '@simbo/tsconfig@2.0.0(typescript@6.0.3)':
     dependencies:
       typescript: 6.0.3
+
+  '@simbo/vite-plugin-html-minifier@1.0.1(vite@8.3.4(@types/node@24.19.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1))':
+    dependencies:
+      '@types/html-minifier-terser': 7.0.2
+      html-minifier-terser: 7.2.0
+      vite: 8.3.4(@types/node@24.19.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1)
 
   '@simbo/vite-plugin-nunjucks@1.0.1(vite@8.3.4(@types/node@24.19.2)(jiti@2.7.0)(sass@1.105.2)(terser@5.51.2)(yaml@2.9.1))':
     dependencies:

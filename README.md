@@ -63,8 +63,8 @@ preferences retain their versioned, compressed local-storage format.
 
 Tests use Vitest with V8 coverage. Module tests live alongside source files as
 `*.test.ts` or `*.test.tsx`; tests spanning multiple components and shared
-helpers live in `tests/`. Build-plugin tests use the Node environment; UI and
-browser-module tests use jsdom and Preact Testing Library.
+helpers live in `tests/`. UI and browser-module tests use jsdom and Preact
+Testing Library.
 
 ```sh
 # run all tests and generate coverage reports
@@ -85,11 +85,11 @@ pnpm run clean:coverage
 
 Coverage reports are written to `coverage/index.html` and `coverage/lcov.info`.
 The initial suite establishes minimum aggregate coverage of 95% for statements,
-functions and lines and 90% for branches. All app modules and both build plugins
-are included; type declarations, enum-only modules and the entry-point bootstrap
-are excluded. Tests cover behavior, edge cases and failures, with controlled
-network, image-loading and canvas boundaries. Real-browser end-to-end tests and
-visual screenshot comparisons are outside this suite.
+functions and lines and 90% for branches. All app modules are included; type
+declarations, enum-only modules and the entry-point bootstrap are excluded.
+Tests cover behavior, edge cases and failures, with controlled network,
+image-loading and canvas boundaries. Real-browser end-to-end tests and visual
+screenshot comparisons are outside this suite.
 
 ## Deployment
 
