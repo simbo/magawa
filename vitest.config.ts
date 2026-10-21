@@ -6,7 +6,6 @@ export default defineConfig({
     APP_VERSION: JSON.stringify('test'),
     APP_IS_DEV: false,
     APP_IS_PROD: false,
-    'import.meta.env.DEV': 'false',
   },
   oxc: { jsx: { runtime: 'automatic', importSource: 'preact' } },
   test: {

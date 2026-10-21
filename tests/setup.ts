@@ -1,6 +1,8 @@
 import { cleanup } from '@testing-library/preact';
 import { afterEach, vi } from 'vitest';
 
+vi.stubEnv('DEV', false);
+
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
