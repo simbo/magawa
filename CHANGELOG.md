@@ -1,5 +1,12 @@
 # Magawa
 
+## 0.13.5
+
+### Patch Changes
+
+- 9bce566: Replace the local HTML minifier build plugin with
+  `@simbo/vite-plugin-html-minifier` while preserving production HTML output.
+
 ## 0.13.4
 
 ### Patch Changes
