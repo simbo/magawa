@@ -1,12 +1,12 @@
 import { fileURLToPath } from 'node:url';
 
+import nunjucksPlugin from '@simbo/vite-plugin-nunjucks';
 import autoprefixer from 'autoprefixer';
 import cssnano from 'cssnano';
 import { defineConfig, type UserConfig } from 'vite';
 
 import packageJson from './package.json' with { type: 'json' };
 import { htmlMinifierPlugin } from './vite-html-minifier.plugin.ts';
-import nunjucksPlugin from './vite-nunjucks.plugin.ts';
 
 /**
  * Primitive template variables also exposed as compile-time app constants.
