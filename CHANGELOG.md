@@ -1,5 +1,17 @@
 # Magawa
 
+## 0.13.4
+
+### Patch Changes
+
+- f9b5272: Disable development action tracing in tests without suppressing
+  console warnings or errors.
+- c3c52d8: Replace the local Nunjucks Vite plugin with
+  @simbo/vite-plugin-nunjucks.
+- c3c52d8: Update application and development dependencies, including the shared
+  CSpell configuration that ignores seven-character commit hashes in changelog
+  entries.
+
 ## 0.13.3
 
 ### Patch Changes
