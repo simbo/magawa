@@ -1,0 +1,2 @@
+import{n as e,t}from"./jsxRuntime-DkMgZm0a.js";var n=class extends e{render(){return t(`div`,{class:`dev-layer`,children:t(`span`,{title:`Dev Mode enabled`,children:`🥷`})})}};export{n as DevLayer};
+//# sourceMappingURL=dev-layer-B-UDOj4i.js.map
